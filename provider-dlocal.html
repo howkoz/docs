@@ -1,0 +1,779 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>dLocal – LATAM Payment Platform | Unicity Payment Ops</title>
+<style>
+:root {
+  --bg:#1e1e2e;--surface:#181825;--surface2:#11111b;
+  --border:#313244;--border2:#45475a;
+  --text:#cdd6f4;--muted:#6c7086;--dim:#45475a;
+  --accent:#89b4fa;--accent2:#89b4fa;
+  --gold:#f9e2af;--green:#a6e3a1;--orange:#fab387;--red:#f38ba8;
+  --blue:#89b4fa;--purple:#cba6f7;--yellow:#f9e2af;
+  --sidebar-w:210px;
+  --accent-dim:#89b4fa25;--accent-glow:#89b4fa12;
+  --red-dim:#f38ba820;--green-dim:#a6e3a120;--orange-dim:#fab38720;
+}
+*{box-sizing:border-box;margin:0;padding:0;}
+body{background:var(--bg);color:var(--text);font-family:'Segoe UI',system-ui,-apple-system,sans-serif;font-size:14px;line-height:1.6;margin-left:var(--sidebar-w);}
+a{color:var(--accent2);text-decoration:none;}a:hover{text-decoration:underline;}
+nav:not(.site-sidebar){border-bottom:1px solid var(--border);padding:0 32px;display:flex;align-items:center;gap:4px;height:48px;position:sticky;top:0;background:rgba(30,30,46,.95);backdrop-filter:blur(12px);z-index:100;}
+.nav-brand{font-size:12px;font-weight:500;color:var(--muted);letter-spacing:.08em;text-transform:uppercase;margin-right:16px;white-space:nowrap;}
+nav:not(.site-sidebar) a{font-size:12px;color:var(--muted);text-decoration:none;padding:0 10px;height:48px;display:flex;align-items:center;border-bottom:2px solid transparent;transition:color .15s,border-color .15s;white-space:nowrap;}
+nav:not(.site-sidebar) a:hover{color:var(--text);}nav:not(.site-sidebar) a.active{color:var(--accent2);border-bottom-color:var(--accent);}
+.hero{max-width:1280px;margin:0 auto;padding:40px 32px 0;background:linear-gradient(135deg,rgba(16,185,129,.07) 0%,transparent 55%);}
+.back-link{font-size:12px;color:var(--muted);display:inline-flex;align-items:center;gap:6px;margin-bottom:20px;}
+.back-link:hover{color:var(--text);}
+.provider-label{font-size:11px;letter-spacing:.1em;text-transform:uppercase;color:var(--muted);margin-bottom:10px;}
+h1{font-family:'Segoe UI',system-ui,-apple-system,sans-serif;font-size:48px;line-height:1.1;margin-bottom:14px;}
+h1 em{font-style:italic;color:var(--accent2);}
+.hero-sub{font-size:15px;color:var(--muted);max-width:700px;margin-bottom:20px;}
+.pills{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:28px;}
+.pill{font-size:11px;font-weight:500;padding:4px 12px;border-radius:20px;letter-spacing:.04em;}
+.pill-q{background:rgba(16,185,129,.15);color:var(--accent2);border:1px solid rgba(16,185,129,.3);}
+.pill-r{background:rgba(255,255,255,.05);color:var(--muted);border:1px solid var(--border);}
+.pill-ok{background:rgba(16,185,129,.1);color:var(--green);border:1px solid rgba(16,185,129,.2);}
+.pill-risk{background:rgba(239,68,68,.12);color:var(--red);border:1px solid rgba(239,68,68,.25);}
+.hero-stats{display:flex;gap:0;border-top:1px solid var(--border);border-bottom:1px solid var(--border);margin-top:8px;}
+.stat{flex:1;padding:16px 20px;border-right:1px solid var(--border);}
+.stat:last-child{border-right:none;}
+.stat-val{display:block;font-size:22px;font-weight:600;color:var(--text);font-family:'Consolas',monospace;margin-bottom:3px;}
+.stat-lbl{font-size:11px;color:var(--muted);text-transform:uppercase;letter-spacing:.07em;}
+.tab-bar{position:sticky;top:48px;z-index:90;background:rgba(30,30,46,.95);backdrop-filter:blur(12px);border-bottom:1px solid var(--border);}
+.tab-bar-inner{max-width:1280px;margin:0 auto;padding:0 32px;display:flex;gap:4px;overflow-x:auto;}
+.tab-btn{background:none;border:none;color:var(--muted);font-family:'Segoe UI',system-ui,-apple-system,sans-serif;font-size:13px;padding:14px 16px;cursor:pointer;border-bottom:2px solid transparent;transition:color .15s,border-color .15s;white-space:nowrap;}
+.tab-btn:hover{color:var(--text);}
+.tab-btn.active{color:var(--accent2);border-bottom-color:var(--accent);}
+.content{max-width:1280px;margin:0 auto;padding:32px;}
+.tab-panel{display:none;}
+.tab-panel.active{display:grid;grid-template-columns:1fr 300px;gap:24px;}
+.tab-panel.wide{display:none;}
+.tab-panel.wide.active{display:block;}
+.main-col{min-width:0;}.sidebar{display:flex;flex-direction:column;gap:16px;}
+.card{background:var(--surface);border:1px solid var(--border);border-radius:8px;padding:20px;}
+.card-title{font-size:12px;font-weight:600;letter-spacing:.08em;text-transform:uppercase;color:var(--muted);margin-bottom:14px;}
+.cap-grid{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:20px;}
+.cap-card{background:var(--surface);border:1px solid var(--border);border-radius:8px;padding:16px;}
+.cap-header{display:flex;align-items:flex-start;gap:10px;margin-bottom:8px;}
+.cap-icon{width:32px;height:32px;border-radius:6px;display:flex;align-items:center;justify-content:center;font-size:16px;flex-shrink:0;}
+.cap-title{font-size:13px;font-weight:600;color:var(--text);}
+.cap-sub{font-size:12px;color:var(--muted);margin-bottom:10px;line-height:1.5;}
+.tags{display:flex;flex-wrap:wrap;gap:4px;}
+.tag{font-size:10px;padding:2px 8px;border-radius:4px;font-weight:500;}
+.tag.ok{background:rgba(16,185,129,.12);color:var(--green);border:1px solid rgba(16,185,129,.2);}
+.tag.risk{background:rgba(239,68,68,.1);color:var(--red);border:1px solid rgba(239,68,68,.2);}
+.tag.warn{background:rgba(245,158,11,.1);color:#fbbf24;border:1px solid rgba(245,158,11,.2);}
+.tag.info{background:rgba(16,185,129,.1);color:var(--accent2);border:1px solid rgba(16,185,129,.2);}
+.callout{border-radius:8px;padding:14px 16px;margin-bottom:16px;font-size:13px;line-height:1.5;}
+.callout strong{display:block;font-weight:600;margin-bottom:4px;}
+.c-info{background:rgba(16,185,129,.08);border:1px solid rgba(16,185,129,.25);color:var(--text);}
+.c-warn{background:rgba(245,158,11,.08);border:1px solid rgba(245,158,11,.25);color:var(--text);}
+.c-risk{background:rgba(239,68,68,.08);border:1px solid rgba(239,68,68,.25);color:var(--text);}
+.c-ok{background:rgba(16,185,129,.08);border:1px solid rgba(16,185,129,.25);color:var(--text);}
+.dt{width:100%;border-collapse:collapse;font-size:13px;}
+.dt th{text-align:left;padding:10px 12px;background:var(--surface2);color:var(--muted);font-weight:500;font-size:11px;text-transform:uppercase;letter-spacing:.06em;border-bottom:1px solid var(--border2);}
+.dt td{padding:10px 12px;border-bottom:1px solid var(--border);}
+.dt tr:last-child td{border-bottom:none;}
+.dt tr:hover td{background:rgba(255,255,255,.02);}
+.ok{color:var(--green);}.warn{color:#fbbf24;}.risk{color:var(--red);}
+.dim{color:var(--muted);font-family:'Consolas',monospace;font-size:12px;}
+.profile-row{display:flex;justify-content:space-between;align-items:flex-start;padding:8px 0;border-bottom:1px solid var(--border);font-size:12px;gap:12px;}
+.profile-row:last-child{border-bottom:none;}
+.profile-key{color:var(--muted);flex-shrink:0;}
+.profile-val{color:var(--text);text-align:right;}
+.signal-row{display:flex;justify-content:space-between;align-items:center;margin-bottom:10px;gap:12px;}
+.signal-label{font-size:12px;color:var(--muted);flex-shrink:0;width:120px;}
+.signal-bar-bg{flex:1;height:4px;background:var(--border);border-radius:2px;}
+.signal-bar{height:4px;border-radius:2px;background:var(--accent);}
+.flow-grid{display:grid;grid-template-columns:1fr 1fr;gap:24px;margin-bottom:24px;}
+.flow-title-block{font-size:11px;font-weight:600;letter-spacing:.08em;text-transform:uppercase;color:var(--accent2);margin-bottom:16px;}
+.flow-step{display:flex;gap:12px;margin-bottom:16px;}
+.flow-left{display:flex;flex-direction:column;align-items:center;}
+.flow-num{width:24px;height:24px;border-radius:50%;background:var(--accent);color:#000;display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:600;flex-shrink:0;}
+.flow-line{width:1px;background:var(--border);flex:1;margin:4px 0;}
+.flow-body{flex:1;padding-bottom:8px;}
+.flow-title-s{font-size:13px;font-weight:600;color:var(--text);margin-bottom:3px;}
+.flow-desc{font-size:12px;color:var(--muted);margin-bottom:6px;}
+.flow-code{font-family:'Consolas',monospace;font-size:11px;color:var(--accent2);background:var(--surface2);border:1px solid var(--border);border-radius:4px;padding:4px 8px;}
+.country-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:14px;margin-bottom:24px;}
+.country-card{background:var(--surface);border:1px solid var(--border);border-radius:8px;padding:14px;}
+.country-flag{font-size:18px;margin-bottom:6px;}
+.country-name{font-size:13px;font-weight:600;color:var(--text);margin-bottom:4px;}
+.country-currency{font-size:11px;font-family:'Consolas',monospace;color:var(--accent2);margin-bottom:6px;}
+.country-methods{font-size:11px;color:var(--muted);line-height:1.5;margin-bottom:6px;}
+.contract-row{display:flex;align-items:flex-start;gap:16px;padding:14px 0;border-bottom:1px solid var(--border);}
+.contract-row:last-child{border-bottom:none;}
+.contract-body{flex:1;}
+.contract-title{font-size:13px;font-weight:600;color:var(--text);margin-bottom:4px;}
+.contract-section-ref{font-size:11px;color:var(--dim);font-family:'Consolas',monospace;margin-bottom:4px;}
+.contract-desc{font-size:12px;color:var(--muted);line-height:1.5;}
+.risk-badge{display:inline-flex;align-items:center;gap:5px;font-size:11px;font-weight:600;padding:4px 10px;border-radius:4px;}
+.rb-high{background:rgba(239,68,68,.12);color:var(--red);border:1px solid rgba(239,68,68,.25);}
+.rb-med{background:rgba(245,158,11,.1);color:#fbbf24;border:1px solid rgba(245,158,11,.2);}
+.rb-ok{background:rgba(16,185,129,.1);color:var(--green);border:1px solid rgba(16,185,129,.2);}
+.vs-table{width:100%;border-collapse:collapse;font-size:13px;}
+.vs-table th{padding:10px 14px;font-size:11px;letter-spacing:.07em;text-transform:uppercase;color:var(--muted);font-weight:500;background:var(--surface2);}
+.vs-table td{padding:12px 14px;border-bottom:1px solid var(--border);vertical-align:top;}
+.vs-table tr:last-child td{border-bottom:none;}
+.vs-factor{font-weight:600;font-size:12px;color:var(--muted);text-transform:uppercase;letter-spacing:.06em;}
+.winner{color:var(--green);}.loser{color:var(--muted);}
+.q-grid{display:grid;grid-template-columns:1fr 1fr;gap:24px;}
+.q-item{display:flex;gap:12px;align-items:flex-start;padding:14px 0;border-bottom:1px solid var(--border);}
+.q-item:last-child{border-bottom:none;}
+.q-num{width:24px;height:24px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:700;flex-shrink:0;}
+.q-go{background:rgba(239,68,68,.15);color:var(--red);}
+.q-com{background:rgba(16,185,129,.12);color:var(--accent2);}
+.section-title{font-size:11px;font-weight:600;letter-spacing:.09em;text-transform:uppercase;color:var(--dim);margin-bottom:14px;margin-top:24px;}
+.section-title:first-child{margin-top:0;}
+.two-col{display:grid;grid-template-columns:1fr 1fr;gap:20px;}
+footer{border-top:1px solid var(--border);padding:24px 32px;margin-top:40px;max-width:1280px;margin-left:auto;margin-right:auto;}
+.footer-inner{display:flex;justify-content:space-between;align-items:center;font-size:12px;color:var(--dim);}
+
+.site-sidebar{position:fixed;top:0;left:0;bottom:0;width:var(--sidebar-w);background:var(--surface);border-right:1px solid var(--border);display:flex;flex-direction:column;z-index:50;font-family:'Segoe UI',system-ui,sans-serif;}
+.site-sidebar .sb-brand{padding:14px 16px;border-bottom:1px solid var(--border);display:flex;align-items:center;gap:10px;}
+.site-sidebar .sb-logo{width:30px;height:30px;border-radius:8px;background:linear-gradient(135deg,var(--accent),#7287fd);display:flex;align-items:center;justify-content:center;font-size:14px;font-weight:800;color:#fff;flex-shrink:0;}
+.site-sidebar .sb-title{font-size:13px;font-weight:700;color:var(--text);letter-spacing:-0.3px;}
+.site-sidebar .sb-sub{font-size:10px;color:var(--muted);}
+.site-sidebar .sb-scroll{flex:1;overflow-y:auto;padding:8px 0;}
+.site-sidebar .sb-section{padding:4px 10px;}
+.site-sidebar .sb-label{font-size:9px;text-transform:uppercase;letter-spacing:1.2px;color:var(--muted);font-weight:700;padding:8px 8px 4px;margin-bottom:2px;}
+nav.site-sidebar a.sb-link{display:block;padding:7px 12px;border-radius:8px;font-size:12px;color:#a6adc8;text-decoration:none;margin-bottom:1px;transition:all .15s;height:auto;border-bottom:none;white-space:normal;}
+nav.site-sidebar a.sb-link:hover{background:var(--accent-glow);color:var(--text);border-bottom:none;}
+nav.site-sidebar a.sb-link.active{background:var(--accent-dim);color:var(--accent);font-weight:600;border-bottom:none;}
+
+</style>
+
+<!-- BREADCRUMB NAV - INJECTED -->
+<style>
+.payops-breadcrumb-bar {
+  position: fixed;
+  top: 0; left: 0; right: 0;
+  z-index: 99999;
+  background: rgba(7,9,14,0.92);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  border-bottom: 1px solid rgba(22,32,49,0.8);
+  padding: 0 24px;
+  height: 40px;
+  display: flex;
+  align-items: center;
+  font-family: 'Space Mono', 'Consolas', 'Monaco', monospace;
+  font-size: 11px;
+}
+.payops-breadcrumb-bar a {
+  color: #00d4ff;
+  text-decoration: none;
+  transition: color 0.15s;
+}
+.payops-breadcrumb-bar a:hover { color: #fff; }
+.payops-breadcrumb-bar .bc-sep {
+  color: #2d4459;
+  margin: 0 10px;
+  font-size: 10px;
+}
+.payops-breadcrumb-bar .bc-current {
+  color: #607d94;
+  max-width: 400px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+/* === Help System === */
+.info-icon {
+  display:inline-flex; align-items:center; justify-content:center;
+  width:16px; height:16px; border-radius:50%; font-size:10px; font-weight:700;
+  background:rgba(137,180,250,0.15); color:var(--accent, #89b4fa); cursor:help;
+  margin-left:6px; position:relative; vertical-align:middle; flex-shrink:0;
+  font-style:normal;
+}
+.info-icon:hover { background:var(--accent, #89b4fa); color:#11111b; }
+.info-tooltip {
+  display:none; position:absolute; bottom:calc(100% + 8px); left:50%; transform:translateX(-50%);
+  background:#313244; color:#cdd6f4; border:1px solid #45475a;
+  border-radius:8px; padding:10px 14px; font-size:11px; font-weight:400;
+  line-height:1.5; width:260px; z-index:1000; text-transform:none; letter-spacing:normal;
+  box-shadow:0 4px 16px rgba(0,0,0,0.4); pointer-events:none;
+}
+.info-tooltip::after {
+  content:''; position:absolute; top:100%; left:50%; transform:translateX(-50%);
+  border:6px solid transparent; border-top-color:#313244;
+}
+.info-icon:hover .info-tooltip { display:block; }
+.info-tooltip .tip-title { font-weight:700; color:#89b4fa; margin-bottom:4px; font-size:11px; }
+.info-tooltip .tip-source { color:#6c7086; font-size:10px; margin-top:4px; }
+/* Intro.js dark theme */
+.introjs-button:hover { background:#cdd6f4 !important; }
+.introjs-button:focus { box-shadow:none !important; }
+.introjs-helperLayer { background:rgba(0,0,0,0.5) !important; border:1px solid #89b4fa !important; border-radius:10px !important; }
+.introjs-arrow.top { border-bottom-color:#181825 !important; }
+.introjs-arrow.bottom { border-top-color:#181825 !important; }
+.introjs-arrow.left { border-right-color:#181825 !important; }
+.introjs-arrow.right { border-left-color:#181825 !important; }
+/* === End Help System === */
+</style>
+
+</head>
+<body>
+<nav class="site-sidebar">
+  <div class="sb-brand">
+    <div class="sb-logo">U</div>
+    <div><div class="sb-title">Payment Ops</div><div class="sb-sub">Unicity International</div></div>
+  </div>
+  <div class="sb-scroll">
+    <div class="sb-section"><div class="sb-label">Core</div>
+      <a class="sb-link" href="index.html">Dashboard</a>
+      <a class="sb-link" href="index.html#layer-markets">Markets</a>
+      <a class="sb-link" href="market-capabilities.html">Coverage Map</a>
+      <a class="sb-link" href="provider-review-hub.html">Processors</a>
+      <a class="sb-link" href="index.html#layer-processors">Auth Rates</a>
+    </div>
+    <div class="sb-section"><div class="sb-label">Monitor</div>
+      <a class="sb-link" href="hub-chargebacks.html">Chargebacks</a>
+      <a class="sb-link" href="mission-control2.html">Mission Control</a>
+      <a class="sb-link" href="PAYMENT-INTEL-dashboard.html">Payment Intel</a>
+      <a class="sb-link" href="fraud-score-intelligence.html">Fraud Score</a>
+      <a class="sb-link" href="DECLINE-INTEL-dashboard.html">Decline Intel</a>
+      <a class="sb-link" href="RETRY-MONITOR-DASHBOARD.html">Retry Monitor</a>
+      <a class="sb-link" href="processor-intelligence.html">Processor Intel</a>
+    </div>
+    <div class="sb-section"><div class="sb-label">Reports</div>
+      <a class="sb-link" href="hub-scorecard.html">Scorecard</a>
+      <a class="sb-link" href="index.html#layer-statements">Statements</a>
+      <a class="sb-link" href="payment-ops-dashboard-v4.html">Ops Dashboard</a>
+      <a class="sb-link" href="payment_sop_v5.html">SOPs</a>
+    </div>
+    <div class="sb-section"><div class="sb-label">Strategic</div>
+      <a class="sb-link" href="2026_Payment_Operations_Strategic_Roadmap.html">2026 Roadmap</a>
+      <a class="sb-link" href="shopify-hub.html">Shopify</a>
+      <a class="sb-link active" href="provider-review-hub.html">Provider Specs</a>
+    </div>
+  </div>
+</nav>
+
+<div class="hero">
+  <a href="payment-provider-landing-page.html" class="back-link">&#8592; Provider Directory</a>
+  <div class="provider-label">Emerging Markets Payment Platform &middot; LATAM &middot; Africa &middot; Asia</div>
+  <h1>dLocal &mdash; <em>LATAM Platform</em></h1>
+<div class="hero-sub">NASDAQ-listed (DLO) cross-border payment platform built exclusively for emerging markets. Single API, single contract, single settlement across 40+ countries and 900+ local payment methods. The go-to platform for global enterprise merchants entering LATAM — Amway (world's #1 direct selling company) partnered with dLocal in January 2026 to power recurring payments across Latin America, the exact use case Unicity needs. Critical for Brazil (SmartPix recurring Pix), Mexico (OXXO), Colombia (PSE + Efecty), and 10+ additional LATAM markets.</div>
+  <div class="pills">
+    <span class="pill pill-q">Pre-Engagement &mdash; Evaluation</span>
+    <span class="pill pill-r">LATAM &middot; Africa &middot; Asia</span>
+    <span class="pill pill-r">40+ Countries &middot; 900+ Methods</span>
+    <span class="pill pill-ok">One dLocal &mdash; Single Contract</span>
+    <span class="pill pill-ok">Amway Reference (Direct Selling)</span>
+    <span class="pill pill-risk">Token Portability &mdash; Confirm SLA</span>
+  </div>
+  <div class="hero-stats">
+    <div class="stat"><span class="stat-val">40+</span><span class="stat-lbl">Countries Covered</span></div>
+    <div class="stat"><span class="stat-val">900+</span><span class="stat-lbl">Local Payment Methods</span></div>
+    <div class="stat"><span class="stat-val">2.7%&ndash;7%</span><span class="stat-lbl">All-In Rate Range</span></div>
+    <div class="stat"><span class="stat-val">1&ndash;2 days</span><span class="stat-lbl">Settlement (Most Methods)</span></div>
+    <div class="stat"><span class="stat-val">30+</span><span class="stat-lbl">Regulatory Licenses</span></div>
+    <div class="stat"><span class="stat-val">Jan 2026</span><span class="stat-lbl">Amway Direct Sell Partnership</span></div>
+  </div>
+</div>
+
+<div class="tab-bar">
+  <div class="tab-bar-inner">
+    <button class="tab-btn active" onclick="switchTab('overview',this)">Overview</button>
+    <button class="tab-btn" onclick="switchTab('pricing',this)">Pricing</button>
+    <button class="tab-btn" onclick="switchTab('flows',this)">Auth Flows</button>
+    <button class="tab-btn" onclick="switchTab('contract',this)">Contract Terms</button>
+    <button class="tab-btn" onclick="switchTab('platform',this)">Platform Features</button>
+    <button class="tab-btn" onclick="switchTab('vs',this)">dLocal vs PayU</button>
+    <button class="tab-btn" onclick="switchTab('questions',this)">Open Questions</button>
+  </div>
+</div>
+
+<div class="content">
+
+<!-- OVERVIEW -->
+<div class="tab-panel active" id="tab-overview">
+  <div class="main-col">
+
+    <div class="callout c-ok">
+      <strong>Amway Reference &mdash; Direct Selling in LATAM (January 2026)</strong>
+      Amway &mdash; the world's #1 direct selling company &mdash; announced a dLocal partnership in January 2026 to power local payments across Latin America. Their stated problem is identical to Unicity's: lower card penetration and higher cross-border processing costs in LATAM affecting approval rates and growth. Their Colombia deployment covers local card acquiring, PSE bank transfers, and Efecty cash vouchers. This is the strongest available reference case for Unicity's engagement. Lead with Amway when opening negotiations.
+    </div>
+
+    <div class="cap-grid">
+      <div class="cap-card">
+        <div class="cap-header"><div class="cap-icon" style="background:rgba(16,185,129,.12)">&#127760;</div><div><div class="cap-title">One dLocal &mdash; Single API, Contract, Settlement</div></div></div>
+        <div class="cap-sub">Single API integration covers all 40+ countries. One commercial agreement — no per-market contracts. One settlement account in USD. dLocal handles local regulatory compliance, banking relationships, and FX in every market. Add countries without additional integrations.</div>
+        <div class="tags"><span class="tag ok">Single API</span><span class="tag ok">Single Contract</span><span class="tag ok">USD Settlement</span><span class="tag ok">Add Markets Fast</span></div>
+      </div>
+      <div class="cap-card">
+        <div class="cap-header"><div class="cap-icon" style="background:rgba(16,185,129,.12)">&#127463;&#127479;</div><div><div class="cap-title">SmartPix &mdash; Brazil Recurring Pix (Aug 2025)</div></div></div>
+        <div class="cap-sub">dLocal's SmartPix launched August 2025 — "Pix on File" tokenized recurring. Brazil's Pix processes 6B+ monthly transactions, surpassing debit and credit cards. SmartPix enables recurring and on-demand merchant-initiated charges without customer re-authorization, variable amounts supported. Critical for Brazil autoship.</div>
+        <div class="tags"><span class="tag ok">Pix on File</span><span class="tag ok">Variable Amount MIT</span><span class="tag ok">No QR Per Charge</span><span class="tag ok">6B+ Monthly Pix Txns</span></div>
+      </div>
+      <div class="cap-card">
+        <div class="cap-header"><div class="cap-icon" style="background:rgba(16,185,129,.12)">&#128176;</div><div><div class="cap-title">Cash Payments &mdash; OXXO, Efecty, Boleto</div></div></div>
+        <div class="cap-sub">Cash-to-digital vouchers for unbanked populations: OXXO (Mexico, 18K+ stores), Efecty (Colombia), Boleto Bancário (Brazil). 40% of online purchases in Argentina and significant portions of Mexico and Colombia are still cash-based. Required for full market coverage — but cash methods are one-time only, not recurring.</div>
+        <div class="tags"><span class="tag ok">OXXO Mexico</span><span class="tag ok">Efecty Colombia</span><span class="tag ok">Boleto Brazil</span><span class="tag warn">One-Time Only</span></div>
+      </div>
+      <div class="cap-card">
+        <div class="cap-header"><div class="cap-icon" style="background:rgba(16,185,129,.12)">&#128260;</div><div><div class="cap-title">Card Recurring &mdash; Local Acquiring + Account Updater</div></div></div>
+        <div class="cap-sub">Local card acquiring in each LATAM market — eliminates cross-border downgrade. Card Updater and Account Updater reduce involuntary churn from expired or replaced cards. Credential-on-File for recurring MIT. 3DS exemption available for fixed-amount subscriptions after first transaction, reducing auth friction.</div>
+        <div class="tags"><span class="tag ok">Local Acquiring</span><span class="tag ok">Account Updater</span><span class="tag ok">CoF Recurring</span><span class="tag ok">3DS Exemption</span></div>
+      </div>
+    </div>
+
+    <div class="callout c-warn">
+      <strong>LATAM Autoship Stack Architecture</strong>
+      Not all LATAM payment methods support recurring. Local cards are the most reliable recurring method across all markets and offer the highest approval rates. Pix Automático and SmartPix enable Brazil recurring (Aug 2025). OXXO, Boleto, PagoEfectivo, and other cash/voucher methods are one-time only — acquire new subscribers via these methods but route them to card or Pix for ongoing autoship. This two-track architecture (acquisition via APMs + recurring via card/Pix) is the standard LATAM subscription model.
+    </div>
+
+    <div class="callout c-info">
+      <strong>Direct Selling Expertise</strong>
+      dLocal explicitly mentions direct selling as a supported use case in their Amway partnership press release. The stated challenges — lower card penetration, high cross-border processing costs, fragmented APM rails — are exactly what Unicity faces. dLocal's local acquiring model in LATAM is the primary lever: domestic card transactions processed as local (not cross-border) improve approval rates and eliminate the 3&ndash;5% FX premium that cross-border adds to every charge.
+    </div>
+
+  </div>
+  <div class="sidebar">
+    <div class="card">
+      <div class="card-title">Provider Profile</div>
+      <div class="profile-row"><span class="profile-key">Company</span><span class="profile-val">dLocal Limited</span></div>
+      <div class="profile-row"><span class="profile-key">HQ</span><span class="profile-val">Montevideo, Uruguay</span></div>
+      <div class="profile-row"><span class="profile-key">Listed</span><span class="profile-val">NASDAQ: DLO (2021)</span></div>
+      <div class="profile-row"><span class="profile-key">Primary Region</span><span class="profile-val">LATAM + Africa + Asia</span></div>
+      <div class="profile-row"><span class="profile-key">Countries</span><span class="profile-val">40+</span></div>
+      <div class="profile-row"><span class="profile-key">Payment Methods</span><span class="profile-val">900+</span></div>
+      <div class="profile-row"><span class="profile-key">Licenses</span><span class="profile-val ok">30+ incl. FCA (UK)</span></div>
+      <div class="profile-row"><span class="profile-key">Rate Range</span><span class="profile-val">2.7%&ndash;7% all-in</span></div>
+      <div class="profile-row"><span class="profile-key">Settlement</span><span class="profile-val">USD cross-border</span></div>
+      <div class="profile-row"><span class="profile-key">Token Portability</span><span class="profile-val warn">TBC &mdash; Negotiate</span></div>
+      <div class="profile-row"><span class="profile-key">Pix Recurring</span><span class="profile-val ok">SmartPix (Aug 2025)</span></div>
+      <div class="profile-row"><span class="profile-key">Status</span><span class="profile-val warn">Pre-Engagement</span></div>
+    </div>
+    <div class="card">
+      <div class="card-title">LATAM Capability Scorecard</div>
+      <div class="signal-row"><span class="signal-label">Market Coverage</span><div class="signal-bar-bg"><div class="signal-bar" style="width:96%"></div></div></div>
+      <div class="signal-row"><span class="signal-label">Local Acquiring</span><div class="signal-bar-bg"><div class="signal-bar" style="width:92%"></div></div></div>
+      <div class="signal-row"><span class="signal-label">APM Coverage</span><div class="signal-bar-bg"><div class="signal-bar" style="width:95%"></div></div></div>
+      <div class="signal-row"><span class="signal-label">Subscription</span><div class="signal-bar-bg"><div class="signal-bar" style="width:82%"></div></div></div>
+      <div class="signal-row"><span class="signal-label">Single Integration</span><div class="signal-bar-bg"><div class="signal-bar" style="width:98%"></div></div></div>
+      <div class="signal-row"><span class="signal-label">Token Portability</span><div class="signal-bar-bg"><div class="signal-bar" style="width:40%"></div></div></div>
+    </div>
+    <div class="card">
+      <div class="card-title">Reference Clients</div>
+      <div class="tags">
+        <span class="tag ok">Amway (Direct Selling)</span>
+        <span class="tag ok">Amazon</span>
+        <span class="tag ok">Uber</span>
+        <span class="tag ok">Booking.com</span>
+        <span class="tag ok">GoDaddy</span>
+        <span class="tag ok">Dropbox</span>
+        <span class="tag ok">Western Union</span>
+        <span class="tag ok">Zara</span>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- PRICING -->
+<div class="tab-panel wide" id="tab-pricing">
+  <div class="callout c-warn">
+    <strong>Pricing Range: 2.7%&ndash;7% All-Inclusive &mdash; Negotiate Per Market</strong>
+    dLocal's published rate range is 2.7%&ndash;7%, all-in. This is a wide range — the actual rate depends on the country, payment method, card type (local vs international), and volume. At Unicity's scale (~$150M annually), enterprise negotiation should target the lower end per market. Get per-market, per-method rates in writing before signing. The FX margin on cross-border settlement is embedded in the all-in rate — clarify the FX methodology explicitly.
+  </div>
+
+  <div class="section-title" id="tour-section-0">LATAM Rate Context by Method Type<span class="info-icon">i<span class="info-tooltip"><span class="tip-title">LATAM Rate Context by Method Type</span>Provider specification: capabilities, integration details, and coverage.<br><span class="tip-source">Source: Provider Research</span></span></span></div>
+  <table class="dt" style="margin-bottom:24px;">
+    <thead><tr><th>Method Type</th><th>Indicative Rate</th><th>Notes</th><th>Recurring</th></tr></thead>
+    <tbody>
+      <tr><td>Local Cards (Domestic Acquiring)</td><td class="ok">~2.7%&ndash;3.5%</td><td>Local acquiring eliminates cross-border premium. Lower MDR than intl routes.</td><td class="ok">Yes</td></tr>
+      <tr><td>International Cards (Cross-Border)</td><td class="warn">~3.5%&ndash;5%</td><td>FX + cross-border fees embedded. Push for local acquiring where available.</td><td class="ok">Yes</td></tr>
+      <tr><td>Pix (Brazil &mdash; SmartPix)</td><td class="ok">~1%&ndash;2%</td><td>Instant settlement. SmartPix enables recurring via tokenized Pix on File.</td><td class="ok">SmartPix</td></tr>
+      <tr><td>Pix Autom&aacute;tico (Brazil)</td><td class="ok">~1%&ndash;2%</td><td>Fixed-amount recurring via Central Bank of Brazil mandate framework.</td><td class="ok">Yes</td></tr>
+      <tr><td>Boleto Banc&aacute;rio (Brazil)</td><td class="warn">~2%&ndash;3%</td><td>Cash/bank payment. Asynchronous confirmation. One-time only.</td><td class="risk">No</td></tr>
+      <tr><td>OXXO (Mexico)</td><td class="warn">~3%&ndash;4%</td><td>Cash voucher. Instant confirmation at OXXO store. One-time only.</td><td class="risk">No</td></tr>
+      <tr><td>SPEI (Mexico)</td><td class="ok">~1%&ndash;2%</td><td>Real-time bank transfer. Good for higher-value orders.</td><td class="warn">Limited</td></tr>
+      <tr><td>PSE (Colombia)</td><td class="warn">~2%&ndash;3%</td><td>Bank transfer. ~35% of Colombia online payments. Redirect flow.</td><td class="warn">Limited</td></tr>
+      <tr><td>Efecty (Colombia)</td><td class="warn">~3%&ndash;5%</td><td>Cash voucher. One-time only. Important for unbanked Colombian market.</td><td class="risk">No</td></tr>
+      <tr><td>eWallets (Mercado Pago, Nequi, etc.)</td><td class="warn">~2%&ndash;3%</td><td>Growing rapidly. 60% of LATAM population use eWallets. Recurring varies by wallet.</td><td class="warn">Varies</td></tr>
+      <tr><td>Payouts (Distributor Payments)</td><td class="dim">Custom</td><td>dLocal supports cross-border payouts. Relevant for Unicity distributor commissions.</td><td class="dim">N/A</td></tr>
+    </tbody>
+  </table>
+
+  <div class="two-col">
+    <div class="callout c-ok" style="margin-bottom:0;">
+      <strong>LATAM Cost Model Target</strong>
+      Target: local card acquiring at &lt;3.5% all-in for Brazil, Mexico, Colombia (largest LATAM markets). Pix SmartPix at &lt;2% for Brazil autoship. Confirm the FX margin embedded in the all-in rate &mdash; dLocal settles in USD, converting from local currency at their rate. The FX spread should be &lt;1.5% above mid-market. Get both the processing rate AND the FX methodology in writing.
+    </div>
+    <div class="callout c-warn" style="margin-bottom:0;">
+      <strong>Cash Methods &mdash; Acquisition Only</strong>
+      OXXO, Boleto, Efecty, and similar cash voucher methods are one-time transactions only &mdash; cannot be used for recurring autoship. Strategy: allow cash methods at checkout for new subscriber acquisition, then collect a card or Pix credential during onboarding for ongoing autoship charges. Do not attempt to run monthly autoship via cash vouchers.
+    </div>
+  </div>
+</div>
+
+<!-- AUTH FLOWS -->
+<div class="tab-panel wide" id="tab-flows">
+  <div class="flow-grid">
+    <div>
+      <div class="flow-title-block">Brazil &mdash; SmartPix Recurring Enrollment + MIT</div>
+      <div class="flow-step">
+        <div class="flow-left"><div class="flow-num">1</div><div class="flow-line"></div></div>
+        <div class="flow-body">
+          <div class="flow-title-s">Customer Selects Pix at Checkout</div>
+          <div class="flow-desc">dLocal checkout presents SmartPix enrollment option. Customer provides Pix key (CPF, phone, email, or random key). One-time Pix authorization establishes the token. No QR code scanning on subsequent charges.</div>
+          <div class="flow-code">POST /payments {payment_method_id: "XA", country: "BR", enrollment: {...}}</div>
+        </div>
+      </div>
+      <div class="flow-step">
+        <div class="flow-left"><div class="flow-num">2</div><div class="flow-line"></div></div>
+        <div class="flow-body">
+          <div class="flow-title-s">One-Time Authorization &mdash; Token Issued</div>
+          <div class="flow-desc">Customer authorizes via their banking app (Bradesco, Itaú, Nubank, etc.). dLocal returns enrollment_id — a token identifying the approved subscription. This token enables all future MIT charges without customer action.</div>
+          <div class="flow-code">GET /enrollments/{id} &rarr; {status: "AUTHORIZED", enrollment_id}</div>
+        </div>
+      </div>
+      <div class="flow-step">
+        <div class="flow-left"><div class="flow-num">3</div><div class="flow-line"></div></div>
+        <div class="flow-body">
+          <div class="flow-title-s">Monthly Autoship &mdash; MIT via enrollment_id</div>
+          <div class="flow-desc">Unicity submits monthly charge using enrollment_id. No QR code, no customer re-authorization. Variable amounts supported (SmartPix advantage over Pix Autom&aacute;tico which requires fixed amounts). Pix Autom&aacute;tico: submit 2&ndash;10 days in advance per BCB rules.</div>
+          <div class="flow-code">POST /payments {enrollment_id, amount: 285, currency: "BRL"}</div>
+        </div>
+      </div>
+      <div class="flow-step">
+        <div class="flow-left"><div class="flow-num">4</div><div class="flow-line"></div></div>
+        <div class="flow-body">
+          <div class="flow-title-s">Decline &mdash; Retry Available</div>
+          <div class="flow-desc">On failure (e.g. insufficient funds), dLocal's retry service can re-attempt using the same enrollment_id. Align retry timing with Unicity's +0/+3/+5/+7 cadence. Webhook fires on all state changes.</div>
+          <div class="flow-code">POST /payments/{id}/retry &rarr; webhook: payment.completed | failed</div>
+        </div>
+      </div>
+    </div>
+    <div>
+      <div class="flow-title-block">Mexico &mdash; OXXO Acquisition + Card Autoship</div>
+      <div class="flow-step">
+        <div class="flow-left"><div class="flow-num">1</div><div class="flow-line"></div></div>
+        <div class="flow-body">
+          <div class="flow-title-s">New Subscriber Pays via OXXO (Acquisition)</div>
+          <div class="flow-desc">Customer chooses OXXO at first checkout. dLocal generates OXXO voucher with reference number. Customer pays in cash at any of 18K+ OXXO stores. dLocal confirms payment. One-time only.</div>
+          <div class="flow-code">POST /payments {payment_method_id: "OX", country: "MX"} &rarr; voucher_ref</div>
+        </div>
+      </div>
+      <div class="flow-step">
+        <div class="flow-left"><div class="flow-num">2</div><div class="flow-line"></div></div>
+        <div class="flow-body">
+          <div class="flow-title-s">Collect Card at Onboarding for Autoship</div>
+          <div class="flow-desc">After OXXO first purchase, prompt subscriber to add a card for recurring autoship. dLocal tokenizes the card (Credential on File). Local Mexican card acquiring ensures domestic processing rates and higher approval.</div>
+          <div class="flow-code">POST /tokens {card: {...}, country: "MX"} &rarr; card_token_id</div>
+        </div>
+      </div>
+      <div class="flow-step">
+        <div class="flow-left"><div class="flow-num">3</div><div class="flow-line"></div></div>
+        <div class="flow-body">
+          <div class="flow-title-s">Monthly MIT via Local Card Token</div>
+          <div class="flow-desc">Autoship charge via stored card token. dLocal routes through local Mexican acquirer for best approval rate. 3DS exemption applicable for fixed-amount recurring after first transaction. MXN settlement.</div>
+          <div class="flow-code">POST /payments {token: card_token_id, amount: 450, currency: "MXN"}</div>
+        </div>
+      </div>
+      <div class="flow-step">
+        <div class="flow-left"><div class="flow-num">4</div><div class="flow-line"></div></div>
+        <div class="flow-body">
+          <div class="flow-title-s">Account Updater on Card Decline</div>
+          <div class="flow-desc">On soft decline from expired/replaced card, dLocal Account Updater fetches updated card credentials from the networks. Retry with updated card. Unicity dunning cadence applies for hard declines and non-recoverable failures.</div>
+          <div class="flow-code">payment_failed &rarr; account_updater.refresh(token) &rarr; retry</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="section-title" id="tour-section-1">Colombia &mdash; Amway Reference Case (Jan 2026)<span class="info-icon">i<span class="info-tooltip"><span class="tip-title">Colombia &mdash; Amway Reference Case (Jan 2026)</span>Provider specification: capabilities, integration details, and coverage.<br><span class="tip-source">Source: Provider Research</span></span></span></div>
+  <div class="callout c-info">
+    <strong>Amway Colombia Deployment via dLocal</strong>
+    dLocal's Amway partnership in Colombia covers: (1) local card processing &mdash; domestic acquiring for Colombian card brands and Visa/MC issued locally, (2) PSE bank transfers &mdash; approximately 35% of Colombia online payments route via PSE, and (3) Efecty cash vouchers &mdash; cash payments via Efecty agents for unbanked consumers. This three-method setup is the recommended starting point for Unicity Colombia. Use Amway as the reference case in your opening dLocal engagement call.
+  </div>
+
+  <div class="callout c-risk">
+    <strong>Token Portability &mdash; Key Unknown</strong>
+    dLocal holds card tokens in their vault as the merchant-of-record in each LATAM market. dLocal's IP and data rights on tokens are not publicly documented. Before any significant subscriber base is enrolled on dLocal card tokens, the token portability SLA must be confirmed: (1) export format, (2) export timeline on termination, (3) whether tokens are stored as network tokens (Visa Token Service / Mastercard MDES) or as PSP-proprietary tokens. PSP-proprietary tokens are non-portable and would require subscriber re-enrollment on migration.
+  </div>
+</div>
+
+<!-- CONTRACT TERMS -->
+<div class="tab-panel wide" id="tab-contract">
+  <div class="callout c-info">
+    <strong>Pre-Engagement &mdash; Contract Not Yet Reviewed</strong>
+    dLocal's Master Services Agreement has not been reviewed. The items below are based on published information, industry standard terms for this platform type, and known risk patterns. Request the full MSA before committing volume. Priority items to review are noted below.
+  </div>
+
+  <div class="section-title" id="tour-section-2">Priority Contract Review Items<span class="info-icon">i<span class="info-tooltip"><span class="tip-title">Priority Contract Review Items</span>Provider specification: capabilities, integration details, and coverage.<br><span class="tip-source">Source: Provider Research</span></span></span></div>
+  <div class="contract-row">
+    <div style="flex-shrink:0;margin-top:2px;"><span class="risk-badge rb-high">HIGH RISK</span></div>
+    <div class="contract-body">
+      <div class="contract-section-ref">Token / Credential Ownership &middot; TBC</div>
+      <div class="contract-title">Confirm Token Portability Before Scaling Autoship</div>
+      <div class="contract-desc">dLocal acts as merchant-of-record in each LATAM country, meaning card tokens are held in dLocal's local entity vaults. The portability of these tokens &mdash; whether they are network tokens (portable) or PSP-proprietary tokens (non-portable) &mdash; is the single most critical unknown before routing significant autoship volume. Negotiate: written token portability addendum, bulk export right within 30 days of termination, machine-readable format, no fee for export.</div>
+    </div>
+  </div>
+  <div class="contract-row">
+    <div style="flex-shrink:0;margin-top:2px;"><span class="risk-badge rb-med">MEDIUM</span></div>
+    <div class="contract-body">
+      <div class="contract-section-ref">FX Rate Methodology &middot; TBC</div>
+      <div class="contract-title">FX Margin Embedded in All-In Rate &mdash; Clarify Methodology</div>
+      <div class="contract-desc">dLocal settles in USD, converting from local currencies at their FX rate. The all-in rate (2.7%&ndash;7%) includes both processing and FX margin. The FX spread above mid-market is not disclosed in public pricing. Negotiate: written FX rate methodology, mid-market benchmark (e.g. ECB/Bloomberg), maximum FX spread cap per currency pair, and weekly FX rate transparency reports.</div>
+    </div>
+  </div>
+  <div class="contract-row">
+    <div style="flex-shrink:0;margin-top:2px;"><span class="risk-badge rb-med">MEDIUM</span></div>
+    <div class="contract-body">
+      <div class="contract-section-ref">Supplements / Wellness MCC &middot; TBC</div>
+      <div class="contract-title">Confirm Direct Selling / Supplement MCC Availability Per Market</div>
+      <div class="contract-desc">Supplement and wellness merchants face elevated scrutiny in several LATAM markets. Some local acquirers have restrictions on supplement MCCs. Confirm Unicity's product category is fully supported across all target LATAM markets before go-live. The Amway partnership confirms direct selling is supported in Colombia at minimum &mdash; verify for Brazil, Mexico, Peru, and other target markets.</div>
+    </div>
+  </div>
+  <div class="contract-row">
+    <div style="flex-shrink:0;margin-top:2px;"><span class="risk-badge rb-med">MEDIUM</span></div>
+    <div class="contract-body">
+      <div class="contract-section-ref">Settlement Reserve &middot; TBC</div>
+      <div class="contract-title">Rolling Reserve Requirements for New Merchants</div>
+      <div class="contract-desc">dLocal may require a rolling reserve (5%&ndash;10% of processed volume held for 90&ndash;180 days) for new enterprise merchants in high-risk verticals. Supplements/wellness combined with cross-border settlement can trigger reserve requirements. Negotiate: reduce reserve percentage and shorten holding period based on Unicity's revenue scale and Amway reference case.</div>
+    </div>
+  </div>
+  <div class="contract-row">
+    <div style="flex-shrink:0;margin-top:2px;"><span class="risk-badge rb-ok">LOW</span></div>
+    <div class="contract-body">
+      <div class="contract-section-ref">One dLocal &mdash; Single Contract</div>
+      <div class="contract-title">Single Master Agreement Covers All 40+ Markets</div>
+      <div class="contract-desc">dLocal's "One dLocal" model means one MSA for all markets. This is a significant operational advantage vs managing separate agreements per country. Addenda for new markets can be activated without a new contract. Confirm whether the single agreement includes per-market rate schedules (it should) and whether adding new markets requires amendment or is self-service.</div>
+    </div>
+  </div>
+
+  <div class="section-title" id="tour-section-3">NASDAQ Listing &mdash; Risk Considerations<span class="info-icon">i<span class="info-tooltip"><span class="tip-title">NASDAQ Listing &mdash; Risk Considerations</span>Provider specification: capabilities, integration details, and coverage.<br><span class="tip-source">Source: Provider Research</span></span></span></div>
+  <table class="dt">
+    <thead><tr><th>Factor</th><th>Assessment</th><th>Notes</th></tr></thead>
+    <tbody>
+      <tr><td>Financial Stability</td><td class="ok">PUBLIC LISTED</td><td>NASDAQ: DLO since 2021. Public financials available. Scrutinized at higher standard than private fintechs.</td></tr>
+      <tr><td>Regulatory Compliance</td><td class="ok">30+ LICENSES</td><td>FCA (UK), multiple LATAM financial regulator licenses. Highest compliance bar in LATAM emerging market payments.</td></tr>
+      <tr><td>Counterparty Risk</td><td class="ok">LOW</td><td>Public company with published audit. Lower counterparty risk than private LATAM payment fintechs.</td></tr>
+      <tr><td>Data Rights</td><td class="warn">REVIEW NEEDED</td><td>As a public company, data handling practices are disclosed. Confirm merchant data usage rights in MSA.</td></tr>
+    </tbody>
+  </table>
+</div>
+
+<!-- PLATFORM FEATURES -->
+<div class="tab-panel wide" id="tab-platform">
+  <div class="section-title" id="tour-section-4">LATAM Market Coverage &mdash; Key Markets for Unicity<span class="info-icon">i<span class="info-tooltip"><span class="tip-title">LATAM Market Coverage &mdash; Key Markets for Unic</span>Provider specification: capabilities, integration details, and coverage.<br><span class="tip-source">Source: Provider Research</span></span></span></div>
+  <div class="country-grid">
+    <div class="country-card">
+      <div class="country-flag">&#127463;&#127479;</div>
+      <div class="country-name">Brazil</div>
+      <div class="country-currency">BRL &middot; Largest LATAM Market</div>
+      <div class="country-methods">Pix (SmartPix recurring), Pix Autom&aacute;tico, Boleto Banc&aacute;rio, Cards (Visa/MC/Elo/Hipercard), installments (parcelamento), eWallets</div>
+      <div class="tags"><span class="tag ok">SmartPix</span><span class="tag ok">Pix Auto</span><span class="tag ok">Local Acquiring</span></div>
+    </div>
+    <div class="country-card">
+      <div class="country-flag">&#127474;&#127485;</div>
+      <div class="country-name">Mexico</div>
+      <div class="country-currency">MXN &middot; 2nd Largest LATAM</div>
+      <div class="country-methods">OXXO (18K+ stores), SPEI bank transfer, Cards (Visa/MC/Amex), CoDi, Mercado Pago wallet</div>
+      <div class="tags"><span class="tag ok">OXXO</span><span class="tag ok">SPEI</span><span class="tag ok">Local Cards</span></div>
+    </div>
+    <div class="country-card">
+      <div class="country-flag">&#127464;&#127476;</div>
+      <div class="country-name">Colombia</div>
+      <div class="country-currency">COP &middot; Amway Reference</div>
+      <div class="country-methods">PSE bank transfer (~35% of payments), Efecty cash vouchers, local cards, Nequi wallet, Daviplata</div>
+      <div class="tags"><span class="tag ok">PSE</span><span class="tag ok">Efecty</span><span class="tag ok">Amway Ref</span></div>
+    </div>
+    <div class="country-card">
+      <div class="country-flag">&#127462;&#127479;</div>
+      <div class="country-name">Argentina</div>
+      <div class="country-currency">ARS &middot; FX Complexity High</div>
+      <div class="country-methods">Mercado Pago (dominant), local cards, Rapipago/Pago F&aacute;cil cash. Note: ARS FX controls add complexity.</div>
+      <div class="tags"><span class="tag ok">Mercado Pago</span><span class="tag warn">ARS FX Controls</span></div>
+    </div>
+    <div class="country-card">
+      <div class="country-flag">&#127464;&#127473;</div>
+      <div class="country-name">Chile</div>
+      <div class="country-currency">CLP &middot; Banked Population</div>
+      <div class="country-methods">Webpay (dominant card gateway), Khipu bank transfer, local cards, Fintoc open banking</div>
+      <div class="tags"><span class="tag ok">Webpay</span><span class="tag ok">Local Cards</span></div>
+    </div>
+    <div class="country-card">
+      <div class="country-flag">&#127477;&#127466;</div>
+      <div class="country-name">Peru</div>
+      <div class="country-currency">PEN &middot; Cash-Heavy</div>
+      <div class="country-methods">PagoEfectivo (cash/bank), Yape (mobile wallet, 15M+ users), local cards, Tunki</div>
+      <div class="tags"><span class="tag ok">PagoEfectivo</span><span class="tag ok">Yape</span></div>
+    </div>
+    <div class="country-card">
+      <div class="country-flag">&#127466;&#127464;</div>
+      <div class="country-name">Ecuador</div>
+      <div class="country-currency">USD &middot; Dollarized</div>
+      <div class="country-methods">Local cards (Visa/MC), bank transfers, Pichincha e-wallet. USD market simplifies FX.</div>
+      <div class="tags"><span class="tag ok">USD</span><span class="tag ok">Local Cards</span></div>
+    </div>
+    <div class="country-card">
+      <div class="country-flag">&#127463;&#127476;</div>
+      <div class="country-name">Bolivia</div>
+      <div class="country-currency">BOB</div>
+      <div class="country-methods">Local cards, QR transfers, bank payments. Smaller market &mdash; confirm dLocal coverage and volume thresholds.</div>
+      <div class="tags"><span class="tag warn">Confirm Coverage</span></div>
+    </div>
+    <div class="country-card">
+      <div class="country-flag">&#127477;&#127462;</div>
+      <div class="country-name">Panama + Caribbean</div>
+      <div class="country-currency">USD</div>
+      <div class="country-methods">Local cards, USD market. Costa Rica (Tuc&aacute;n Cash, 4,300+ points), Dominican Republic. dLocal expanded here Oct 2020.</div>
+      <div class="tags"><span class="tag ok">USD</span><span class="tag ok">Cash Options</span></div>
+    </div>
+  </div>
+
+  <div class="section-title" id="tour-section-5">Platform Capabilities<span class="info-icon">i<span class="info-tooltip"><span class="tip-title">Platform Capabilities</span>Provider specification: capabilities, integration details, and coverage.<br><span class="tip-source">Source: Provider Research</span></span></span></div>
+  <table class="dt">
+    <thead><tr><th>Capability</th><th>Status</th><th>Notes</th></tr></thead>
+    <tbody>
+      <tr><td>SmartPix (Brazil Recurring Pix)</td><td class="ok">Live &mdash; Aug 2025</td><td>Tokenized Pix on File. Variable amounts. No per-charge QR or customer auth.</td></tr>
+      <tr><td>Pix Autom&aacute;tico</td><td class="ok">Live</td><td>Fixed-amount recurring Pix per Central Bank of Brazil. Submit 2&ndash;10 days in advance.</td></tr>
+      <tr><td>Card Recurring (CoF)</td><td class="ok">Live</td><td>Credential on File across all LATAM card markets. 3DS exemption for fixed recurring.</td></tr>
+      <tr><td>Account Updater</td><td class="ok">Live</td><td>Reduces involuntary churn from expired/replaced cards. Network-based refresh.</td></tr>
+      <tr><td>Local Acquiring</td><td class="ok">Live</td><td>Acts as local acquirer in each market. Eliminates cross-border downgrade on domestic cards.</td></tr>
+      <tr><td>Defense Suite (Fraud)</td><td class="ok">Live</td><td>AI fraud detection, chargeback management. LATAM-specific fraud patterns.</td></tr>
+      <tr><td>Payouts (Distributor)</td><td class="ok">Live</td><td>Cross-border payouts to distributors. Relevant for Unicity Latin America distributor commissions.</td></tr>
+      <tr><td>Invoice Collection</td><td class="ok">Live</td><td>B2B invoice payment collection. Local currency, addresses FX and regulations.</td></tr>
+      <tr><td>BNPL Fuse</td><td class="ok">Live</td><td>BNPL aggregator for emerging markets. Pagaleve and Payflex partnerships.</td></tr>
+      <tr><td>eWallet Coverage</td><td class="ok">Live</td><td>Mercado Pago, Nequi, Daviplata, Ual&aacute;, Yape, and others. ~60% of LATAM population use eWallets.</td></tr>
+      <tr><td>Cash Methods</td><td class="ok">Live</td><td>OXXO (MX), Efecty (CO), Boleto (BR), PagoEfectivo (PE), Tuc&aacute;n Cash (CR). One-time only.</td></tr>
+    </tbody>
+  </table>
+</div>
+
+<!-- VS PAYU -->
+<div class="tab-panel wide" id="tab-vs">
+  <div class="callout c-info">
+    <strong>Context: dLocal vs PayU for LATAM</strong>
+    PayU (Prosus subsidiary) is Unicity's current LATAM processor. This comparison evaluates whether dLocal provides enough differentiated value to replace or supplement PayU, particularly for markets where PayU has coverage gaps or high cross-border rates.
+  </div>
+  <table class="vs-table">
+    <thead><tr><th style="width:35%">PayU (Current LATAM)</th><th style="width:30%;text-align:center">Factor</th><th style="width:35%">dLocal (Proposed)</th></tr></thead>
+    <tbody>
+      <tr>
+        <td class="warn">Brazil coverage limited &mdash; no SmartPix</td>
+        <td style="text-align:center"><div class="vs-factor">Brazil Recurring</div></td>
+        <td class="winner">SmartPix (Aug 2025) &mdash; Pix on File, variable amount, no per-charge auth</td>
+      </tr>
+      <tr>
+        <td class="warn">Primarily card-focused in LATAM</td>
+        <td style="text-align:center"><div class="vs-factor">APM Coverage</div></td>
+        <td class="winner">900+ methods incl. OXXO, Efecty, PSE, PagoEfectivo, Yape, 60+ eWallets</td>
+      </tr>
+      <tr>
+        <td class="warn">Multiple contracts per market common</td>
+        <td style="text-align:center"><div class="vs-factor">Contract Structure</div></td>
+        <td class="winner">One dLocal &mdash; single contract, single API, single settlement for all 40+ countries</td>
+      </tr>
+      <tr>
+        <td>Active in ~20 LATAM markets</td>
+        <td style="text-align:center"><div class="vs-factor">Market Coverage</div></td>
+        <td class="winner">40+ markets globally, LATAM + Africa + Asia on single platform</td>
+      </tr>
+      <tr>
+        <td class="ok">Established Unicity relationship &mdash; known rates</td>
+        <td style="text-align:center"><div class="vs-factor">Relationship</div></td>
+        <td class="warn">New engagement &mdash; rates to be negotiated, onboarding time required</td>
+      </tr>
+      <tr>
+        <td class="warn">Cross-border processing for local cards in some markets</td>
+        <td style="text-align:center"><div class="vs-factor">Local Acquiring</div></td>
+        <td class="winner">Local acquiring in each market &mdash; eliminates cross-border premium on domestic cards</td>
+      </tr>
+      <tr>
+        <td>PayU token portability TBC</td>
+        <td style="text-align:center"><div class="vs-factor">Token Portability</div></td>
+        <td class="warn">dLocal token portability also TBC &mdash; both require negotiation</td>
+      </tr>
+      <tr>
+        <td class="ok">Active &mdash; no disruption to current flow</td>
+        <td style="text-align:center"><div class="vs-factor">Operational Risk</div></td>
+        <td class="warn">Migration risk &mdash; subscriber re-enrollment for token migration if PayU tokens non-portable</td>
+      </tr>
+    </tbody>
+  </table>
+  <div class="two-col" style="margin-top:20px;">
+    <div class="card">
+      <div class="card-title" style="color:var(--accent2);">Recommended Approach</div>
+      <p style="font-size:13px;color:var(--muted);">Start dLocal in markets where PayU has the weakest coverage or highest cross-border rates. Brazil (SmartPix) and Colombia (Amway reference case) are the best entry points. Run dLocal in parallel with PayU initially &mdash; don't migrate all existing PayU subscribers until token portability is resolved on both sides. dLocal's single-contract model significantly reduces operational overhead once fully onboarded.</p>
+    </div>
+    <div class="card">
+      <div class="card-title" style="color:#fbbf24;">Migration Risk</div>
+      <p style="font-size:13px;color:var(--muted);">Any existing PayU LATAM card tokens must be assessed for portability before migration planning. If PayU tokens are non-portable (PSP-proprietary format), existing autoship subscribers would need to re-enter card details during migration. Quantify this subscriber re-enrollment risk before committing a dLocal migration timeline. Start fresh subscriber enrollment on dLocal &mdash; migrate existing only after token portability is resolved on both ends.</p>
+    </div>
+  </div>
+</div>
+
+<!-- OPEN QUESTIONS -->
+<div class="tab-panel wide" id="tab-questions">
+  <div class="q-grid">
+    <div>
+      <div class="section-title" id="tour-section-6">Pre-Engagement Priorities<span class="info-icon">i<span class="info-tooltip"><span class="tip-title">Pre-Engagement Priorities</span>Provider specification: capabilities, integration details, and coverage.<br><span class="tip-source">Source: Provider Research</span></span></span></div>
+      <div class="q-item">
+        <div class="q-num q-go">1</div>
+        <div><div class="q-text">Open with Amway Direct Selling Reference</div><div class="q-sub">dLocal's January 2026 Amway partnership (world's #1 direct selling company) is the strongest available reference for Unicity's engagement. Lead with: "We see you just partnered with Amway for direct selling in LATAM — our use case is identical. We're ~$150M annual processing across 30+ markets." This positions Unicity as a known use case, not an experiment.</div></div>
+      </div>
+      <div class="q-item">
+        <div class="q-num q-go">2</div>
+        <div><div class="q-text">Token Portability SLA — Non-Negotiable</div><div class="q-sub">Unicity's policy: no processor with non-portable tokens. Before any production volume routes through dLocal, confirm in writing: (a) are LATAM card tokens stored as network tokens (VTS/MDES) or dLocal-proprietary tokens, (b) bulk export right within 30 days of termination request, (c) machine-readable format, (d) no export fee. This is the go/no-go condition.</div></div>
+      </div>
+      <div class="q-item">
+        <div class="q-num q-go">3</div>
+        <div><div class="q-text">Per-Market, Per-Method Rate Schedule</div><div class="q-sub">The published 2.7%&ndash;7% range is too wide to evaluate ROI. Before signing, get written per-market rates for: Brazil (SmartPix, local cards), Mexico (OXXO, SPEI, local cards), Colombia (PSE, Efecty, local cards), and other priority LATAM markets. Include FX methodology and spread cap per currency pair.</div></div>
+      </div>
+      <div class="q-item">
+        <div class="q-num q-go">4</div>
+        <div><div class="q-text">Supplement / Wellness MCC Confirmation Per Market</div><div class="q-sub">Some LATAM local acquirers impose restrictions on supplement and wellness MCCs. Confirm Unicity's product category is fully supported for local acquiring in Brazil, Mexico, Colombia, Chile, Peru, Argentina, and all other target markets. Request written confirmation before go-live in each market.</div></div>
+      </div>
+    </div>
+    <div>
+      <div class="section-title" id="tour-section-7">Commercial and Operational Questions<span class="info-icon">i<span class="info-tooltip"><span class="tip-title">Commercial and Operational Questions</span>Provider specification: capabilities, integration details, and coverage.<br><span class="tip-source">Source: Provider Research</span></span></span></div>
+      <div class="q-item">
+        <div class="q-num q-com">A</div>
+        <div><div class="q-text">SmartPix vs Pix Autom&aacute;tico for Brazil Autoship</div><div class="q-sub">SmartPix supports variable amounts and immediate MIT. Pix Autom&aacute;tico requires fixed amounts and 2&ndash;10 day advance submission. Unicity's autoship is fixed monthly amounts — confirm whether Pix Autom&aacute;tico alone covers the use case or whether SmartPix is needed for variable/ad-hoc charges. Understand the cost difference if any.</div></div>
+      </div>
+      <div class="q-item">
+        <div class="q-num q-com">B</div>
+        <div><div class="q-text">Settlement Reserve Requirements</div><div class="q-sub">Confirm whether dLocal requires a rolling reserve for new supplement/wellness merchants. Request: reserve percentage, reserve holding period, and conditions for release. Negotiate down based on Unicity's $150M annual volume and reference to Amway direct selling partnership.</div></div>
+      </div>
+      <div class="q-item">
+        <div class="q-num q-com">C</div>
+        <div><div class="q-text">Payout Capability for Distributor Commissions</div><div class="q-sub">dLocal supports cross-border payouts. Unicity pays distributor commissions in LATAM. Evaluate whether dLocal's payout product can handle this use case (BRL, MXN, COP, etc. disbursements to individual bank accounts) and what the cost model is. This could be a material secondary use case.</div></div>
+      </div>
+      <div class="q-item">
+        <div class="q-num q-com">D</div>
+        <div><div class="q-text">PayU Parallel Running Strategy</div><div class="q-sub">Define the parallel-run period: which markets start on dLocal first, how long PayU stays active in those markets, and the trigger conditions for full cutover. Don't migrate existing PayU autoship subscribers until both PayU and dLocal token portability are resolved.</div></div>
+      </div>
+      <div class="q-item">
+        <div class="q-num q-com">E</div>
+        <div><div class="q-text">Argentina FX Controls</div><div class="q-sub">Argentina's currency controls (BCRA regulations) create significant complexity for cross-border settlement. Confirm dLocal's mechanism for settling Argentine transactions in USD given ARS capital controls. Some platforms use blue-rate or parallel market rates — understand the exact methodology and legal risk for Unicity.</div></div>
+      </div>
+      <div class="q-item">
+        <div class="q-num q-com">F</div>
+        <div><div class="q-text">Retry Cadence Configuration</div><div class="q-sub">dLocal's retry service is available for Pix and cards. Confirm whether Unicity's custom dunning cadence (+0/+3/+5/+7/dun +10/deactivate +30) is configurable within dLocal or if dLocal's default retry logic overrides it. This affects subscriber churn rates and must be aligned before go-live.</div></div>
+      </div>
+    </div>
+  </div>
+  <div class="callout c-warn" style="margin-top:24px;">
+    <strong>Engagement Playbook</strong>
+    (1) Schedule intro call &mdash; open with Amway direct selling reference and $150M volume. (2) Request per-market rate schedule (BR, MX, CO, CL, PE priority). (3) Negotiate token portability addendum as go/no-go condition. (4) Confirm supplement MCC support per market in writing. (5) Request MSA for legal review. (6) Define parallel-run strategy with PayU &mdash; start in Brazil (SmartPix) and Colombia (PSE + Efecty). (7) Evaluate distributor payout use case as secondary product. (8) Model full blended cost vs PayU current rates before committing migration timeline.
+  </div>
+</div>
+
+</div>
+
+<footer>Unicity International · Payment Operations · Howard Koziara · hkowr.github.io/workflow</footer>
+<script>
+function switchTab(id,btn){document.querySelectorAll('.tab-panel').forEach(p=>p.classList.remove('active'));document.querySelectorAll('.tab-btn').forEach(b=>b.classList.remove('active'));document.getElementById('tab-'+id).classList.add('active');btn.classList.add('active');}
+</script>
+
+<script>if(location.search.includes("clean")){var s=document.querySelector(".site-sidebar");if(s)s.style.display="none";document.body.style.marginLeft="0";document.body.style.paddingTop="0";var b=document.querySelector(".payops-breadcrumb-bar");if(b)b.style.display="none";}</script>
+
+</body>
+</html>

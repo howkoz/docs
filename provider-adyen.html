@@ -1,0 +1,659 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Adyen — Provider Detail · Unicity Payment Ops</title>
+<style>
+:root {
+  --bg:#1e1e2e;--surface:#181825;--surface2:#11111b;
+  --border:#313244;--border2:#45475a;
+  --text:#cdd6f4;--muted:#6c7086;--dim:#45475a;
+  --accent:#89b4fa;--accent2:#89b4fa;
+  --gold:#f9e2af;--green:#a6e3a1;--orange:#fab387;--red:#f38ba8;
+  --blue:#89b4fa;--purple:#cba6f7;--yellow:#f9e2af;
+  --sidebar-w:210px;
+  --accent-dim:#89b4fa25;--accent-glow:#89b4fa12;
+  --red-dim:#f38ba820;--green-dim:#a6e3a120;--orange-dim:#fab38720;
+}
+*{margin:0;padding:0;box-sizing:border-box;}
+body{font-family:'Segoe UI',system-ui,-apple-system,sans-serif;background:var(--bg);color:var(--text);font-size:14px;margin-left:var(--sidebar-w);}
+nav:not(.site-sidebar){border-bottom:1px solid var(--border);padding:0 32px;display:flex;align-items:center;gap:4px;height:48px;position:sticky;top:0;background:rgba(30,30,46,.95);backdrop-filter:blur(12px);z-index:100;}
+.nav-brand{font-size:12px;font-weight:500;color:var(--muted);letter-spacing:.08em;text-transform:uppercase;margin-right:16px;white-space:nowrap;}
+nav:not(.site-sidebar) a{font-size:12px;color:var(--muted);text-decoration:none;padding:0 10px;height:48px;display:flex;align-items:center;border-bottom:2px solid transparent;transition:color .15s,border-color .15s;white-space:nowrap;}
+nav:not(.site-sidebar) a:hover{color:var(--text);}
+nav:not(.site-sidebar) a.active{color:var(--accent2);border-bottom-color:var(--accent);}
+.hero{padding:40px 32px 0;background:linear-gradient(135deg,rgba(10,191,83,.07) 0%,transparent 55%);max-width:1280px;margin:0 auto;}
+.back-link{display:inline-flex;align-items:center;gap:6px;font-size:12px;color:var(--muted);text-decoration:none;margin-bottom:18px;transition:color .15s;font-family:'Consolas',monospace;}
+.back-link:hover{color:var(--accent2);}
+.hero-top{display:flex;align-items:flex-start;justify-content:space-between;gap:24px;flex-wrap:wrap;margin-bottom:24px;}
+.provider-label{font-family:'Consolas',monospace;font-size:11px;color:var(--accent);letter-spacing:.12em;text-transform:uppercase;margin-bottom:8px;}
+.hero h1{font-family:'Segoe UI',system-ui,-apple-system,sans-serif;font-size:36px;font-weight:700;line-height:1.1;margin-bottom:8px;}
+.hero h1 em{font-style:italic;color:var(--accent2);}
+.hero-sub{font-size:13px;color:var(--muted);max-width:540px;line-height:1.6;}
+.pills{display:flex;gap:8px;flex-wrap:wrap;margin-top:10px;}
+.pill{font-family:'Consolas',monospace;font-size:10px;letter-spacing:.1em;text-transform:uppercase;padding:4px 10px;border-radius:4px;font-weight:500;}
+.pill-q{background:rgba(249,226,175,.12);color:var(--gold);border:1px solid rgba(249,226,175,.2);}
+.pill-r{background:rgba(10,191,83,.12);color:var(--accent2);border:1px solid rgba(10,191,83,.2);}
+.hero-stats{display:flex;gap:24px;flex-wrap:wrap;padding:20px 0;border-top:1px solid var(--border);}
+.stat{display:flex;flex-direction:column;gap:2px;}
+.stat-val{font-family:'Consolas',monospace;font-size:18px;font-weight:500;color:var(--text);}
+.stat-lbl{font-size:10px;color:var(--dim);letter-spacing:.06em;text-transform:uppercase;}
+.tab-bar{display:flex;gap:0;border-bottom:1px solid var(--border);max-width:1280px;margin:0 auto;padding:0 32px;background:var(--bg);position:sticky;top:48px;z-index:90;overflow-x:auto;}
+.tab-btn{font-family:'Consolas',monospace;font-size:11px;letter-spacing:.06em;text-transform:uppercase;padding:14px 18px;color:var(--muted);background:none;border:none;border-bottom:2px solid transparent;cursor:pointer;transition:color .15s,border-color .15s;white-space:nowrap;}
+.tab-btn:hover{color:var(--text);}
+.tab-btn.active{color:var(--accent2);border-bottom-color:var(--accent);}
+.tab-content{max-width:1280px;margin:0 auto;padding:28px 32px;}
+.tab-panel{display:none;}
+.tab-panel.active{display:grid;grid-template-columns:1fr 300px;gap:28px;}
+.tab-panel.wide{display:none;}
+.tab-panel.wide.active{display:block;}
+@media(max-width:900px){.tab-panel.active,.tab-panel.wide.active{display:block;}.tab-panel.active{grid-template-columns:1fr;}}
+.section-title{font-family:'Consolas',monospace;font-size:10px;color:var(--dim);letter-spacing:.14em;text-transform:uppercase;margin-bottom:14px;padding-bottom:8px;border-bottom:1px solid var(--border);}
+section{margin-bottom:28px;}
+.cap-grid{display:grid;grid-template-columns:1fr 1fr;gap:12px;}
+.cap-grid.three{grid-template-columns:1fr 1fr 1fr;}
+@media(max-width:700px){.cap-grid,.cap-grid.three{grid-template-columns:1fr;}}
+.cap-card{background:var(--surface);border:1px solid var(--border);border-radius:8px;padding:16px 18px;display:flex;flex-direction:column;gap:8px;}
+.cap-card.full{grid-column:1/-1;}
+.cap-icon{width:30px;height:30px;border-radius:6px;display:flex;align-items:center;justify-content:center;font-size:14px;flex-shrink:0;}
+.cap-header{display:flex;align-items:center;gap:10px;}
+.cap-title{font-size:13px;font-weight:600;color:var(--text);}
+.cap-sub{font-size:11px;color:var(--muted);line-height:1.55;}
+.tags{display:flex;flex-wrap:wrap;gap:5px;}
+.tag{font-size:10px;color:var(--dim);background:var(--surface2);border:1px solid var(--border);border-radius:3px;padding:2px 7px;font-family:'Consolas',monospace;}
+.tag.hi{color:var(--accent2);border-color:rgba(10,191,83,.3);background:rgba(10,191,83,.07);}
+.tag.ok{color:var(--accent2);border-color:rgba(10,191,83,.3);background:rgba(10,191,83,.07);}
+.tag.warn{color:var(--gold);border-color:rgba(249,226,175,.3);background:rgba(249,226,175,.07);}
+.tag.risk{color:var(--red);border-color:rgba(243,139,168,.3);background:rgba(243,139,168,.07);}
+.tag.blue{color:var(--blue);border-color:rgba(96,165,250,.3);background:rgba(96,165,250,.07);}
+.flow{display:flex;flex-direction:column;}
+.flow-step{display:flex;gap:14px;padding-bottom:16px;}
+.flow-step:last-child{padding-bottom:0;}
+.flow-left{display:flex;flex-direction:column;align-items:center;}
+.flow-num{width:26px;height:26px;border-radius:50%;background:rgba(10,191,83,.15);border:1px solid rgba(10,191,83,.3);color:var(--accent2);font-family:'Consolas',monospace;font-size:11px;display:flex;align-items:center;justify-content:center;flex-shrink:0;}
+.flow-line{width:1px;flex:1;background:var(--border);margin-top:4px;}
+.flow-step:last-child .flow-line{display:none;}
+.flow-body{padding-top:3px;}
+.flow-title{font-size:12px;font-weight:600;color:var(--text);margin-bottom:3px;}
+.flow-desc{font-size:11px;color:var(--muted);line-height:1.5;}
+.flow-code{font-family:'Consolas',monospace;font-size:10px;color:var(--accent);background:rgba(10,191,83,.08);border:1px solid rgba(10,191,83,.15);border-radius:3px;padding:2px 6px;display:inline-block;margin-top:4px;}
+.dt{width:100%;border-collapse:collapse;font-size:12px;}
+.dt th{background:var(--surface2);color:var(--muted);font-weight:500;font-family:'Consolas',monospace;font-size:10px;letter-spacing:.06em;text-transform:uppercase;padding:8px 12px;text-align:left;border-bottom:1px solid var(--border2);}
+.dt td{padding:8px 12px;border-bottom:1px solid var(--border);color:var(--text);vertical-align:top;line-height:1.45;}
+.dt tr:last-child td{border-bottom:none;}
+.dt tr:hover td{background:rgba(255,255,255,.02);}
+td.ok{color:var(--accent2);font-family:'Consolas',monospace;font-size:11px;}
+td.warn{color:var(--gold);font-family:'Consolas',monospace;font-size:11px;}
+td.risk{color:var(--red);font-family:'Consolas',monospace;font-size:11px;}
+td.dim{color:var(--muted);font-family:'Consolas',monospace;font-size:11px;}
+td.blue{color:var(--blue);font-family:'Consolas',monospace;font-size:11px;}
+.callout{border-radius:6px;padding:12px 14px;margin:12px 0;font-size:12px;line-height:1.55;}
+.c-info{background:rgba(10,191,83,.07);border:1px solid rgba(10,191,83,.2);color:var(--accent2);}
+.c-warn{background:rgba(249,226,175,.08);border:1px solid rgba(249,226,175,.2);color:var(--gold);}
+.c-risk{background:rgba(243,139,168,.07);border:1px solid rgba(243,139,168,.2);color:var(--red);}
+.c-blue{background:rgba(96,165,250,.07);border:1px solid rgba(96,165,250,.2);color:var(--blue);}
+.callout strong{font-weight:600;}
+.sidebar{display:flex;flex-direction:column;gap:14px;}
+.s-card{background:var(--surface);border:1px solid var(--border);border-radius:8px;padding:16px;}
+.s-title{font-family:'Consolas',monospace;font-size:10px;color:var(--dim);letter-spacing:.12em;text-transform:uppercase;margin-bottom:10px;}
+.info-row{display:flex;justify-content:space-between;align-items:flex-start;gap:8px;padding:5px 0;border-bottom:1px solid var(--border);font-size:12px;}
+.info-row:last-child{border-bottom:none;}
+.i-lbl{color:var(--muted);}
+.i-val{color:var(--text);text-align:right;font-family:'Consolas',monospace;font-size:11px;}
+.score-row{display:flex;align-items:center;gap:8px;margin-bottom:6px;}
+.s-lbl{font-size:11px;color:var(--muted);flex:1;}
+.s-bar{width:80px;height:3px;background:var(--border);border-radius:2px;overflow:hidden;}
+.s-fill{height:100%;border-radius:2px;}
+.s-num{font-family:'Consolas',monospace;font-size:11px;color:var(--text);min-width:26px;text-align:right;}
+.phase-row{display:flex;gap:0;margin:14px 0;overflow-x:auto;}
+.phase-box{background:var(--surface);border:1px solid var(--border);padding:14px 16px;min-width:140px;flex:1;position:relative;}
+.phase-box:not(:last-child)::after{content:'→';position:absolute;right:-12px;top:50%;transform:translateY(-50%);color:var(--dim);font-size:16px;z-index:1;}
+.phase-box:not(:first-child){border-left:none;}
+.phase-box:first-child{border-radius:6px 0 0 6px;}
+.phase-box:last-child{border-radius:0 6px 6px 0;}
+.phase-num{font-family:'Consolas',monospace;font-size:10px;color:var(--accent);margin-bottom:5px;letter-spacing:.08em;}
+.phase-title{font-size:12px;font-weight:600;color:var(--text);margin-bottom:4px;}
+.phase-desc{font-size:11px;color:var(--muted);line-height:1.4;}
+.methods-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));gap:12px;}
+.method-card{background:var(--surface);border:1px solid var(--border);border-radius:8px;padding:14px 16px;}
+.method-region{font-family:'Consolas',monospace;font-size:9px;color:var(--accent);letter-spacing:.1em;text-transform:uppercase;margin-bottom:5px;}
+.method-name{font-size:13px;font-weight:600;color:var(--text);margin-bottom:4px;}
+.method-desc{font-size:11px;color:var(--muted);line-height:1.45;margin-bottom:8px;}
+.method-badges{display:flex;flex-wrap:wrap;gap:4px;}
+/* VS COMPARISON */
+.vs-grid{display:grid;grid-template-columns:1fr auto 1fr;gap:0;align-items:start;}
+.vs-head{font-family:'Consolas',monospace;font-size:11px;font-weight:500;padding:10px 14px;text-align:center;letter-spacing:.06em;text-transform:uppercase;}
+.vs-divider{display:flex;align-items:center;justify-content:center;padding:0 16px;color:var(--dim);font-family:'Consolas',monospace;font-size:12px;}
+.vs-row{display:contents;}
+.vs-cell{padding:8px 14px;border-bottom:1px solid var(--border);font-size:12px;line-height:1.45;}
+.vs-cell.winner{color:var(--accent2);background:rgba(10,191,83,.04);}
+.vs-cell.loser{color:var(--muted);}
+.vs-label{padding:8px 4px;border-bottom:1px solid var(--border);font-family:'Consolas',monospace;font-size:10px;color:var(--dim);text-align:center;letter-spacing:.06em;text-transform:uppercase;writing-mode:horizontal-tb;}
+.vs-wrap{background:var(--surface);border:1px solid var(--border);border-radius:8px;overflow:hidden;}
+footer{border-top:1px solid var(--border);padding:18px 32px;text-align:center;font-size:11px;color:var(--dim);font-family:'Consolas',monospace;letter-spacing:.06em;}
+footer a{color:var(--dim);text-decoration:none;}
+
+.site-sidebar{position:fixed;top:0;left:0;bottom:0;width:var(--sidebar-w);background:var(--surface);border-right:1px solid var(--border);display:flex;flex-direction:column;z-index:50;font-family:'Segoe UI',system-ui,sans-serif;}
+.site-sidebar .sb-brand{padding:14px 16px;border-bottom:1px solid var(--border);display:flex;align-items:center;gap:10px;}
+.site-sidebar .sb-logo{width:30px;height:30px;border-radius:8px;background:linear-gradient(135deg,var(--accent),#7287fd);display:flex;align-items:center;justify-content:center;font-size:14px;font-weight:800;color:#fff;flex-shrink:0;}
+.site-sidebar .sb-title{font-size:13px;font-weight:700;color:var(--text);letter-spacing:-0.3px;}
+.site-sidebar .sb-sub{font-size:10px;color:var(--muted);}
+.site-sidebar .sb-scroll{flex:1;overflow-y:auto;padding:8px 0;}
+.site-sidebar .sb-section{padding:4px 10px;}
+.site-sidebar .sb-label{font-size:9px;text-transform:uppercase;letter-spacing:1.2px;color:var(--muted);font-weight:700;padding:8px 8px 4px;margin-bottom:2px;}
+nav.site-sidebar a.sb-link{display:block;padding:7px 12px;border-radius:8px;font-size:12px;color:#a6adc8;text-decoration:none;margin-bottom:1px;transition:all .15s;height:auto;border-bottom:none;white-space:normal;}
+nav.site-sidebar a.sb-link:hover{background:var(--accent-glow);color:var(--text);border-bottom:none;}
+nav.site-sidebar a.sb-link.active{background:var(--accent-dim);color:var(--accent);font-weight:600;border-bottom:none;}
+
+</style>
+
+<!-- BREADCRUMB NAV - INJECTED -->
+<style>
+.payops-breadcrumb-bar {
+  position: fixed;
+  top: 0; left: 0; right: 0;
+  z-index: 99999;
+  background: rgba(7,9,14,0.92);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  border-bottom: 1px solid rgba(22,32,49,0.8);
+  padding: 0 24px;
+  height: 40px;
+  display: flex;
+  align-items: center;
+  font-family: 'Space Mono', 'Consolas', 'Monaco', monospace;
+  font-size: 11px;
+}
+.payops-breadcrumb-bar a {
+  color: #00d4ff;
+  text-decoration: none;
+  transition: color 0.15s;
+}
+.payops-breadcrumb-bar a:hover { color: #fff; }
+.payops-breadcrumb-bar .bc-sep {
+  color: #2d4459;
+  margin: 0 10px;
+  font-size: 10px;
+}
+.payops-breadcrumb-bar .bc-current {
+  color: #607d94;
+  max-width: 400px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+/* === Help System === */
+.info-icon {
+  display:inline-flex; align-items:center; justify-content:center;
+  width:16px; height:16px; border-radius:50%; font-size:10px; font-weight:700;
+  background:rgba(137,180,250,0.15); color:var(--accent, #89b4fa); cursor:help;
+  margin-left:6px; position:relative; vertical-align:middle; flex-shrink:0;
+  font-style:normal;
+}
+.info-icon:hover { background:var(--accent, #89b4fa); color:#11111b; }
+.info-tooltip {
+  display:none; position:absolute; bottom:calc(100% + 8px); left:50%; transform:translateX(-50%);
+  background:#313244; color:#cdd6f4; border:1px solid #45475a;
+  border-radius:8px; padding:10px 14px; font-size:11px; font-weight:400;
+  line-height:1.5; width:260px; z-index:1000; text-transform:none; letter-spacing:normal;
+  box-shadow:0 4px 16px rgba(0,0,0,0.4); pointer-events:none;
+}
+.info-tooltip::after {
+  content:''; position:absolute; top:100%; left:50%; transform:translateX(-50%);
+  border:6px solid transparent; border-top-color:#313244;
+}
+.info-icon:hover .info-tooltip { display:block; }
+.info-tooltip .tip-title { font-weight:700; color:#89b4fa; margin-bottom:4px; font-size:11px; }
+.info-tooltip .tip-source { color:#6c7086; font-size:10px; margin-top:4px; }
+/* Intro.js dark theme */
+.introjs-button:hover { background:#cdd6f4 !important; }
+.introjs-button:focus { box-shadow:none !important; }
+.introjs-helperLayer { background:rgba(0,0,0,0.5) !important; border:1px solid #89b4fa !important; border-radius:10px !important; }
+.introjs-arrow.top { border-bottom-color:#181825 !important; }
+.introjs-arrow.bottom { border-top-color:#181825 !important; }
+.introjs-arrow.left { border-right-color:#181825 !important; }
+.introjs-arrow.right { border-left-color:#181825 !important; }
+/* === End Help System === */
+</style>
+
+</head>
+<body>
+<nav class="site-sidebar">
+  <div class="sb-brand">
+    <div class="sb-logo">U</div>
+    <div><div class="sb-title">Payment Ops</div><div class="sb-sub">Unicity International</div></div>
+  </div>
+  <div class="sb-scroll">
+    <div class="sb-section"><div class="sb-label">Core</div>
+      <a class="sb-link" href="index.html">Dashboard</a>
+      <a class="sb-link" href="index.html#layer-markets">Markets</a>
+      <a class="sb-link" href="market-capabilities.html">Coverage Map</a>
+      <a class="sb-link" href="provider-review-hub.html">Processors</a>
+      <a class="sb-link" href="index.html#layer-processors">Auth Rates</a>
+    </div>
+    <div class="sb-section"><div class="sb-label">Monitor</div>
+      <a class="sb-link" href="hub-chargebacks.html">Chargebacks</a>
+      <a class="sb-link" href="mission-control2.html">Mission Control</a>
+      <a class="sb-link" href="PAYMENT-INTEL-dashboard.html">Payment Intel</a>
+      <a class="sb-link" href="fraud-score-intelligence.html">Fraud Score</a>
+      <a class="sb-link" href="DECLINE-INTEL-dashboard.html">Decline Intel</a>
+      <a class="sb-link" href="RETRY-MONITOR-DASHBOARD.html">Retry Monitor</a>
+      <a class="sb-link" href="processor-intelligence.html">Processor Intel</a>
+    </div>
+    <div class="sb-section"><div class="sb-label">Reports</div>
+      <a class="sb-link" href="hub-scorecard.html">Scorecard</a>
+      <a class="sb-link" href="index.html#layer-statements">Statements</a>
+      <a class="sb-link" href="payment-ops-dashboard-v4.html">Ops Dashboard</a>
+      <a class="sb-link" href="payment_sop_v5.html">SOPs</a>
+    </div>
+    <div class="sb-section"><div class="sb-label">Strategic</div>
+      <a class="sb-link" href="2026_Payment_Operations_Strategic_Roadmap.html">2026 Roadmap</a>
+      <a class="sb-link" href="shopify-hub.html">Shopify</a>
+      <a class="sb-link active" href="provider-review-hub.html">Provider Specs</a>
+    </div>
+  </div>
+</nav>
+
+<!-- HERO -->
+<div style="max-width:1280px;margin:0 auto;">
+<div class="hero">
+  <a href="provider-review-hub.html" class="back-link">← Provider Reviews</a>
+  <div class="hero-top">
+    <div>
+      <div class="provider-label">Provider Deep-Dive · Global / Europe Alternative</div>
+      <h1><em>Adyen</em></h1>
+<div class="hero-sub">Enterprise payments platform. Primary evaluation driver: Nexi alternative for Europe if dual-platform (Nexi + Netaxept) creates contract/operational complexity. Native BLIK support is the key advantage over Nexi for Poland.</div>
+      <div class="pills"><span class="pill pill-q">Queued</span><span class="pill pill-r">Europe · Global</span></div>
+    </div>
+  </div>
+  <div class="hero-stats">
+    <div class="stat"><span class="stat-val">37</span><span class="stat-lbl">Countries</span></div>
+    <div class="stat"><span class="stat-val">€0.10 + IC+</span><span class="stat-lbl">Base Rate</span></div>
+    <div class="stat"><span class="stat-val">3DS 2.2</span><span class="stat-lbl">Protocol</span></div>
+    <div class="stat"><span class="stat-val">2006</span><span class="stat-lbl">Founded · Amsterdam</span></div>
+    <div class="stat"><span class="stat-val">Euronext: ADYEN</span><span class="stat-lbl">Publicly traded</span></div>
+    <div class="stat"><span class="stat-val">BLIK native</span><span class="stat-lbl">Key Nexi advantage</span></div>
+  </div>
+</div>
+</div>
+
+<!-- TAB BAR -->
+<div class="tab-bar">
+  <button class="tab-btn active" onclick="switchTab('overview',this)">Overview</button>
+  <button class="tab-btn" onclick="switchTab('flows',this)">Auth Flows</button>
+  <button class="tab-btn" onclick="switchTab('models',this)">Payment Models</button>
+  <button class="tab-btn" onclick="switchTab('methods',this)">Payment Methods</button>
+  <button class="tab-btn" onclick="switchTab('wallets',this)">Digital Wallets</button>
+  <button class="tab-btn" onclick="switchTab('vs',this)">Adyen vs Nexi</button>
+  <button class="tab-btn" onclick="switchTab('questions',this)">Open Questions</button>
+</div>
+
+<div class="tab-content">
+
+<!-- ═══ OVERVIEW ═══ -->
+<div id="tab-overview" class="tab-panel active">
+  <div>
+    <section>
+      <div class="section-title" id="tour-section-0">Why Adyen Is in Scope<span class="info-icon">i<span class="info-tooltip"><span class="tip-title">Why Adyen Is in Scope</span>Provider specification: capabilities, integration details, and coverage.<br><span class="tip-source">Source: Provider Research</span></span></span></div>
+      <div class="callout c-blue"><strong>Evaluation trigger:</strong> Nexi's dual-platform problem. Italy/DACH markets use Nexi core; Poland/Nordics use Netaxept (a Nexi subsidiary). That means two separate API integrations, two contracts, potentially two settlement structures. If Nexi can't deliver a single commercial and technical agreement, Adyen becomes the primary Europe alternative — one platform, 37 countries, native BLIK.</div>
+    </section>
+    <section>
+      <div class="section-title" id="tour-section-1">Platform Capabilities<span class="info-icon">i<span class="info-tooltip"><span class="tip-title">Platform Capabilities</span>Provider specification: capabilities, integration details, and coverage.<br><span class="tip-source">Source: Provider Research</span></span></span></div>
+      <div class="cap-grid">
+        <div class="cap-card">
+          <div class="cap-header"><div class="cap-icon" style="background:rgba(10,191,83,.12)">🌍</div><div><div class="cap-title">Single Platform, 37 Countries</div></div></div>
+          <div class="cap-sub">One API, one integration, one contract covers all of Europe including Nordics and CEE. Eliminates the Nexi dual-platform issue. Acquires locally in most EU markets — no cross-border surcharge on domestic cards.</div>
+          <div class="tags"><span class="tag ok">Single contract</span><span class="tag ok">Local acquiring</span></div>
+        </div>
+        <div class="cap-card">
+          <div class="cap-header"><div class="cap-icon" style="background:rgba(96,165,250,.12)">🔄</div><div><div class="cap-title">Subscription / MIT Native</div></div></div>
+          <div class="cap-sub">recurringProcessingModel: Subscription on CIT enrollment. ContAuth on subsequent MITs. UnscheduledCardOnFile for dunning retries with changed amounts. Full support for 40K monthly autoship without 3DS on each MIT.</div>
+          <div class="tags"><span class="tag ok">MIT native</span><span class="tag ok">ContAuth + UCOF</span></div>
+        </div>
+        <div class="cap-card">
+          <div class="cap-header"><div class="cap-icon" style="background:rgba(249,226,175,.12)">🎛️</div><div><div class="cap-title">Dynamic 3DS Rules</div></div></div>
+          <div class="cap-sub">Configure per-market 3DS exemption rules in the Adyen dashboard. Automatically request TRA, low-value, or trusted beneficiary exemptions based on transaction context. Reduces friction for low-risk markets while maintaining SCA compliance.</div>
+          <div class="tags"><span class="tag warn">Configurable</span><span class="tag">Per-market rules</span></div>
+        </div>
+        <div class="cap-card">
+          <div class="cap-header"><div class="cap-icon" style="background:rgba(243,139,168,.12)">⚠️</div><div><div class="cap-title">Token Ownership — Same Risk</div></div></div>
+          <div class="cap-sub">Adyen stores tokenized card data as recurringDetailReference values. Portability of these tokens to another processor is not guaranteed by default. Must negotiate token export rights contractually — same go/no-go condition as every other provider.</div>
+          <div class="tags"><span class="tag risk">Token portability TBC</span><span class="tag risk">Go/no-go condition</span></div>
+        </div>
+      </div>
+    </section>
+    <section>
+      <div class="section-title" id="tour-section-2">Integration Approach Options<span class="info-icon">i<span class="info-tooltip"><span class="tip-title">Integration Approach Options</span>Provider specification: capabilities, integration details, and coverage.<br><span class="tip-source">Source: Provider Research</span></span></span></div>
+      <div class="cap-grid">
+        <div class="cap-card">
+          <div class="cap-header"><div class="cap-icon" style="background:rgba(10,191,83,.12)">💡</div><div><div class="cap-title">Sessions Flow (Recommended)</div></div></div>
+          <div class="cap-sub">Single API call to /sessions. Adyen Drop-in UI handles everything: card entry, 3DS2 challenge, redirect, result. SAQ-A compliant. Minimal PCI scope. Recommended for Unicity CIT enrollment.</div>
+          <div class="tags"><span class="tag ok">SAQ-A</span><span class="tag ok">1 API call</span><span class="tag">Drop-in UI</span></div>
+        </div>
+        <div class="cap-card">
+          <div class="cap-header"><div class="cap-icon" style="background:rgba(96,165,250,.12)">⚙️</div><div><div class="cap-title">Advanced Flow (More Control)</div></div></div>
+          <div class="cap-sub">Three-call flow: /paymentMethods → /payments → /payments/details. Unicity controls the full UI. SAQ-A EP. Needed only if Drop-in UI doesn't meet design requirements or custom 3DS handling is needed.</div>
+          <div class="tags"><span class="tag blue">SAQ-A EP</span><span class="tag">3 API calls</span><span class="tag">Full UI control</span></div>
+        </div>
+      </div>
+    </section>
+  </div>
+  <div class="sidebar">
+    <div class="s-card">
+      <div class="s-title">Provider Profile</div>
+      <div class="info-row"><span class="i-lbl">HQ</span><span class="i-val">Amsterdam, NL</span></div>
+      <div class="info-row"><span class="i-lbl">Founded</span><span class="i-val">2006</span></div>
+      <div class="info-row"><span class="i-lbl">Ticker</span><span class="i-val">ADYEN (Euronext)</span></div>
+      <div class="info-row"><span class="i-lbl">Countries</span><span class="i-val">37+</span></div>
+      <div class="info-row"><span class="i-lbl">Base rate</span><span class="i-val">€0.10 + IC+</span></div>
+      <div class="info-row"><span class="i-lbl">3DS</span><span class="i-val">v2.2.0</span></div>
+      <div class="info-row"><span class="i-lbl">Docs</span><span class="i-val"><a href="https://docs.adyen.com" target="_blank" style="color:var(--accent2)">docs.adyen.com</a></span></div>
+      <div class="info-row"><span class="i-lbl">ClickUp</span><span class="i-val"><a href="https://app.clickup.com/t/86e090yjm" target="_blank" style="color:var(--accent2)">TKT-link</a></span></div>
+    </div>
+    <div class="s-card">
+      <div class="s-title">Preliminary Signals</div>
+      <div class="score-row"><span class="s-lbl">MIT / Recurring</span><div class="s-bar"><div class="s-fill" style="width:90%;background:linear-gradient(90deg,var(--accent),var(--accent2))"></div></div><span class="s-num">—</span></div>
+      <div class="score-row"><span class="s-lbl">Europe Coverage</span><div class="s-bar"><div class="s-fill" style="width:88%;background:linear-gradient(90deg,var(--accent),var(--accent2))"></div></div><span class="s-num">—</span></div>
+      <div class="score-row"><span class="s-lbl">Token Ownership</span><div class="s-bar"><div class="s-fill" style="width:30%;background:linear-gradient(90deg,var(--red),var(--orange))"></div></div><span class="s-num">TBC</span></div>
+      <div class="score-row"><span class="s-lbl">BLIK (Poland)</span><div class="s-bar"><div class="s-fill" style="width:95%;background:linear-gradient(90deg,var(--accent),var(--accent2))"></div></div><span class="s-num">—</span></div>
+      <div class="score-row"><span class="s-lbl">vs Nexi pricing</span><div class="s-bar"><div class="s-fill" style="width:50%;background:linear-gradient(90deg,var(--gold),var(--orange))"></div></div><span class="s-num">TBC</span></div>
+      <div style="font-size:11px;color:var(--dim);margin-top:8px;padding-top:8px;border-top:1px solid var(--border)">Full scorecard after spec completion.</div>
+    </div>
+    <div class="s-card">
+      <div class="s-title">Market Fit</div>
+      <table class="dt" style="font-size:11px">
+        <tbody>
+          <tr><td>Italy / DACH</td><td class="ok">STRONG</td></tr>
+          <tr><td>Nordics (DK/FI/NO/SE)</td><td class="ok">STRONG</td></tr>
+          <tr><td>Poland (BLIK)</td><td class="ok">NATIVE BLIK</td></tr>
+          <tr><td>MENA</td><td class="warn">SECONDARY</td></tr>
+          <tr><td>SEA / India</td><td class="warn">SECONDARY</td></tr>
+          <tr><td>Global fallback</td><td class="ok">GOOD</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+</div>
+
+<!-- ═══ FLOWS ═══ -->
+<div id="tab-flows" class="tab-panel wide">
+  <div style="display:grid;grid-template-columns:1fr 1fr;gap:24px;">
+    <div>
+      <section>
+        <div class="section-title" id="tour-section-3">Sessions Flow — CIT Enrollment (Recommended)<span class="info-icon">i<span class="info-tooltip"><span class="tip-title">Sessions Flow — CIT Enrollment (Recommended)</span>Provider specification: capabilities, integration details, and coverage.<br><span class="tip-source">Source: Provider Research</span></span></span></div>
+        <div class="flow">
+          <div class="flow-step"><div class="flow-left"><div class="flow-num">1</div><div class="flow-line"></div></div><div class="flow-body"><div class="flow-title">Create Session</div><div class="flow-desc">POST /sessions with amount, currency, returnUrl, and recurringProcessingModel: Subscription. Adyen returns a sessionId and sessionData. No card data sent at this step — all handled client-side by Drop-in.</div><div class="flow-code">POST /sessions → sessionId + sessionData</div></div></div>
+          <div class="flow-step"><div class="flow-left"><div class="flow-num">2</div><div class="flow-line"></div></div><div class="flow-body"><div class="flow-title">Drop-in Renders</div><div class="flow-desc">Client loads Adyen Drop-in UI with sessionId. Cardholder enters card details. Drop-in handles device fingerprinting silently — collects browser/device data required for 3DS2 AReq.</div><div class="flow-code">AdyenCheckout({ session: sessionId })</div></div></div>
+          <div class="flow-step"><div class="flow-left"><div class="flow-num">3</div><div class="flow-line"></div></div><div class="flow-body"><div class="flow-title">3DS2 Authentication</div><div class="flow-desc">Adyen sends AReq to issuer with 100+ data elements. Frictionless: issuer returns ARes Y — payment proceeds without cardholder action. Challenge: Drop-in renders OTP/biometric inline. Regulatory mandate active in EU/UK from 2021.</div><div class="flow-code">AReq → frictionless (ARes:Y) | challenge</div></div></div>
+          <div class="flow-step"><div class="flow-left"><div class="flow-num">4</div><div class="flow-line"></div></div><div class="flow-body"><div class="flow-title">Token Stored</div><div class="flow-desc">On authorised result, Adyen returns recurringDetailReference in the payment result. Unicity stores this as the subscription token. Used for all subsequent MIT charges — never requires cardholder interaction again.</div><div class="flow-code">recurringDetailReference → store in vault</div></div></div>
+        </div>
+      </section>
+      <section>
+        <div class="section-title" id="tour-section-4">3DS Regulatory Timeline<span class="info-icon">i<span class="info-tooltip"><span class="tip-title">3DS Regulatory Timeline</span>Provider specification: capabilities, integration details, and coverage.<br><span class="tip-source">Source: Provider Research</span></span></span></div>
+        <table class="dt">
+          <thead><tr><th>Market</th><th>Mandate</th><th>Protocol</th></tr></thead>
+          <tbody>
+            <tr><td>EU / EEA</td><td>2021 (PSD2)</td><td class="ok">3DS 2.2</td></tr>
+            <tr><td>UK</td><td>2022 (FCA SCA)</td><td class="ok">3DS 2.2</td></tr>
+            <tr><td>France</td><td class="warn">March 2025</td><td class="ok">3DS 2.2</td></tr>
+            <tr><td>Japan</td><td class="warn">April 2025</td><td class="ok">3DS 2.2</td></tr>
+            <tr><td>MC/Visa global</td><td class="warn">2.2.0 required</td><td class="ok">EMV 3DS 2.2.0</td></tr>
+          </tbody>
+        </table>
+      </section>
+    </div>
+
+    <div>
+      <section>
+        <div class="section-title" id="tour-section-5">MIT — Monthly Autoship<span class="info-icon">i<span class="info-tooltip"><span class="tip-title">MIT — Monthly Autoship</span>Provider specification: capabilities, integration details, and coverage.<br><span class="tip-source">Source: Provider Research</span></span></span></div>
+        <div class="flow">
+          <div class="flow-step"><div class="flow-left"><div class="flow-num">1</div><div class="flow-line"></div></div><div class="flow-body"><div class="flow-title">Retrieve Token</div><div class="flow-desc">Unicity batch scheduler pulls recurringDetailReference for each subscriber due on billing date. No cardholder interaction. No 3DS — MIT exemption established by CIT enrollment.</div><div class="flow-code">recurringDetailReference from vault</div></div></div>
+          <div class="flow-step"><div class="flow-left"><div class="flow-num">2</div><div class="flow-line"></div></div><div class="flow-body"><div class="flow-title">POST /payments (ContAuth)</div><div class="flow-desc">POST /payments with shopperReference, recurringDetailReference, recurringProcessingModel: Subscription. Set shopperInteraction: ContAuth to declare this as a merchant-initiated follow-up. Includes original CIT shopperReference for chain verification.</div><div class="flow-code">shopperInteraction: ContAuth → MIT</div></div></div>
+          <div class="flow-step"><div class="flow-left"><div class="flow-num">3</div><div class="flow-line"></div></div><div class="flow-body"><div class="flow-title">Webhook Result</div><div class="flow-desc">AUTHORISATION notification fires to Unicity webhook. Check success: true. Log resultCode, reason, and any refusalReason codes for analytics. Always verify via GET /payments/{pspReference} for authoritative result.</div><div class="flow-code">AUTHORISATION → success:true | false</div></div></div>
+          <div class="flow-step"><div class="flow-left"><div class="flow-num">4</div><div class="flow-line"></div></div><div class="flow-body"><div class="flow-title">Retry / UCOF on Failure</div><div class="flow-desc">Soft decline: retry Day +3, +5, +7 using ContAuth. If card expired or amount changes on retry: switch to shopperInteraction: ContAuth + recurringProcessingModel: UnscheduledCardOnFile. Preserves liability exemption on retries.</div><div class="flow-code">UCOF for dunning retries</div></div></div>
+        </div>
+      </section>
+
+      <section>
+        <div class="section-title" id="tour-section-6">Advanced Flow (3 calls — manual 3DS)<span class="info-icon">i<span class="info-tooltip"><span class="tip-title">Advanced Flow (3 calls — manual 3DS)</span>Provider specification: capabilities, integration details, and coverage.<br><span class="tip-source">Source: Provider Research</span></span></span></div>
+        <div class="flow">
+          <div class="flow-step"><div class="flow-left"><div class="flow-num">A</div><div class="flow-line"></div></div><div class="flow-body"><div class="flow-title">GET /paymentMethods</div><div class="flow-desc">Retrieve available payment methods for the shopper's locale and amount. Used to render custom payment method selector UI.</div></div></div>
+          <div class="flow-step"><div class="flow-left"><div class="flow-num">B</div><div class="flow-line"></div></div><div class="flow-body"><div class="flow-title">POST /payments</div><div class="flow-desc">Submit payment with card data (via encrypted form) + 3DS2 browserInfo. Returns action object if challenge required or redirectShopper for 3DS.</div></div></div>
+          <div class="flow-step"><div class="flow-left"><div class="flow-num">C</div><div class="flow-line"></div></div><div class="flow-body"><div class="flow-title">POST /payments/details</div><div class="flow-desc">Submit 3DS challenge result (MD + PaRes) back to Adyen. Returns final authorization result. Only required if action was returned in step B.</div></div></div>
+        </div>
+        <div class="callout c-warn">Use Sessions Flow unless custom UI is a hard requirement. Advanced Flow increases PCI scope and dev complexity.</div>
+      </section>
+    </div>
+  </div>
+</div>
+
+<!-- ═══ PAYMENT MODELS ═══ -->
+<div id="tab-models" class="tab-panel wide">
+  <section>
+    <div class="section-title" id="tour-section-7">Autoship Subscription Lifecycle<span class="info-icon">i<span class="info-tooltip"><span class="tip-title">Autoship Subscription Lifecycle</span>How recurring billing works: enrollment, retry, update, cancel flows.<br><span class="tip-source">Source: Provider Documentation</span></span></span></div>
+    <div class="phase-row">
+      <div class="phase-box"><div class="phase-num">PHASE 1</div><div class="phase-title">CIT Enrollment</div><div class="phase-desc">Sessions flow. Drop-in handles 3DS. recurringProcessingModel: Subscription. Returns recurringDetailReference.</div></div>
+      <div class="phase-box"><div class="phase-num">PHASE 2</div><div class="phase-title">Monthly MIT</div><div class="phase-desc">ContAuth. No 3DS. POST /payments with token. shopperInteraction: ContAuth.</div></div>
+      <div class="phase-box"><div class="phase-num">RETRY</div><div class="phase-title">Soft Decline</div><div class="phase-desc">Retry Day +3, +5, +7. Same token. Log refusalReason codes per attempt.</div></div>
+      <div class="phase-box"><div class="phase-num">UCOF</div><div class="phase-title">Dunning / Retry</div><div class="phase-desc">Switch to UnscheduledCardOnFile if amount changed or card expired. Preserves MIT exemption.</div></div>
+      <div class="phase-box"><div class="phase-num">DEACTIVATE</div><div class="phase-title">+30d Failure</div><div class="phase-desc">Deactivate subscription. Route to re-enrollment. Disable recurringDetailReference in vault.</div></div>
+    </div>
+  </section>
+
+  <div style="display:grid;grid-template-columns:1fr 1fr;gap:24px;margin-top:4px;">
+    <section>
+      <div class="section-title" id="tour-section-8">Recurring Processing Model Options<span class="info-icon">i<span class="info-tooltip"><span class="tip-title">Recurring Processing Model Options</span>Provider specification: capabilities, integration details, and coverage.<br><span class="tip-source">Source: Provider Research</span></span></span></div>
+      <table class="dt">
+        <thead><tr><th>Model</th><th>Use Case</th><th>3DS on MIT</th></tr></thead>
+        <tbody>
+          <tr><td>Subscription</td><td>Regular autoship (same amount, same interval)</td><td class="ok">NO</td></tr>
+          <tr><td>ContAuth</td><td>Standard recurring — maps to MIT on subsequent charges</td><td class="ok">NO</td></tr>
+          <tr><td>UnscheduledCardOnFile</td><td>Dunning retries, variable amounts, card updates</td><td class="ok">NO</td></tr>
+          <tr><td>CardOnFile</td><td>Customer-triggered one-click reorder</td><td class="warn">SOMETIMES</td></tr>
+        </tbody>
+      </table>
+    </section>
+
+    <section>
+      <div class="section-title" id="tour-section-9">Key API Fields for Unicity<span class="info-icon">i<span class="info-tooltip"><span class="tip-title">Key API Fields for Unicity</span>Critical fields used in payment API requests and responses.<br><span class="tip-source">Source: Provider Documentation</span></span></span></div>
+      <table class="dt">
+        <thead><tr><th>Field</th><th>CIT Value</th><th>MIT Value</th></tr></thead>
+        <tbody>
+          <tr><td>shopperInteraction</td><td class="dim">Ecommerce</td><td class="dim">ContAuth</td></tr>
+          <tr><td>recurringProcessingModel</td><td class="dim">Subscription</td><td class="dim">Subscription</td></tr>
+          <tr><td>shopperReference</td><td class="dim">Unicity customer ID</td><td class="dim">Same ID</td></tr>
+          <tr><td>recurringDetailReference</td><td class="dim">(returned)</td><td class="dim">Send stored value</td></tr>
+          <tr><td>storePaymentMethod</td><td class="dim">true</td><td class="dim">n/a</td></tr>
+          <tr><td>channel</td><td class="dim">Web</td><td class="dim">Moto (or omit)</td></tr>
+        </tbody>
+      </table>
+      <div class="callout c-info" style="margin-top:10px"><strong>No bulk endpoint:</strong> Same as Checkout.com — 40K MIT calls require an individual loop scheduler. Build with queue, rate limiting, and dead-letter logic.</div>
+    </section>
+  </div>
+</div>
+
+<!-- ═══ PAYMENT METHODS ═══ -->
+<div id="tab-methods" class="tab-panel wide">
+
+  <section>
+    <div class="section-title" id="tour-section-10">Europe — Priority Methods for Unicity Markets<span class="info-icon">i<span class="info-tooltip"><span class="tip-title">Europe — Priority Methods for Unicity Markets</span>Provider specification: capabilities, integration details, and coverage.<br><span class="tip-source">Source: Provider Research</span></span></span></div>
+    <div class="methods-grid">
+      <div class="method-card" style="border-color:rgba(10,191,83,.3)"><div class="method-region">Poland — KEY DIFFERENTIATOR</div><div class="method-name">BLIK</div><div class="method-desc">Poland's dominant payment method — 75%+ of Polish e-commerce. Mobile-code-based authorization. Adyen supports BLIK natively, including recurring BLIK (mandate-based). This is the critical advantage over Nexi, which requires a separate Netaxept integration for BLIK in Poland.</div><div class="method-badges"><span class="tag ok">PLN</span><span class="tag ok">Native on Adyen</span><span class="tag ok">Recurring support</span><span class="tag risk">Requires Netaxept on Nexi</span></div></div>
+      <div class="method-card"><div class="method-region">Netherlands</div><div class="method-name">iDEAL → SEPA</div><div class="method-desc">iDEAL is a one-time bank redirect. Adyen converts iDEAL to SEPA Direct Debit for recurring — single mandate covers all future charges. Correct approach for NL autoship subscribers.</div><div class="method-badges"><span class="tag hi">EUR</span><span class="tag ok">SEPA mandate flow</span><span class="tag">One-time then recurring</span></div></div>
+      <div class="method-card"><div class="method-region">Europe-wide</div><div class="method-name">SEPA Direct Debit</div><div class="method-desc">Bank-to-bank EUR debit with mandate. Covers all SEPA-zone countries. 3-5 day settlement. Return risk (SEPA returns up to 8 weeks). Suitable for subscriptions where card on file isn't available.</div><div class="method-badges"><span class="tag hi">EUR</span><span class="tag ok">Mandate-based recurring</span><span class="tag warn">3-5d settlement</span></div></div>
+      <div class="method-card"><div class="method-region">Denmark</div><div class="method-name">Dankort</div><div class="method-desc">Denmark's national debit scheme. Required for DKK market coverage. Adyen supports Dankort natively through local acquiring in Denmark. Recurring support available.</div><div class="method-badges"><span class="tag hi">DKK</span><span class="tag ok">Native recurring</span></div></div>
+      <div class="method-card"><div class="method-region">Belgium</div><div class="method-name">Bancontact</div><div class="method-desc">Belgium's dominant domestic scheme. Adyen supports Bancontact one-time and through Bancontact BCMC Mobile for recurring via mandate. Required for BEL market.</div><div class="method-badges"><span class="tag hi">EUR / BEL</span><span class="tag ok">BCMC Mobile recurring</span></div></div>
+      <div class="method-card"><div class="method-region">France</div><div class="method-name">Cartes Bancaires</div><div class="method-desc">France's co-badged Visa/MC scheme. Lower interchange than Visa/MC alone when acquiring locally. Adyen's French local acquiring enables CB pricing on French cards.</div><div class="method-badges"><span class="tag hi">EUR / FR</span><span class="tag ok">Lower IC</span><span class="tag ok">Recurring</span></div></div>
+    </div>
+  </section>
+
+  <section style="margin-top:20px">
+    <div class="section-title" id="tour-section-11">Global + Other Methods<span class="info-icon">i<span class="info-tooltip"><span class="tip-title">Global + Other Methods</span>Provider specification: capabilities, integration details, and coverage.<br><span class="tip-source">Source: Provider Research</span></span></span></div>
+    <table class="dt">
+      <thead><tr><th>Method</th><th>Region</th><th>Type</th><th>Recurring</th><th>Notes</th></tr></thead>
+      <tbody>
+        <tr><td>Visa / Mastercard</td><td>Global</td><td>Card</td><td class="ok">YES</td><td>Primary recurring vehicle globally</td></tr>
+        <tr><td>Amex</td><td>Global</td><td>Card</td><td class="ok">YES</td><td>Confirm on merchant agreement</td></tr>
+        <tr><td>Klarna</td><td>EU / US / AU</td><td>BNPL</td><td class="risk">NO</td><td>One-time / installment — not for autoship</td></tr>
+        <tr><td>PayPal</td><td>Global</td><td>Wallet</td><td class="warn">PARTIAL</td><td>Billing Agreement for recurring; limited markets</td></tr>
+        <tr><td>WeChat Pay</td><td>China / APAC</td><td>Wallet</td><td class="risk">NO</td><td>One-time; relevant for Chinese diaspora markets</td></tr>
+        <tr><td>Alipay</td><td>China / APAC</td><td>Wallet</td><td class="risk">NO</td><td>One-time; same as WeChat</td></tr>
+        <tr><td>BACS Direct Debit</td><td>UK</td><td>Bank debit</td><td class="ok">YES</td><td>UK GBP subscriptions; 3-5d settlement</td></tr>
+      </tbody>
+    </table>
+  </section>
+</div>
+
+<!-- ═══ DIGITAL WALLETS ═══ -->
+<div id="tab-wallets" class="tab-panel wide">
+  <div class="cap-grid three">
+    <div class="cap-card">
+      <div class="cap-header"><div class="cap-icon" style="background:#111">🍎</div><div><div class="cap-title">Apple Pay</div></div></div>
+      <div class="cap-sub">Full support via Adyen Sessions or Advanced flow. Biometric auth satisfies SCA — no 3DS redirect. Adyen handles Apple Pay merchant registration and domain validation automatically when using Drop-in. Network tokens (VTS) held by Adyen — same token portability question applies.</div>
+      <div class="tags"><span class="tag ok">Frictionless SCA</span><span class="tag hi">iOS · Web</span><span class="tag warn">Token portability TBC</span></div>
+    </div>
+    <div class="cap-card">
+      <div class="cap-header"><div class="cap-icon" style="background:rgba(10,191,83,.1)">G</div><div><div class="cap-title">Google Pay</div></div></div>
+      <div class="cap-sub">Full support via Drop-in. MDES network tokens returned. Device authentication satisfies SCA — no 3DS for enrolled GPay cardholders. Works on Android and Chrome desktop. Same token portability concern.</div>
+      <div class="tags"><span class="tag ok">Frictionless SCA</span><span class="tag hi">Android · Web</span><span class="tag">MDES tokens</span></div>
+    </div>
+    <div class="cap-card">
+      <div class="cap-header"><div class="cap-icon" style="background:rgba(96,165,250,.1)">💳</div><div><div class="cap-title">PayPal (Partial Recurring)</div></div></div>
+      <div class="cap-sub">Adyen supports PayPal one-time and Billing Agreement for recurring. Billing Agreement requires shopper consent on first purchase. MIT via Billing Agreement works in US and some EU markets. Verify market availability for Unicity's active PayPal markets.</div>
+      <div class="tags"><span class="tag warn">Billing Agreement</span><span class="tag">US · EU (partial)</span><span class="tag warn">Verify markets</span></div>
+    </div>
+    <div class="cap-card full">
+      <div class="cap-header"><div class="cap-icon" style="background:rgba(10,191,83,.1)">🔒</div><div><div class="cap-title">RevenueProtect — Adyen's Fraud + Tokenization Layer</div></div></div>
+      <div class="cap-sub">Adyen's built-in fraud and revenue protection tool. Handles network tokenization (VTS/MDES), account updater for expired cards, and risk-scoring for 3DS exemption decisions. Relevant for Unicity: VAU/ABU can automatically update expired card tokens in the vault, reducing subscription churn from card expiries without requiring customer re-enrollment.</div>
+      <div class="tags"><span class="tag ok">VAU / ABU auto-update</span><span class="tag ok">Reduces churn</span><span class="tag">VTS + MDES</span><span class="tag warn">Token portability still TBC</span></div>
+    </div>
+  </div>
+</div>
+
+<!-- ═══ ADYEN vs NEXI ═══ -->
+<div id="tab-vs" class="tab-panel wide">
+  <div class="callout c-blue" style="margin-bottom:20px"><strong>Decision context:</strong> Nexi is the Europe-first candidate (local acquirer, EU-focused, Italian market lead). Adyen is the fallback if Nexi's dual-platform problem — Nexi core for IT/DACH, Netaxept for Nordics/Poland — cannot be resolved with a single contract and API. Use this comparison to frame the go/no-go for Nexi negotiation.</div>
+
+  <div class="vs-wrap" style="margin-bottom:24px">
+    <div style="display:grid;grid-template-columns:1fr auto 1fr;">
+      <div class="vs-head" style="color:var(--blue)">Nexi Group</div>
+      <div class="vs-head" style="color:var(--dim)">FACTOR</div>
+      <div class="vs-head" style="color:var(--accent2)">Adyen</div>
+    </div>
+    <div style="display:grid;grid-template-columns:1fr auto 1fr;">
+      <div class="vs-cell winner">Single Nexi entity — but dual APIs (Nexi + Netaxept)</div>
+      <div class="vs-label">Platforms</div>
+      <div class="vs-cell winner">Single platform, single API, 37 countries</div>
+    </div>
+    <div style="display:grid;grid-template-columns:1fr auto 1fr;">
+      <div class="vs-cell loser">Netaxept integration required separately for PL/Nordics</div>
+      <div class="vs-label">Poland / BLIK</div>
+      <div class="vs-cell winner">Native BLIK — no secondary platform needed</div>
+    </div>
+    <div style="display:grid;grid-template-columns:1fr auto 1fr;">
+      <div class="vs-cell winner">Local acquirer Italy, DACH, Nordics — better rates on domestic cards</div>
+      <div class="vs-label">Local Acquiring</div>
+      <div class="vs-cell winner">Local acquiring in 37 countries including same EU markets</div>
+    </div>
+    <div style="display:grid;grid-template-columns:1fr auto 1fr;">
+      <div class="vs-cell loser">Two contracts likely (Nexi + Netaxept). TBC in negotiation.</div>
+      <div class="vs-label">Contract</div>
+      <div class="vs-cell winner">Single commercial agreement</div>
+    </div>
+    <div style="display:grid;grid-template-columns:1fr auto 1fr;">
+      <div class="vs-cell">Potentially lower for EU-domestic cards via local IC</div>
+      <div class="vs-label">Pricing</div>
+      <div class="vs-cell">€0.10 + IC+ — volume discounts at scale</div>
+    </div>
+    <div style="display:grid;grid-template-columns:1fr auto 1fr;">
+      <div class="vs-cell loser">TBC — must negotiate token export SLA</div>
+      <div class="vs-label">Token Portability</div>
+      <div class="vs-cell loser">TBC — same requirement; recurringDetailReference export</div>
+    </div>
+    <div style="display:grid;grid-template-columns:1fr auto 1fr;">
+      <div class="vs-cell">European company — EU regulatory alignment by default</div>
+      <div class="vs-label">Regulatory Fit</div>
+      <div class="vs-cell winner">EU HQ, PSD2-native, SCA tooling built-in</div>
+    </div>
+    <div style="display:grid;grid-template-columns:1fr auto 1fr;">
+      <div class="vs-cell loser">Less mature developer tooling; Netaxept docs older</div>
+      <div class="vs-label">Dev Experience</div>
+      <div class="vs-cell winner">Industry-leading docs, Drop-in, native 3DS handling</div>
+    </div>
+    <div style="display:grid;grid-template-columns:1fr auto 1fr;">
+      <div class="vs-cell loser">Limited outside Europe — MENA/APAC is weak</div>
+      <div class="vs-label">Global Coverage</div>
+      <div class="vs-cell winner">37 countries, strong global fallback</div>
+    </div>
+  </div>
+
+  <div style="display:grid;grid-template-columns:1fr 1fr;gap:20px">
+    <section>
+      <div class="section-title" id="tour-section-12">When to Choose Nexi<span class="info-icon">i<span class="info-tooltip"><span class="tip-title">When to Choose Nexi</span>Provider specification: capabilities, integration details, and coverage.<br><span class="tip-source">Source: Provider Research</span></span></span></div>
+      <div class="cap-card">
+        <div class="cap-sub" style="line-height:1.7">
+          Nexi wins if they deliver: a single API covering both Nexi and Netaxept, one commercial agreement, and contractual token portability. Italian market lead and potentially lower local acquiring rates on EU-domestic cards make them the better Europe specialist. The non-negotiable: "one agreement, one API, one token export SLA."
+        </div>
+        <div class="tags"><span class="tag ok">Single agreement requirement</span><span class="tag ok">Token export SLA required</span></div>
+      </div>
+    </section>
+    <section>
+      <div class="section-title" id="tour-section-13">When to Choose Adyen<span class="info-icon">i<span class="info-tooltip"><span class="tip-title">When to Choose Adyen</span>Provider specification: capabilities, integration details, and coverage.<br><span class="tip-source">Source: Provider Research</span></span></span></div>
+      <div class="cap-card">
+        <div class="cap-sub" style="line-height:1.7">
+          Adyen wins if Nexi cannot resolve the dual-platform problem. Native BLIK, single API, global coverage, and superior dev tooling make it the simpler operational choice — especially if Unicity expands beyond Europe. Accept slightly higher rates in exchange for one integration that covers all 33+ markets.
+        </div>
+        <div class="tags"><span class="tag hi">If Nexi dual-platform fails</span><span class="tag hi">BLIK without Netaxept</span></div>
+      </div>
+    </section>
+  </div>
+</div>
+
+<!-- ═══ OPEN QUESTIONS ═══ -->
+<div id="tab-questions" class="tab-panel wide">
+  <div style="display:grid;grid-template-columns:1fr 1fr;gap:24px;">
+    <section>
+      <div class="section-title" id="tour-section-14">Go / No-Go Conditions<span class="info-icon">i<span class="info-tooltip"><span class="tip-title">Go / No-Go Conditions</span>Criteria that must be met before going live with this processor.<br><span class="tip-source">Source: Internal Assessment</span></span></span></div>
+      <table class="dt">
+        <thead><tr><th>#</th><th>Condition</th><th>Impact</th></tr></thead>
+        <tbody>
+          <tr><td class="dim">1</td><td><strong>Token portability</strong> — can Unicity export recurringDetailReference values to another processor?</td><td class="risk">GO/NO-GO — same disqualifier as every other provider</td></tr>
+          <tr><td class="dim">2</td><td><strong>Volume minimums</strong> — does Adyen require minimum monthly processing volume for Europe?</td><td class="risk">May disqualify if EU markets are still small</td></tr>
+        </tbody>
+      </table>
+    </section>
+    <section>
+      <div class="section-title" id="tour-section-15">Commercial + Technical Questions<span class="info-icon">i<span class="info-tooltip"><span class="tip-title">Commercial + Technical Questions</span>Provider specification: capabilities, integration details, and coverage.<br><span class="tip-source">Source: Provider Research</span></span></span></div>
+      <table class="dt">
+        <thead><tr><th>#</th><th>Question</th><th>Why It Matters</th></tr></thead>
+        <tbody>
+          <tr><td class="dim">3</td><td>All-in rate for EU-domestic card transactions vs. Nexi local acquirer rate?</td><td class="warn">Key pricing comparison — Nexi may win on EU domestic</td></tr>
+          <tr><td class="dim">4</td><td>API rate limits for 40K monthly MIT calls in a single batch window?</td><td>Affects scheduler design and batch window</td></tr>
+          <tr><td class="dim">5</td><td>Single commercial agreement covering all 37 countries?</td><td class="warn">If no, this is the same problem Nexi has</td></tr>
+          <tr><td class="dim">6</td><td>RevenueProtect (VAU/ABU) included in base contract or add-on fee?</td><td>Affects subscription churn modeling</td></tr>
+          <tr><td class="dim">7</td><td>BLIK recurring (mandate-based) — available in Adyen merchant agreement as standard?</td><td>Confirms native BLIK advantage over Nexi</td></tr>
+        </tbody>
+      </table>
+    </section>
+  </div>
+</div>
+
+</div><!-- /tab-content -->
+
+<footer>Unicity International · Payment Operations · Howard Koziara · hkowr.github.io/workflow</footer>
+
+<script>
+function switchTab(id, btn) {
+  document.querySelectorAll('.tab-panel').forEach(p => p.classList.remove('active'));
+  document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+  document.getElementById('tab-' + id).classList.add('active');
+  btn.classList.add('active');
+}
+</script>
+
+<script>if(location.search.includes("clean")){var s=document.querySelector(".site-sidebar");if(s)s.style.display="none";document.body.style.marginLeft="0";document.body.style.paddingTop="0";var b=document.querySelector(".payops-breadcrumb-bar");if(b)b.style.display="none";}</script>
+
+</body>
+</html>
