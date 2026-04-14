@@ -38,6 +38,44 @@ body::after{content:'';position:fixed;top:-200px;left:50%;transform:translateX(-
 .banner.danger strong{color:var(--red)}
 .banner.success strong{color:var(--green)}
 
+/* HERO RATE/VOLUME STRIP */
+.hero-label-banner{font-family:'Space Mono',monospace;font-size:10px;letter-spacing:2px;text-transform:uppercase;color:var(--accent);margin:14px 0 8px;padding:6px 12px;border-left:3px solid var(--accent);background:rgba(0,212,255,0.04);display:inline-block}
+.hero-strip{display:grid;grid-template-columns:repeat(6,1fr);gap:10px;margin-bottom:14px}
+@media(max-width:1200px){.hero-strip{grid-template-columns:repeat(3,1fr)}}
+@media(max-width:700px){.hero-strip{grid-template-columns:repeat(2,1fr)}}
+.hero-card{background:var(--surface);border:1px solid var(--border);border-radius:4px;padding:14px 16px;position:relative;overflow:hidden}
+.hero-card::before{content:'';position:absolute;top:0;left:0;right:0;height:2px}
+.hero-effective::before{background:var(--red)}
+.hero-interchange::before{background:var(--accent)}
+.hero-scheme::before{background:var(--purple)}
+.hero-markup::before{background:var(--yellow)}
+.hero-fx::before{background:var(--orange)}
+.hero-refund::before{background:var(--sky)}
+.hero-volume::before{background:var(--green)}
+.hero-txns::before{background:var(--sky)}
+.hero-ticket::before{background:var(--accent)}
+.hero-fees::before{background:var(--yellow)}
+.hero-fxcost::before{background:var(--orange)}
+.hero-annual::before{background:var(--purple)}
+.hero-label{font-family:'Space Mono',monospace;font-size:8.5px;letter-spacing:1.5px;text-transform:uppercase;color:var(--muted);margin-bottom:8px}
+.hero-value{font-family:'Space Mono',monospace;font-size:22px;font-weight:700;letter-spacing:-0.5px;line-height:1.05}
+.hero-effective .hero-value{color:var(--red)}
+.hero-interchange .hero-value{color:var(--accent)}
+.hero-scheme .hero-value{color:var(--purple)}
+.hero-markup .hero-value{color:var(--yellow)}
+.hero-fx .hero-value{color:var(--orange)}
+.hero-refund .hero-value{color:var(--sky)}
+.hero-volume .hero-value{color:var(--green)}
+.hero-txns .hero-value{color:var(--sky)}
+.hero-ticket .hero-value{color:var(--accent)}
+.hero-fees .hero-value{color:var(--yellow)}
+.hero-fxcost .hero-value{color:var(--orange)}
+.hero-annual .hero-value{color:var(--purple)}
+.hero-sub{font-size:10px;color:var(--muted);margin-top:5px;font-family:'Space Mono',monospace;line-height:1.35}
+
+/* NOTES SECTION (banners moved to bottom) */
+.notes-section{margin-top:32px;padding-top:24px;border-top:1px solid var(--border)}
+
 .kpi-strip{display:grid;grid-template-columns:repeat(6,1fr);gap:12px;margin-bottom:28px}
 @media(max-width:1100px){.kpi-strip{grid-template-columns:repeat(3,1fr)}}
 @media(max-width:600px){.kpi-strip{grid-template-columns:repeat(2,1fr)}}
@@ -121,6 +159,24 @@ tr.refund-month td:first-child::after{content:' \\21BA';color:var(--orange);font
 .rate-buildup-header h2::before{content:'';display:inline-block;width:8px;height:8px;background:var(--accent);border-radius:50%;margin-right:10px;vertical-align:middle}
 .rate-buildup-header p{font-size:12px;color:var(--muted);max-width:880px;line-height:1.6}
 
+/* RATE DECOMPOSITION SECTION */
+.decomposition-section{margin-top:32px;padding-top:24px;border-top:1px solid var(--border)}
+.decomp-grid{display:grid;grid-template-columns:1.6fr 1fr;gap:16px;margin-bottom:18px}
+@media(max-width:1000px){.decomp-grid{grid-template-columns:1fr}}
+.decomp-right{display:flex;flex-direction:column;gap:12px}
+.decomp-card{background:var(--surface);border:1px solid var(--border);border-radius:4px;padding:18px 22px;position:relative;overflow:hidden}
+.decomp-card::before{content:'';position:absolute;top:0;left:0;right:0;height:3px}
+.decomp-fx::before{background:var(--accent)}
+.decomp-baseline::before{background:var(--green)}
+.decomp-total::before{background:var(--purple)}
+.decomp-label{font-family:'Space Mono',monospace;font-size:9px;letter-spacing:1.5px;text-transform:uppercase;color:var(--muted);margin-bottom:8px}
+.decomp-value{font-family:'Space Mono',monospace;font-size:24px;font-weight:700;color:var(--text);letter-spacing:-0.5px;line-height:1.1}
+.decomp-fx .decomp-value{color:var(--accent)}
+.decomp-baseline .decomp-value{color:var(--green)}
+.decomp-total .decomp-value{color:var(--purple)}
+.decomp-sub{font-size:11px;color:var(--muted);margin-top:4px;font-family:'Space Mono',monospace}
+.decomp-note{font-size:10px;color:var(--dim);margin-top:8px;line-height:1.5;font-family:'Space Mono',monospace}
+
 /* OBSERVATIONS SECTION */
 .observations-section{margin-top:32px;padding-top:24px;border-top:1px solid var(--border)}
 .obs-card{background:var(--surface);border:1px solid var(--border);border-radius:4px;padding:16px 20px;margin-bottom:12px;border-left-width:4px}
@@ -194,7 +250,42 @@ tr.refund-month td:first-child::after{content:' \\21BA';color:var(--orange);font
   .cardmix-bar{border-color:#cbd5e1 !important}
   .note{color:#666 !important}
 
-  /* KPI strip */
+  /* Hero strips */
+  .hero-label-banner{color:#0070C0 !important;background:#EAF4FB !important;border-left:3px solid #0070C0 !important;font-size:9px;margin:10px 0 6px}
+  .hero-strip{grid-template-columns:repeat(6,1fr) !important;gap:6px;margin-bottom:8px;page-break-inside:avoid}
+  .hero-card{background:#ffffff !important;border:1px solid #cbd5e1 !important;padding:8px 10px}
+  .hero-effective::before{background:#C40000 !important}
+  .hero-interchange::before{background:#0070C0 !important}
+  .hero-scheme::before{background:#6F42C1 !important}
+  .hero-markup::before{background:#B07000 !important}
+  .hero-fx::before{background:#C45000 !important}
+  .hero-refund::before{background:#0080C0 !important}
+  .hero-volume::before{background:#2E7D32 !important}
+  .hero-txns::before{background:#0080C0 !important}
+  .hero-ticket::before{background:#0070C0 !important}
+  .hero-fees::before{background:#B07000 !important}
+  .hero-fxcost::before{background:#C45000 !important}
+  .hero-annual::before{background:#6F42C1 !important}
+  .hero-label{color:#666 !important;font-size:7px;margin-bottom:4px}
+  .hero-value{font-size:14px !important}
+  .hero-effective .hero-value{color:#C40000 !important}
+  .hero-interchange .hero-value{color:#0070C0 !important}
+  .hero-scheme .hero-value{color:#6F42C1 !important}
+  .hero-markup .hero-value{color:#B07000 !important}
+  .hero-fx .hero-value{color:#C45000 !important}
+  .hero-refund .hero-value{color:#0080C0 !important}
+  .hero-volume .hero-value{color:#2E7D32 !important}
+  .hero-txns .hero-value{color:#0080C0 !important}
+  .hero-ticket .hero-value{color:#0070C0 !important}
+  .hero-fees .hero-value{color:#B07000 !important}
+  .hero-fxcost .hero-value{color:#C45000 !important}
+  .hero-annual .hero-value{color:#6F42C1 !important}
+  .hero-sub{color:#666 !important;font-size:7px}
+
+  /* Notes section (moved to bottom) */
+  .notes-section{border-top-color:#1A1F36 !important;page-break-before:always}
+
+  /* KPI strip (legacy - hidden anyway but keep the rule) */
   .kpi-strip{grid-template-columns:repeat(6,1fr) !important;gap:8px;page-break-inside:avoid}
   .kpi-card{background:#ffffff !important;border:1px solid #cbd5e1 !important;padding:10px 12px}
   .kpi-label{color:#666 !important;font-size:8px}
@@ -233,6 +324,18 @@ tr.refund-month td:first-child::after{content:' \\21BA';color:var(--orange);font
   .rate-buildup-header h2{color:#1A1F36 !important;font-size:18px}
   .rate-buildup-header h2::before{background:#0070C0 !important}
   .rate-buildup-header p{color:#666 !important;font-size:10px}
+
+  /* Decomposition */
+  .decomposition-section{border-top-color:#1A1F36 !important;page-break-before:always}
+  .decomp-grid{display:grid;grid-template-columns:1.6fr 1fr !important;gap:12px;page-break-inside:avoid}
+  .decomp-card{background:#ffffff !important;border:1px solid #cbd5e1 !important;padding:12px 14px}
+  .decomp-label{color:#666 !important;font-size:8px}
+  .decomp-value{color:#1A1F36 !important;font-size:18px}
+  .decomp-fx .decomp-value{color:#0070C0 !important}
+  .decomp-baseline .decomp-value{color:#2E7D32 !important}
+  .decomp-total .decomp-value{color:#6F42C1 !important}
+  .decomp-sub{color:#666 !important;font-size:9px}
+  .decomp-note{color:#666 !important;font-size:8px}
 
   /* Observations */
   .observations-section{border-top-color:#1A1F36 !important;page-break-before:always}
@@ -290,18 +393,91 @@ tr.refund-month td:first-child::after{content:' \\21BA';color:var(--orange);font
     </div>
   </div>
 
-  <div class="banners" id="banners"></div>
+  <!-- ============================================================ -->
+  <!-- HERO STRIP ROW 1 - The Rates                                  -->
+  <!-- ============================================================ -->
+  <div class="hero-label-banner">Rates - What You're Paying</div>
+  <div class="hero-strip">
+    <div class="hero-card hero-effective">
+      <div class="hero-label">Full Effective Rate</div>
+      <div class="hero-value" id="heroEffRate"></div>
+      <div class="hero-sub" id="heroEffRateSub"></div>
+    </div>
+    <div class="hero-card hero-interchange">
+      <div class="hero-label">Interchange Rate</div>
+      <div class="hero-value" id="heroIcRate"></div>
+      <div class="hero-sub" id="heroIcRateSub"></div>
+    </div>
+    <div class="hero-card hero-scheme">
+      <div class="hero-label">Scheme / Network Rate</div>
+      <div class="hero-value" id="heroSchemeRate"></div>
+      <div class="hero-sub" id="heroSchemeRateSub"></div>
+    </div>
+    <div class="hero-card hero-markup">
+      <div class="hero-label">Acquirer Markup (Nexi)</div>
+      <div class="hero-value" id="heroMarkup"></div>
+      <div class="hero-sub" id="heroMarkupSub"></div>
+    </div>
+    <div class="hero-card hero-fx">
+      <div class="hero-label">Cross-Border / FX Rate</div>
+      <div class="hero-value" id="heroFxRate"></div>
+      <div class="hero-sub" id="heroFxRateSub"></div>
+    </div>
+    <div class="hero-card hero-refund">
+      <div class="hero-label">Refund Rate</div>
+      <div class="hero-value" id="heroRefundRate"></div>
+      <div class="hero-sub" id="heroRefundRateSub"></div>
+    </div>
+  </div>
+
+  <!-- ============================================================ -->
+  <!-- HERO STRIP ROW 2 - Volume and Money                           -->
+  <!-- ============================================================ -->
+  <div class="hero-label-banner">Volume &amp; Money - What's Flowing</div>
+  <div class="hero-strip">
+    <div class="hero-card hero-volume">
+      <div class="hero-label">Total Volume (Period)</div>
+      <div class="hero-value" id="heroVolume"></div>
+      <div class="hero-sub" id="heroVolumeSub"></div>
+    </div>
+    <div class="hero-card hero-txns">
+      <div class="hero-label">Transactions</div>
+      <div class="hero-value" id="heroTxns"></div>
+      <div class="hero-sub" id="heroTxnsSub"></div>
+    </div>
+    <div class="hero-card hero-ticket">
+      <div class="hero-label">Average Ticket</div>
+      <div class="hero-value" id="heroTicket"></div>
+      <div class="hero-sub" id="heroTicketSub"></div>
+    </div>
+    <div class="hero-card hero-fees">
+      <div class="hero-label">Total Fees (Period)</div>
+      <div class="hero-value" id="heroFees"></div>
+      <div class="hero-sub" id="heroFeesSub"></div>
+    </div>
+    <div class="hero-card hero-fxcost">
+      <div class="hero-label">FX Cost (Period)</div>
+      <div class="hero-value" id="heroFxCost"></div>
+      <div class="hero-sub" id="heroFxCostSub"></div>
+    </div>
+    <div class="hero-card hero-annual">
+      <div class="hero-label">Annualized Run Rate</div>
+      <div class="hero-value" id="heroAnnual"></div>
+      <div class="hero-sub" id="heroAnnualSub"></div>
+    </div>
+  </div>
 
   <!-- MERCHANT ACQUIRER SETUP -->
   <div class="setup-grid" id="setupGrid"></div>
 
-  <div class="kpi-strip">
-    <div class="kpi-card accent"><div class="kpi-label">Total Volume</div><div class="kpi-value accent" id="kpi-volume"></div><div class="kpi-sub" id="kpi-volume-sub"></div></div>
-    <div class="kpi-card blue"><div class="kpi-label">Transactions</div><div class="kpi-value blue" id="kpi-txns"></div><div class="kpi-sub" id="kpi-txns-sub"></div></div>
-    <div class="kpi-card warn"><div class="kpi-label">Total Fees</div><div class="kpi-value warn" id="kpi-fees"></div><div class="kpi-sub" id="kpi-fees-sub"></div></div>
-    <div class="kpi-card danger"><div class="kpi-label">Effective Rate</div><div class="kpi-value danger" id="kpi-rate"></div><div class="kpi-sub" id="kpi-rate-sub"></div></div>
-    <div class="kpi-card green"><div class="kpi-label">Net Settled</div><div class="kpi-value green" id="kpi-settled"></div><div class="kpi-sub" id="kpi-settled-sub"></div></div>
-    <div class="kpi-card purple"><div class="kpi-label">Refunds</div><div class="kpi-value purple" id="kpi-refunds"></div><div class="kpi-sub" id="kpi-refunds-sub"></div></div>
+  <!-- old kpi-strip removed; hero strip above now covers these metrics -->
+  <div style="display:none">
+    <span id="kpi-volume"></span><span id="kpi-volume-sub"></span>
+    <span id="kpi-txns"></span><span id="kpi-txns-sub"></span>
+    <span id="kpi-fees"></span><span id="kpi-fees-sub"></span>
+    <span id="kpi-rate"></span><span id="kpi-rate-sub"></span>
+    <span id="kpi-settled"></span><span id="kpi-settled-sub"></span>
+    <span id="kpi-refunds"></span><span id="kpi-refunds-sub"></span>
   </div>
 
   <div class="charts-row">
@@ -448,6 +624,159 @@ tr.refund-month td:first-child::after{content:' \\21BA';color:var(--orange);font
   </div>
 
   <!-- ============================================================ -->
+  <!-- EFFECTIVE RATE DECOMPOSITION - "Where the 2.54% actually goes" -->
+  <!-- ============================================================ -->
+  <div class="decomposition-section">
+    <div class="rate-buildup-header">
+      <h2>Where The Full Effective Rate Actually Goes</h2>
+      <p>Every component of the all-in cost, decomposed into two buckets: cross-border / FX-driven cost (the portion of the rate that exists because the cardholders are foreign) and the domestic baseline (the portion that would apply to a 100% Italian / EEA consumer card mix). The purpose of this view is to show what share of the merchant's total fee burden is actually inherent to acquiring, versus what share is a function of the customer base.</p>
+    </div>
+
+    <div class="decomp-grid">
+      <div class="decomp-left">
+        <div class="chart-card" style="padding:20px">
+          <div class="chart-title">Share of total effective rate</div>
+          <div class="chart-sub" id="decompChartSub"></div>
+          <div class="chart-wrap tall" style="height:320px"><canvas id="chartDecomp"></canvas></div>
+        </div>
+      </div>
+      <div class="decomp-right">
+        <div class="decomp-card decomp-fx">
+          <div class="decomp-label">Cross-border / FX-driven</div>
+          <div class="decomp-value" id="decompFxBps"></div>
+          <div class="decomp-sub" id="decompFxShare"></div>
+          <div class="decomp-note">Cost that exists because the cardholders are foreign. Would follow the merchant to any acquirer on earth.</div>
+        </div>
+        <div class="decomp-card decomp-baseline">
+          <div class="decomp-label">Domestic baseline</div>
+          <div class="decomp-value" id="decompBaselineBps"></div>
+          <div class="decomp-sub" id="decompBaselineShare"></div>
+          <div class="decomp-note">What the rate would be on a 100% Italian / EEA consumer card mix.</div>
+        </div>
+        <div class="decomp-card decomp-total">
+          <div class="decomp-label">Full effective rate</div>
+          <div class="decomp-value" id="decompTotalBps"></div>
+          <div class="decomp-sub">total observed</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="table-section">
+      <div class="table-header">
+        <h3>Full Component Breakdown</h3>
+        <span style="font-family:'Space Mono',monospace;font-size:9px;color:var(--dim)">EVERY BPS OF THE 254 BPS EFFECTIVE RATE</span>
+      </div>
+      <div class="tbl-wrap">
+        <table>
+          <thead>
+            <tr>
+              <th style="text-align:left">Component</th>
+              <th>Bucket</th>
+              <th>bps</th>
+              <th>% of volume</th>
+              <th>% of effective rate</th>
+              <th>What This Is</th>
+            </tr>
+          </thead>
+          <tbody id="decompTableBody"></tbody>
+        </table>
+      </div>
+    </div>
+
+    <div class="banner info" style="margin-top:14px">
+      <span class="banner-icon">i</span>
+      <div id="decompSummary"></div>
+    </div>
+  </div>
+
+  <!-- ============================================================ -->
+  <!-- PER-TRANSACTION FX COST                                       -->
+  <!-- ============================================================ -->
+  <div class="cross-border-section">
+    <div class="rate-buildup-header">
+      <h2>Per-Transaction FX Cost</h2>
+      <p>The cross-border / FX-driven portion of every sale, expressed both as a flat percentage of ticket and as absolute euros per transaction. The percentage is constant across all sales (it's a rate). Absolute EUR per transaction varies only because ticket sizes vary - and on this account ticket sizes swing from EUR 2,000 to EUR 122,000.</p>
+    </div>
+
+    <div class="cb-grid">
+      <div class="cb-card cb-headline">
+        <div class="cb-label">Cross-border / FX cost per ticket</div>
+        <div class="cb-value" id="fxPctVal"></div>
+        <div class="cb-sub" id="fxPctSub"></div>
+      </div>
+      <div class="cb-card cb-loading">
+        <div class="cb-label">Average per-transaction FX cost</div>
+        <div class="cb-value" id="fxPerTxnVal"></div>
+        <div class="cb-sub" id="fxPerTxnSub"></div>
+      </div>
+      <div class="cb-card cb-share">
+        <div class="cb-label">FX total over period</div>
+        <div class="cb-value" id="fxTotalVal"></div>
+        <div class="cb-sub" id="fxTotalSub"></div>
+      </div>
+    </div>
+
+    <div class="charts-row full">
+      <div class="chart-card">
+        <div class="chart-title">Per-transaction FX cost by month</div>
+        <div class="chart-sub">Same FX rate applied to each month's average ticket. Absolute EUR varies because ticket sizes vary.</div>
+        <div class="chart-wrap tall" style="height:240px"><canvas id="chartFXPerTxn"></canvas></div>
+      </div>
+    </div>
+
+    <div class="table-section">
+      <div class="table-header">
+        <h3>Per-Month Per-Transaction FX Cost</h3>
+        <span style="font-family:'Space Mono',monospace;font-size:9px;color:var(--dim)">CONSTANT RATE, VARIABLE ABSOLUTE EUR</span>
+      </div>
+      <div class="tbl-wrap">
+        <table>
+          <thead>
+            <tr>
+              <th style="text-align:left">Period</th>
+              <th>Txns</th>
+              <th>Avg Ticket</th>
+              <th>Layer 1 / txn (Scheme XB)</th>
+              <th>Layer 2 / txn (IC tier uplift)</th>
+              <th>Total FX / txn</th>
+              <th>Month FX Total</th>
+            </tr>
+          </thead>
+          <tbody id="fxMonthlyBody"></tbody>
+        </table>
+      </div>
+    </div>
+
+    <div class="table-section">
+      <div class="table-header">
+        <h3>Top 10 Largest Single Transactions - FX Cost on Each</h3>
+        <span style="font-family:'Space Mono',monospace;font-size:9px;color:var(--dim)">FX EUR ON ACTUAL DAILY DETAIL LINES</span>
+      </div>
+      <div class="tbl-wrap">
+        <table>
+          <thead>
+            <tr>
+              <th style="text-align:left">Date</th>
+              <th>Month</th>
+              <th>Txn Count</th>
+              <th>Gross</th>
+              <th>Total Fees Billed</th>
+              <th>FX Portion (est.)</th>
+              <th>FX %</th>
+            </tr>
+          </thead>
+          <tbody id="fxLargestBody"></tbody>
+        </table>
+      </div>
+    </div>
+
+    <div class="banner info" style="margin-top:14px">
+      <span class="banner-icon">i</span>
+      <div id="fxNote"></div>
+    </div>
+  </div>
+
+  <!-- ============================================================ -->
   <!-- NOTABLE OBSERVATIONS                                          -->
   <!-- ============================================================ -->
   <div class="observations-section">
@@ -456,6 +785,17 @@ tr.refund-month td:first-child::after{content:' \\21BA';color:var(--orange);font
       <p>Things that stand out in the data - missing fields, reporting opacity, anomalies, and unusual patterns. Each entry is a factual observation from the statements, not a recommendation. Severity is assigned based on impact on the merchant's ability to understand or audit their own acquiring costs.</p>
     </div>
     <div id="observationsList"></div>
+  </div>
+
+  <!-- ============================================================ -->
+  <!-- KEY NOTES (moved from top to bottom)                          -->
+  <!-- ============================================================ -->
+  <div class="notes-section">
+    <div class="rate-buildup-header">
+      <h2>Key Notes</h2>
+      <p>Period-level facts that frame the rest of the analysis.</p>
+    </div>
+    <div class="banners" id="banners"></div>
   </div>
 
   <div class="table-section">
@@ -517,7 +857,7 @@ tr.refund-month td:first-child::after{content:' \\21BA';color:var(--orange);font
 // ============================================================
 // EMBEDDED DATA
 // ============================================================
-const NEXI_DATA = {"nexi_eur": {"meta": {"processor": "Nexi", "merchant": "OVER THE LUX S.R.L.", "merchant_pi": "06979100960", "country": "Italy", "city": "Milan", "currency": "EUR", "period_start": "2025-09", "period_end": "2026-01", "month_count": 5, "source_files": ["Estratto conto Settembre 2025.pdf", "Estratto conto Ottobre 2025.pdf", "Estratto_conto_2025-11-30.pdf", "Estratto_conto_2025-12-31.pdf", "Estratto conto Gennaio 2026.pdf"], "generated": "2026-04-14", "total_volume": 839433.04, "total_fees": 21329.9, "total_transactions": 106, "blended_effective_rate_pct": 2.538, "card_mix": {"intl_card_volume": 839433.04, "bancomat_volume": 0.0, "intl_pct": 100.0, "bancomat_pct": 0.0}, "rate_buildup": {"interchange_rate_pct": 1.6514, "scheme_rate_pct": 0.8068, "markup_rate_pct": 0.08, "bundled_processing_rate_pct": 2.5383, "fixed_acquirer_rate_pct": 0.0015, "stamp_tax_rate_pct": 0.0012, "full_effective_rate_pct": 2.541, "uplift_over_bundled_bps": 0.27}, "cross_border_indicator": {"actual_combined_ic_scheme_bps": 245.8, "actual_full_effective_bps": 254.1, "reference_rates_bps": {"eea_consumer_debit": 30.0, "eea_consumer_credit": 45.0, "eea_premium_credit": 90.0, "intra_eea_cross_border": 100.0, "commercial_corporate": 220.0, "inter_regional_credit_cnp": 250.0, "amex_typical": 260.0}, "bancomat_baseline_bps": 26.0, "loading_over_eea_debit_bps": 215.8, "loading_over_eea_credit_bps": 200.8, "estimated_inter_regional_share_vs_debit": 98.1, "estimated_inter_regional_share_vs_credit": 98.0, "annualized_volume_eur": 2014639.3, "nexi_markup_bps": 8.0, "nexi_markup_annual_eur": 1612.39, "factual_summary": "Combined interchange + scheme rate of 245.8 bps is 8.2x the IFR-capped EEA consumer debit baseline (30 bps) and 5.5x the EEA consumer credit baseline (45 bps). Nexi acquirer markup component: 8.0 bps (~€1,612 annualized). All transactions in the daily detail are bucketed as international card networks; no per-brand, per-BIN, or per-issuer detail is available from the monthly PDF."}, "observations": [{"category": "Reporting transparency", "severity": "high", "title": "No interchange tier breakdown", "detail": "The monthly PDF reports total interchange as a single number per contract. It does NOT disclose which interchange tiers were hit (e.g. consumer debit, consumer credit, premium credit, commercial, inter-regional). Visa and Mastercard publish dozens of tier categories with materially different rates - the merchant has zero visibility into which ones drove the bill."}, {"category": "Reporting transparency", "severity": "high", "title": "No card brand split (Visa / Mastercard / AMEX / etc.)", "detail": "All transactions are bucketed under the single label 'CIRCUITI INTERNAZIONALI' (international card networks). The PDF gives no Visa-vs-Mastercard-vs-AMEX share, no per-brand volume, and no per-brand fee allocation. Per the footer of every page, this detail is only available in the Nexi Business portal at business.nexi.it."}, {"category": "Reporting transparency", "severity": "high", "title": "No issuer country / cardholder geography", "detail": "There is no breakdown of which countries the cardholders' issuing banks are in. For a merchant whose blended IC + scheme is 245.8 bps (5x the EEA credit baseline), this is the single most important missing piece of information for understanding where the cost is coming from."}, {"category": "Reporting transparency", "severity": "medium", "title": "No card type split (debit vs credit vs prepaid vs commercial)", "detail": "The PDF distinguishes only Bancomat vs International Cards. Within International Cards there is no separation between consumer debit, consumer credit, prepaid, or commercial / corporate cards - even though IFR caps these very differently."}, {"category": "Reporting transparency", "severity": "medium", "title": "No BIN-level detail", "detail": "Individual transactions are listed only by date and reference ID. There is no card BIN range, masked PAN, or any issuer identifier in the daily detail."}, {"category": "Pricing model", "severity": "medium", "title": "Bundled (not interchange-plus) pricing", "detail": "The 'Commissioni Acquiring %' equals 'Totale Commissioni' - meaning the merchant is on a bundled rate (one combined rate that hides interchange, scheme, and acquirer markup as a single line). The per-offering breakdown does show interchange and scheme as informational pass-through, but the merchant's CONTRACTED rate appears to be a single bundled number. This is standard for Italian SMB acquiring but obscures the acquirer markup component from the merchant's normal view."}, {"category": "Data anomaly", "severity": "high", "title": "Negative implied acquirer markup in 1 month(s)", "detail": "Month(s) showing negative markup: September 2025. In normal months the formula 'Total Commissioni minus Interchange minus Scheme' yields a positive acquirer markup. When a month has substantial refund processing, Nexi credits the gross fees back, which reduces 'Total Commissioni' below the GROSS interchange and scheme totals shown in the per-offering breakdown. The negative number is therefore an artifact of how Nexi nets refund fee credits in the totals - it does NOT mean Nexi paid the merchant. The most extreme case here is September 2025 (-532.63 EUR)."}, {"category": "Refund activity", "severity": "high", "title": "Refunds exceeded 5% of volume in 2 month(s)", "detail": "2 month(s) had merchant-initiated refunds greater than 5% of gross volume. Highest: September 2025 with EUR 89,845.50 of refunds against EUR 253,379.50 of volume (35.5%). The Nexi PDF does not differentiate between voluntary refunds, partial reversals, and processor-initiated reversals - all show as negative entries in the daily detail."}, {"category": "Card mix", "severity": "medium", "title": "Zero Bancomat (Italian domestic debit) volume", "detail": "Across 5 month(s) and EUR 839,433.04 of total volume, the merchant processed zero Bancomat transactions. Either Bancomat acceptance is not enabled on the terminal, the customer base does not present Bancomat cards, or both. For a merchant in Italy this is unusual - the Bancomat network has near-universal Italian debit-card coverage."}, {"category": "Rate variance", "severity": "medium", "title": "Effective rate varies by 16 bps month-to-month", "detail": "Lowest month: January 2026 at 2.417% (241.7 bps). Highest month: November 2025 at 2.579% (257.9 bps). A spread of 16 bps month-to-month is consistent with cardholder mix shift (different mix of issuer countries, brand mix, debit/credit/commercial mix). It is NOT consistent with a single-tier flat rate."}, {"category": "Fixed fee disproportion", "severity": "low", "title": "Fixed monthly fees added more than 0.5 bps in 1 month(s)", "detail": "Nexi charges a flat EUR 2.50 'Commissione di Acquiring in Euro' + EUR 2.00 'Imposta di Bollo' (Italian stamp tax) per contract per month, regardless of volume. On low-volume months these flat fees become a larger share of the basis-point cost. Worst month: October 2025 with 1.0 bps of uplift on EUR 45,580.04 of volume."}, {"category": "Cost anomaly", "severity": "high", "title": "Combined IC + scheme rate is 8.2x the IFR-capped EEA debit baseline", "detail": "The EU Interchange Fee Regulation caps domestic and intra-EEA consumer card interchange at 0.20% (debit) and 0.30% (credit). Combined with typical scheme fees this puts the cheapest-possible blended pass-through cost at roughly 30-45 bps. This merchant is paying 245.8 bps - 216 bps above the EEA debit baseline. The gap can only come from non-EEA-issued cards, premium consumer card tiers within IFR limits, commercial / corporate cards (uncapped under IFR), or AMEX volume bundled in. The PDF does not let us identify which of these is driving the cost."}, {"category": "Account structure", "severity": "low", "title": "Payment Contract PC0000280938 appears in only 1 month with 1 transaction(s)", "detail": "Contract PC0000280938 is active only in 2025-09 with 1 transaction(s) totaling EUR 198.00. This is unusual - either a test transaction, a legacy terminal that fired once, a separate channel (e-commerce vs in-store) that the merchant did not realize was active, or a one-off booking. Worth confirming with the merchant."}], "merchant_setup": {"settlement_banks": ["MONTE DEI PASCHI DI SIENA"], "abi": ["01030"], "cab": ["01661"], "iban": ["IT80L0103001661000001388752"], "pos_codes": ["LN0003602146"], "payment_contracts": [{"contract_id": "PC0000280938", "pos_code": "LN0003602146", "bank": "MONTE DEI PASCHI DI SIENA", "abi": "01030", "cab": "01661", "iban": "IT80L0103001661000001388752", "first_seen": "2025-09", "last_seen": "2025-09", "months_active": 1, "total_volume": 198.0, "total_txns": 1, "total_fees": 5.25}, {"contract_id": "PC0001263218", "pos_code": "LN0003602146", "bank": "MONTE DEI PASCHI DI SIENA", "abi": "01030", "cab": "01661", "iban": "IT80L0103001661000001388752", "first_seen": "2025-09", "last_seen": "2026-01", "months_active": 5, "total_volume": 839235.04, "total_txns": 105, "total_fees": 21324.65}]}, "data_limitations": ["Nexi monthly Estratto Conto PDFs do NOT break down volume by card brand (Visa, Mastercard, AMEX, etc.).", "Per-brand, per-BIN, and per-issuer detail is only available in the Nexi Business portal at business.nexi.it under the 'Transazioni' section.", "All transactions in the daily detail are bucketed as 'CIRCUITI INTERNAZIONALI' (international card networks).", "Bancomat (Italian domestic debit) is reported separately - this merchant has 0 EUR Bancomat activity in the captured period.", "To enable per-brand analysis, export the Transazioni CSV from Nexi Business and re-run with the --transactions-csv flag (parser will be extended in a follow-up)."]}, "months": [{"period": "2025-09", "month_label": "September 2025", "currency": "EUR", "source_file": "Estratto conto Settembre 2025.pdf", "contract_count": 2, "intl_card_volume": 253379.5, "bancomat_volume": 0.0, "intl_pct_of_volume": 100.0, "rate_buildup": {"interchange_rate_pct": 1.9732, "scheme_rate_pct": 0.8119, "markup_rate_pct": -0.2102, "bundled_processing_rate_pct": 2.575, "fixed_acquirer_rate_pct": 0.001, "stamp_tax_rate_pct": 0.0008, "full_effective_rate_pct": 2.5767, "uplift_over_bundled_bps": 0.18}, "contracts": ["PC0000280938", "PC0001263218"], "volume": 253379.5, "transaction_count": 32, "net_sales": 163534.0, "refund_amount": 89845.5, "refund_count": 4, "refund_rate_pct": 35.459, "other_movements": 0.0, "total_cost": 6528.91, "commissions": 6524.41, "interchange": 4999.78, "scheme_fees": 2057.26, "acquirer_markup": -532.63, "acquiring_fee_eur": 2.5, "stamp_tax": 2.0, "total_debited": 6528.91, "net_settled": 253379.5, "effective_rate_pct": 2.575, "interchange_pct_of_volume": 1.973, "scheme_pct_of_volume": 0.812, "markup_pct_of_volume": -0.21, "avg_ticket": 7918.11, "chargebacks_count": 0, "chargebacks_amount": 0.0, "chargeback_rate_pct": 0.0, "fees_detail": {"interchange_fees": 4999.78, "scheme_fees": 2057.26, "acquirer_markup": -532.63, "acquiring_eur_fixed": 2.5, "stamp_tax": 2.0, "total_fees_and_taxes": 6528.91}, "daily": [{"disp_date": "05/09/25", "op_date": "04/09/25", "op_type": "Intl Card Networks", "gross": 198.0, "fees": 5.25, "net": 192.75, "count": 1, "contract": "PC0000280938", "ref_id": "889882977599"}, {"disp_date": "02/09/25", "op_date": "01/09/25", "op_type": "Intl Card Networks", "gross": 1648.0, "fees": 42.85, "net": 1605.15, "count": 1, "contract": "PC0001263218", "ref_id": "885227324699"}, {"disp_date": "06/09/25", "op_date": "05/09/25", "op_type": "Intl Card Networks", "gross": 33865.0, "fees": 910.97, "net": 32954.03, "count": 3, "contract": "PC0001263218", "ref_id": "891587032899"}, {"disp_date": "07/09/25", "op_date": "06/09/25", "op_type": "Intl Card Networks", "gross": 121825.0, "fees": 3211.39, "net": 118613.61, "count": 6, "contract": "PC0001263218", "ref_id": "893303840399"}, {"disp_date": "10/09/25", "op_date": "09/09/25", "op_type": "Intl Card Networks", "gross": -73000.0, "fees": -1929.5, "net": -71070.5, "count": 2, "contract": "PC0001263218", "ref_id": "897412605399"}, {"disp_date": "11/09/25", "op_date": "10/09/25", "op_type": "Intl Card Networks", "gross": -16845.5, "fees": -437.28, "net": -16408.22, "count": 2, "contract": "PC0001263218", "ref_id": "898975570199"}, {"disp_date": "16/09/25", "op_date": "15/09/25", "op_type": "Intl Card Networks", "gross": 190.0, "fees": 4.94, "net": 185.06, "count": 1, "contract": "PC0001263218", "ref_id": "906657658299"}, {"disp_date": "19/09/25", "op_date": "18/09/25", "op_type": "Intl Card Networks", "gross": 122202.0, "fees": 3177.25, "net": 119024.75, "count": 4, "contract": "PC0001263218", "ref_id": "911375996299"}, {"disp_date": "20/09/25", "op_date": "19/09/25", "op_type": "Intl Card Networks", "gross": 24520.0, "fees": 659.12, "net": 23860.88, "count": 3, "contract": "PC0001263218", "ref_id": "913057800199"}, {"disp_date": "23/09/25", "op_date": "22/09/25", "op_type": "Intl Card Networks", "gross": 6160.0, "fees": 160.16, "net": 5999.84, "count": 1, "contract": "PC0001263218", "ref_id": "917322381999"}, {"disp_date": "25/09/25", "op_date": "24/09/25", "op_type": "Intl Card Networks", "gross": 560.0, "fees": 14.56, "net": 545.44, "count": 1, "contract": "PC0001263218", "ref_id": "920336751899"}, {"disp_date": "26/09/25", "op_date": "25/09/25", "op_type": "Intl Card Networks", "gross": 8679.0, "fees": 233.33, "net": 8445.67, "count": 2, "contract": "PC0001263218", "ref_id": "921885878699"}, {"disp_date": "27/09/25", "op_date": "26/09/25", "op_type": "Intl Card Networks", "gross": 7230.0, "fees": 64.35, "net": 7165.65, "count": 2, "contract": "PC0001263218", "ref_id": "923524481399"}, {"disp_date": "29/09/25", "op_date": "28/09/25", "op_type": "Intl Card Networks", "gross": 750.0, "fees": 6.68, "net": 743.33, "count": 1, "contract": "PC0001263218", "ref_id": "926370831399"}, {"disp_date": "30/09/25", "op_date": "29/09/25", "op_type": "Intl Card Networks", "gross": 15398.0, "fees": 400.35, "net": 14997.65, "count": 2, "contract": "PC0001263218", "ref_id": "927772206599"}]}, {"period": "2025-10", "month_label": "October 2025", "currency": "EUR", "source_file": "Estratto conto Ottobre 2025.pdf", "contract_count": 1, "intl_card_volume": 45580.04, "bancomat_volume": 0.0, "intl_pct_of_volume": 100.0, "rate_buildup": {"interchange_rate_pct": 1.4604, "scheme_rate_pct": 0.6484, "markup_rate_pct": 0.431, "bundled_processing_rate_pct": 2.5397, "fixed_acquirer_rate_pct": 0.0055, "stamp_tax_rate_pct": 0.0044, "full_effective_rate_pct": 2.5496, "uplift_over_bundled_bps": 0.99}, "contracts": ["PC0001263218"], "volume": 45580.04, "transaction_count": 22, "net_sales": 36955.04, "refund_amount": 8625.0, "refund_count": 1, "refund_rate_pct": 18.923, "other_movements": -8625.0, "total_cost": 1162.11, "commissions": 1157.61, "interchange": 665.64, "scheme_fees": 295.54, "acquirer_markup": 196.43, "acquiring_fee_eur": 2.5, "stamp_tax": 2.0, "total_debited": 1162.11, "net_settled": 37179.29, "effective_rate_pct": 2.54, "interchange_pct_of_volume": 1.46, "scheme_pct_of_volume": 0.648, "markup_pct_of_volume": 0.431, "avg_ticket": 2071.82, "chargebacks_count": 0, "chargebacks_amount": 0.0, "chargeback_rate_pct": 0.0, "fees_detail": {"interchange_fees": 665.64, "scheme_fees": 295.54, "acquirer_markup": 196.43, "acquiring_eur_fixed": 2.5, "stamp_tax": 2.0, "total_fees_and_taxes": 1162.11}, "daily": [{"disp_date": "04/10/25", "op_date": "03/10/25", "op_type": "Intl Card Networks", "gross": 720.0, "fees": 18.72, "net": 701.28, "count": 1, "contract": "PC0001263218", "ref_id": "934810964699"}, {"disp_date": "05/10/25", "op_date": "04/10/25", "op_type": "Intl Card Networks", "gross": 6110.0, "fees": 158.86, "net": 5951.14, "count": 2, "contract": "PC0001263218", "ref_id": "936515218599"}, {"disp_date": "07/10/25", "op_date": "06/10/25", "op_type": "Intl Card Networks", "gross": 7699.0, "fees": 200.17, "net": 7498.83, "count": 1, "contract": "PC0001263218", "ref_id": "938950060799"}, {"disp_date": "07/10/25", "op_date": "06/10/25", "op_type": "DISPUTE", "gross": -8625.0, "fees": -224.25, "net": -8400.75, "count": 1, "contract": "PC0001263218", "ref_id": "938968875999"}, {"disp_date": "08/10/25", "op_date": "07/10/25", "op_type": "Intl Card Networks", "gross": 2649.0, "fees": 50.25, "net": 2598.75, "count": 2, "contract": "PC0001263218", "ref_id": "940427292899"}, {"disp_date": "10/10/25", "op_date": "09/10/25", "op_type": "Intl Card Networks", "gross": 1760.0, "fees": 45.76, "net": 1714.24, "count": 1, "contract": "PC0001263218", "ref_id": "943452080399"}, {"disp_date": "11/10/25", "op_date": "10/10/25", "op_type": "Intl Card Networks", "gross": 500.0, "fees": 13.0, "net": 487.0, "count": 1, "contract": "PC0001263218", "ref_id": "945099205599"}, {"disp_date": "12/10/25", "op_date": "11/10/25", "op_type": "Intl Card Networks", "gross": 1500.0, "fees": 39.0, "net": 1461.0, "count": 1, "contract": "PC0001263218", "ref_id": "946810110199"}, {"disp_date": "13/10/25", "op_date": "12/10/25", "op_type": "Intl Card Networks", "gross": 9900.0, "fees": 266.31, "net": 9633.69, "count": 1, "contract": "PC0001263218", "ref_id": "947915153699"}, {"disp_date": "14/10/25", "op_date": "13/10/25", "op_type": "Intl Card Networks", "gross": 530.0, "fees": 13.78, "net": 516.22, "count": 1, "contract": "PC0001263218", "ref_id": "949263764399"}, {"disp_date": "18/10/25", "op_date": "17/10/25", "op_type": "Intl Card Networks", "gross": 780.0, "fees": 20.98, "net": 759.02, "count": 1, "contract": "PC0001263218", "ref_id": "955359578499"}, {"disp_date": "20/10/25", "op_date": "19/10/25", "op_type": "Intl Card Networks", "gross": 1332.52, "fees": 34.65, "net": 1297.87, "count": 1, "contract": "PC0001263218", "ref_id": "958140909099"}, {"disp_date": "21/10/25", "op_date": "20/10/25", "op_type": "Intl Card Networks", "gross": 1322.52, "fees": 34.39, "net": 1288.13, "count": 1, "contract": "PC0001263218", "ref_id": "959463728299"}, {"disp_date": "23/10/25", "op_date": "22/10/25", "op_type": "Intl Card Networks", "gross": 1035.0, "fees": 9.98, "net": 1025.02, "count": 2, "contract": "PC0001263218", "ref_id": "962351297499"}, {"disp_date": "24/10/25", "op_date": "23/10/25", "op_type": "Intl Card Networks", "gross": 7340.0, "fees": 190.84, "net": 7149.16, "count": 2, "contract": "PC0001263218", "ref_id": "963795301999"}, {"disp_date": "26/10/25", "op_date": "25/10/25", "op_type": "Intl Card Networks", "gross": 720.0, "fees": 18.72, "net": 701.28, "count": 1, "contract": "PC0001263218", "ref_id": "967095312799"}, {"disp_date": "29/10/25", "op_date": "28/10/25", "op_type": "Intl Card Networks", "gross": 1297.0, "fees": 32.19, "net": 1264.81, "count": 2, "contract": "PC0001263218", "ref_id": "970977151899"}, {"disp_date": "01/11/25", "op_date": "31/10/25", "op_type": "Intl Card Networks", "gross": 385.0, "fees": 10.01, "net": 374.99, "count": 1, "contract": "PC0001263218", "ref_id": "976127417099"}]}, {"period": "2025-11", "month_label": "November 2025", "currency": "EUR", "source_file": "Estratto_conto_2025-11-30.pdf", "contract_count": 1, "intl_card_volume": 251228.5, "bancomat_volume": 0.0, "intl_pct_of_volume": 100.0, "rate_buildup": {"interchange_rate_pct": 1.4292, "scheme_rate_pct": 0.8599, "markup_rate_pct": 0.2898, "bundled_processing_rate_pct": 2.5789, "fixed_acquirer_rate_pct": 0.001, "stamp_tax_rate_pct": 0.0008, "full_effective_rate_pct": 2.5807, "uplift_over_bundled_bps": 0.18}, "contracts": ["PC0001263218"], "volume": 251228.5, "transaction_count": 13, "net_sales": 251228.5, "refund_amount": 0.0, "refund_count": 0, "refund_rate_pct": 0.0, "other_movements": 0.0, "total_cost": 6483.5, "commissions": 6479.0, "interchange": 3590.66, "scheme_fees": 2160.34, "acquirer_markup": 728.0, "acquiring_fee_eur": 2.5, "stamp_tax": 2.0, "total_debited": 6483.5, "net_settled": 251228.5, "effective_rate_pct": 2.579, "interchange_pct_of_volume": 1.429, "scheme_pct_of_volume": 0.86, "markup_pct_of_volume": 0.29, "avg_ticket": 19325.27, "chargebacks_count": 0, "chargebacks_amount": 0.0, "chargeback_rate_pct": 0.0, "fees_detail": {"interchange_fees": 3590.66, "scheme_fees": 2160.34, "acquirer_markup": 728.0, "acquiring_eur_fixed": 2.5, "stamp_tax": 2.0, "total_fees_and_taxes": 6483.5}, "daily": [{"disp_date": "02/11/25", "op_date": "01/11/25", "op_type": "Intl Card Networks", "gross": 8000.0, "fees": 208.0, "net": 7792.0, "count": 1, "contract": "PC0001263218", "ref_id": "977700024299"}, {"disp_date": "03/11/25", "op_date": "02/11/25", "op_type": "Intl Card Networks", "gross": 7000.0, "fees": 182.0, "net": 6818.0, "count": 1, "contract": "PC0001263218", "ref_id": "978684936399"}, {"disp_date": "04/11/25", "op_date": "03/11/25", "op_type": "Intl Card Networks", "gross": 10500.0, "fees": 282.45, "net": 10217.55, "count": 1, "contract": "PC0001263218", "ref_id": "980026824799"}, {"disp_date": "05/11/25", "op_date": "04/11/25", "op_type": "Intl Card Networks", "gross": 10250.0, "fees": 176.73, "net": 10073.28, "count": 2, "contract": "PC0001263218", "ref_id": "981473458299"}, {"disp_date": "06/11/25", "op_date": "05/11/25", "op_type": "Intl Card Networks", "gross": 2030.0, "fees": 54.61, "net": 1975.39, "count": 1, "contract": "PC0001263218", "ref_id": "982917673699"}, {"disp_date": "08/11/25", "op_date": "07/11/25", "op_type": "Intl Card Networks", "gross": 500.0, "fees": 4.45, "net": 495.55, "count": 1, "contract": "PC0001263218", "ref_id": "985947034299"}, {"disp_date": "11/11/25", "op_date": "10/11/25", "op_type": "Intl Card Networks", "gross": 33072.0, "fees": 859.87, "net": 32212.13, "count": 2, "contract": "PC0001263218", "ref_id": "989910589999"}, {"disp_date": "19/11/25", "op_date": "18/11/25", "op_type": "Intl Card Networks", "gross": 53369.5, "fees": 1387.61, "net": 51981.89, "count": 1, "contract": "PC0001263218", "ref_id": "1001091686699"}, {"disp_date": "20/11/25", "op_date": "19/11/25", "op_type": "Intl Card Networks", "gross": 44607.0, "fees": 1159.78, "net": 43447.22, "count": 1, "contract": "PC0001263218", "ref_id": "1002521278999"}, {"disp_date": "26/11/25", "op_date": "25/11/25", "op_type": "Intl Card Networks", "gross": 37900.0, "fees": 1019.51, "net": 36880.49, "count": 1, "contract": "PC0001263218", "ref_id": "1010807627199"}]}, {"period": "2025-12", "month_label": "December 2025", "currency": "EUR", "source_file": "Estratto_conto_2025-12-31.pdf", "contract_count": 1, "intl_card_volume": 177397.0, "bancomat_volume": 0.0, "intl_pct_of_volume": 100.0, "rate_buildup": {"interchange_rate_pct": 1.6629, "scheme_rate_pct": 0.8034, "markup_rate_pct": 0.0382, "bundled_processing_rate_pct": 2.5045, "fixed_acquirer_rate_pct": 0.0014, "stamp_tax_rate_pct": 0.0011, "full_effective_rate_pct": 2.507, "uplift_over_bundled_bps": 0.25}, "contracts": ["PC0001263218"], "volume": 177397.0, "transaction_count": 18, "net_sales": 176347.0, "refund_amount": 1050.0, "refund_count": 4, "refund_rate_pct": 0.592, "other_movements": 0.0, "total_cost": 4447.43, "commissions": 4442.93, "interchange": 2949.99, "scheme_fees": 1425.25, "acquirer_markup": 67.69, "acquiring_fee_eur": 2.5, "stamp_tax": 2.0, "total_debited": 4447.43, "net_settled": 177397.0, "effective_rate_pct": 2.505, "interchange_pct_of_volume": 1.663, "scheme_pct_of_volume": 0.803, "markup_pct_of_volume": 0.038, "avg_ticket": 9855.39, "chargebacks_count": 0, "chargebacks_amount": 0.0, "chargeback_rate_pct": 0.0, "fees_detail": {"interchange_fees": 2949.99, "scheme_fees": 1425.25, "acquirer_markup": 67.69, "acquiring_eur_fixed": 2.5, "stamp_tax": 2.0, "total_fees_and_taxes": 4447.43}, "daily": [{"disp_date": "07/12/25", "op_date": "06/12/25", "op_type": "Intl Card Networks", "gross": 1850.0, "fees": 48.1, "net": 1801.9, "count": 1, "contract": "PC0001263218", "ref_id": "1028173594299"}, {"disp_date": "09/12/25", "op_date": "08/12/25", "op_type": "Intl Card Networks", "gross": 107500.0, "fees": 2795.0, "net": 104705.0, "count": 1, "contract": "PC0001263218", "ref_id": "1030445765799"}, {"disp_date": "10/12/25", "op_date": "09/12/25", "op_type": "Intl Card Networks", "gross": 540.0, "fees": 14.04, "net": 525.96, "count": 1, "contract": "PC0001263218", "ref_id": "1031916364399"}, {"disp_date": "13/12/25", "op_date": "12/12/25", "op_type": "Intl Card Networks", "gross": 650.0, "fees": 16.9, "net": 633.1, "count": 1, "contract": "PC0001263218", "ref_id": "1036431848699"}, {"disp_date": "14/12/25", "op_date": "13/12/25", "op_type": "Intl Card Networks", "gross": 580.0, "fees": 15.08, "net": 564.92, "count": 1, "contract": "PC0001263218", "ref_id": "1038442189399"}, {"disp_date": "15/12/25", "op_date": "14/12/25", "op_type": "Intl Card Networks", "gross": 19800.0, "fees": 532.62, "net": 19267.38, "count": 1, "contract": "PC0001263218", "ref_id": "1039637469399"}, {"disp_date": "16/12/25", "op_date": "15/12/25", "op_type": "Intl Card Networks", "gross": 12000.0, "fees": 322.8, "net": 11677.2, "count": 1, "contract": "PC0001263218", "ref_id": "1041096293599"}, {"disp_date": "20/12/25", "op_date": "19/12/25", "op_type": "Intl Card Networks", "gross": 5367.0, "fees": 139.54, "net": 5227.46, "count": 2, "contract": "PC0001263218", "ref_id": "1047784565999"}, {"disp_date": "23/12/25", "op_date": "22/12/25", "op_type": "Intl Card Networks", "gross": 18625.0, "fees": 501.01, "net": 18123.99, "count": 2, "contract": "PC0001263218", "ref_id": "1052878882299"}, {"disp_date": "25/12/25", "op_date": "24/12/25", "op_type": "Intl Card Networks", "gross": -1050.0, "fees": -206.85, "net": -843.15, "count": 4, "contract": "PC0001263218", "ref_id": "1056595429699"}, {"disp_date": "26/12/25", "op_date": "25/12/25", "op_type": "Intl Card Networks", "gross": 2060.0, "fees": 18.33, "net": 2041.67, "count": 1, "contract": "PC0001263218", "ref_id": "1057226100399"}, {"disp_date": "27/12/25", "op_date": "26/12/25", "op_type": "Intl Card Networks", "gross": 2585.0, "fees": 67.21, "net": 2517.79, "count": 1, "contract": "PC0001263218", "ref_id": "1057836110199"}, {"disp_date": "01/01/26", "op_date": "31/12/25", "op_type": "Intl Card Networks", "gross": 6890.0, "fees": 179.14, "net": 6710.86, "count": 1, "contract": "PC0001263218", "ref_id": "1065386703999"}]}, {"period": "2026-01", "month_label": "January 2026", "currency": "EUR", "source_file": "Estratto conto Gennaio 2026.pdf", "contract_count": 1, "intl_card_volume": 111848.0, "bancomat_volume": 0.0, "intl_pct_of_volume": 100.0, "rate_buildup": {"interchange_rate_pct": 1.4811, "scheme_rate_pct": 0.7461, "markup_rate_pct": 0.1898, "bundled_processing_rate_pct": 2.4171, "fixed_acquirer_rate_pct": 0.0022, "stamp_tax_rate_pct": 0.0018, "full_effective_rate_pct": 2.4211, "uplift_over_bundled_bps": 0.4}, "contracts": ["PC0001263218"], "volume": 111848.0, "transaction_count": 21, "net_sales": 111598.0, "refund_amount": 250.0, "refund_count": 1, "refund_rate_pct": 0.224, "other_movements": 0.0, "total_cost": 2707.95, "commissions": 2703.45, "interchange": 1656.6, "scheme_fees": 834.51, "acquirer_markup": 212.34, "acquiring_fee_eur": 2.5, "stamp_tax": 2.0, "total_debited": 2707.95, "net_settled": 111848.0, "effective_rate_pct": 2.417, "interchange_pct_of_volume": 1.481, "scheme_pct_of_volume": 0.746, "markup_pct_of_volume": 0.19, "avg_ticket": 5326.1, "chargebacks_count": 0, "chargebacks_amount": 0.0, "chargeback_rate_pct": 0.0, "fees_detail": {"interchange_fees": 1656.6, "scheme_fees": 834.51, "acquirer_markup": 212.34, "acquiring_eur_fixed": 2.5, "stamp_tax": 2.0, "total_fees_and_taxes": 2707.95}, "daily": [{"disp_date": "03/01/26", "op_date": "02/01/26", "op_type": "Intl Card Networks", "gross": 250.0, "fees": 2.23, "net": 247.78, "count": 1, "contract": "PC0001263218", "ref_id": "1067566077799"}, {"disp_date": "04/01/26", "op_date": "03/01/26", "op_type": "Intl Card Networks", "gross": 198.0, "fees": 5.15, "net": 192.85, "count": 1, "contract": "PC0001263218", "ref_id": "1069031281799"}, {"disp_date": "08/01/26", "op_date": "07/01/26", "op_type": "Intl Card Networks", "gross": 1350.0, "fees": 35.8, "net": 1314.2, "count": 2, "contract": "PC0001263218", "ref_id": "1073603150299"}, {"disp_date": "09/01/26", "op_date": "08/01/26", "op_type": "Intl Card Networks", "gross": 792.0, "fees": 21.3, "net": 770.7, "count": 1, "contract": "PC0001263218", "ref_id": "1074967623299"}, {"disp_date": "10/01/26", "op_date": "09/01/26", "op_type": "Intl Card Networks", "gross": -250.0, "fees": -2.23, "net": -247.78, "count": 1, "contract": "PC0001263218", "ref_id": "1076422105899"}, {"disp_date": "12/01/26", "op_date": "11/01/26", "op_type": "Intl Card Networks", "gross": 31300.0, "fees": 841.97, "net": 30458.03, "count": 1, "contract": "PC0001263218", "ref_id": "1078869162599"}, {"disp_date": "14/01/26", "op_date": "13/01/26", "op_type": "Intl Card Networks", "gross": 972.0, "fees": 26.68, "net": 945.32, "count": 3, "contract": "PC0001263218", "ref_id": "1081512999899"}, {"disp_date": "15/01/26", "op_date": "14/01/26", "op_type": "Intl Card Networks", "gross": 46848.0, "fees": 1218.05, "net": 45629.95, "count": 2, "contract": "PC0001263218", "ref_id": "1082917443699"}, {"disp_date": "17/01/26", "op_date": "16/01/26", "op_type": "Intl Card Networks", "gross": 800.0, "fees": 20.8, "net": 779.2, "count": 1, "contract": "PC0001263218", "ref_id": "1085861407399"}, {"disp_date": "21/01/26", "op_date": "20/01/26", "op_type": "Intl Card Networks", "gross": 380.0, "fees": 9.88, "net": 370.12, "count": 1, "contract": "PC0001263218", "ref_id": "1090962652699"}, {"disp_date": "22/01/26", "op_date": "21/01/26", "op_type": "Intl Card Networks", "gross": 440.0, "fees": 11.84, "net": 428.16, "count": 1, "contract": "PC0001263218", "ref_id": "1092359232999"}, {"disp_date": "23/01/26", "op_date": "22/01/26", "op_type": "Intl Card Networks", "gross": 1098.0, "fees": 29.54, "net": 1068.46, "count": 2, "contract": "PC0001263218", "ref_id": "1093810422499"}, {"disp_date": "24/01/26", "op_date": "23/01/26", "op_type": "Intl Card Networks", "gross": 600.0, "fees": 5.34, "net": 594.66, "count": 1, "contract": "PC0001263218", "ref_id": "1095359016299"}, {"disp_date": "30/01/26", "op_date": "29/01/26", "op_type": "Intl Card Networks", "gross": 11475.0, "fees": 298.35, "net": 11176.65, "count": 1, "contract": "PC0001263218", "ref_id": "1103351707199"}, {"disp_date": "31/01/26", "op_date": "30/01/26", "op_type": "Intl Card Networks", "gross": 2220.0, "fees": 59.72, "net": 2160.28, "count": 1, "contract": "PC0001263218", "ref_id": "1104892837899"}, {"disp_date": "01/02/26", "op_date": "31/01/26", "op_type": "Intl Card Networks", "gross": 13375.0, "fees": 119.04, "net": 13255.96, "count": 1, "contract": "PC0001263218", "ref_id": "1107039539599"}]}]}};
+const NEXI_DATA = {"nexi_eur": {"meta": {"processor": "Nexi", "merchant": "OVER THE LUX S.R.L.", "merchant_pi": "06979100960", "country": "Italy", "city": "Milan", "currency": "EUR", "period_start": "2025-09", "period_end": "2026-01", "month_count": 5, "source_files": ["Estratto conto Settembre 2025.pdf", "Estratto conto Ottobre 2025.pdf", "Estratto_conto_2025-11-30.pdf", "Estratto_conto_2025-12-31.pdf", "Estratto conto Gennaio 2026.pdf"], "generated": "2026-04-14", "total_volume": 839433.04, "total_fees": 21329.9, "total_transactions": 106, "blended_effective_rate_pct": 2.538, "card_mix": {"intl_card_volume": 839433.04, "bancomat_volume": 0.0, "intl_pct": 100.0, "bancomat_pct": 0.0}, "rate_buildup": {"interchange_rate_pct": 1.6514, "scheme_rate_pct": 0.8068, "markup_rate_pct": 0.08, "bundled_processing_rate_pct": 2.5383, "fixed_acquirer_rate_pct": 0.0015, "stamp_tax_rate_pct": 0.0012, "full_effective_rate_pct": 2.541, "uplift_over_bundled_bps": 0.27}, "cross_border_indicator": {"actual_combined_ic_scheme_bps": 245.8, "actual_full_effective_bps": 254.1, "reference_rates_bps": {"eea_consumer_debit": 30.0, "eea_consumer_credit": 45.0, "eea_premium_credit": 90.0, "intra_eea_cross_border": 100.0, "commercial_corporate": 220.0, "inter_regional_credit_cnp": 250.0, "amex_typical": 260.0}, "bancomat_baseline_bps": 26.0, "loading_over_eea_debit_bps": 215.8, "loading_over_eea_credit_bps": 200.8, "estimated_inter_regional_share_vs_debit": 98.1, "estimated_inter_regional_share_vs_credit": 98.0, "annualized_volume_eur": 2014639.3, "nexi_markup_bps": 8.0, "nexi_markup_annual_eur": 1612.39, "factual_summary": "Combined interchange + scheme rate of 245.8 bps is 8.2x the IFR-capped EEA consumer debit baseline (30 bps) and 5.5x the EEA consumer credit baseline (45 bps). Nexi acquirer markup component: 8.0 bps (~€1,612 annualized). All transactions in the daily detail are bucketed as international card networks; no per-brand, per-BIN, or per-issuer detail is available from the monthly PDF."}, "effective_rate_decomposition": {"full_effective_rate_bps": 254.1, "full_effective_rate_pct": 2.541, "cross_border_fx_total_bps": 213.8, "cross_border_fx_total_pct": 2.1383, "cross_border_fx_share_of_total": 84.2, "domestic_baseline_total_bps": 40.3, "domestic_baseline_total_pct": 0.4027, "domestic_baseline_share_of_total": 15.8, "components": [{"name": "Layer 2: Cross-border interchange tier uplift", "description": "Inter-regional and premium consumer credit cards pay higher IC than the IFR-capped EEA baseline. This is interchange above the 25 bps domestic floor.", "bps": 140.1, "pct_of_volume": 1.4014, "pct_of_total_rate": 55.2, "bucket": "fx", "color_hex": "#00d4ff"}, {"name": "Layer 1: Scheme cross-border fees", "description": "Visa International Service Assessment (ISA) + Mastercard Cross-Border Assessment Fee (CBAF). Applies when issuer and acquirer are in different countries.", "bps": 73.7, "pct_of_volume": 0.7368, "pct_of_total_rate": 29.0, "bucket": "fx", "color_hex": "#a78bfa"}, {"name": "Domestic interchange baseline", "description": "The IFR-capped portion of interchange that would apply to a 100% Italian / EEA consumer card mix. Set by Visa / Mastercard rules, not negotiable.", "bps": 25.0, "pct_of_volume": 0.25, "pct_of_total_rate": 9.8, "bucket": "baseline", "color_hex": "#00e5a0"}, {"name": "Nexi acquirer markup", "description": "What Nexi actually keeps after passing through interchange and scheme fees. This is the only component of the rate that is negotiable with the acquirer.", "bps": 8.0, "pct_of_volume": 0.08, "pct_of_total_rate": 3.1, "bucket": "baseline", "color_hex": "#ffc845"}, {"name": "Domestic scheme fees baseline", "description": "The portion of scheme fees (Oneri Circuiti) that would apply to a 100% domestic Italian mix. Visa/MC fixed assessment fees, network access, etc.", "bps": 7.0, "pct_of_volume": 0.07, "pct_of_total_rate": 2.8, "bucket": "baseline", "color_hex": "#38bdf8"}, {"name": "Fixed monthly fees (Acquiring EUR + Stamp Tax)", "description": "EUR 2.50 Commissione di Acquiring in Euro + EUR 2.00 Imposta di Bollo per contract per month. Flat amounts, become a larger bps share on low-volume months.", "bps": 0.27, "pct_of_volume": 0.00268, "pct_of_total_rate": 0.11, "bucket": "baseline", "color_hex": "#ff7a3d"}], "factual_summary": "Of the 254.1 bps (2.541%) full effective rate, 213.8 bps (84.2%) is cross-border / FX-driven and 40.3 bps (15.8%) is the domestic baseline (everything that would apply to a pure Italian-issued card mix). If this merchant were processing only domestic cards the full effective rate would be around 0.40% instead of 2.54%."}, "per_transaction_fx": {"method_note": "Per-transaction FX cost is the cross-border / FX-driven portion of total fees, expressed as a flat percentage of every ticket. The percentage is constant; absolute EUR per transaction varies only because ticket sizes vary. Layer 1 = scheme cross-border assessment (Visa ISA + MC CBAF), derived as observed scheme fees minus a 7 bps domestic baseline. Layer 2 = cross-border interchange tier uplift, derived as observed interchange minus a 25 bps IFR-capped EEA baseline. Both layers are blended estimates - the PDF does not expose the actual brand or issuer-country split.", "layer1_bps": 73.7, "layer2_bps": 140.1, "total_fx_bps": 213.8, "fx_pct_of_ticket": 2.138, "period_avg_ticket_eur": 7919.18, "period_total_txns": 106, "period_layer1_per_txn_eur": 58.35, "period_layer2_per_txn_eur": 110.98, "period_total_per_txn_eur": 169.33, "period_fx_total_eur": 17949.38, "annualized_fx_total_eur": 43078.52, "monthly_breakdown": [{"period": "2025-09", "month_label": "September 2025", "txn_count": 32, "avg_ticket": 7918.11, "layer1_per_txn_eur": 58.34, "layer2_per_txn_eur": 110.97, "total_fx_per_txn_eur": 169.31, "month_total_fx_eur": 5417.95}, {"period": "2025-10", "month_label": "October 2025", "txn_count": 22, "avg_ticket": 2071.82, "layer1_per_txn_eur": 15.27, "layer2_per_txn_eur": 29.04, "total_fx_per_txn_eur": 44.3, "month_total_fx_eur": 974.63}, {"period": "2025-11", "month_label": "November 2025", "txn_count": 13, "avg_ticket": 19325.27, "layer1_per_txn_eur": 142.4, "layer2_per_txn_eur": 270.83, "total_fx_per_txn_eur": 413.23, "month_total_fx_eur": 5371.96}, {"period": "2025-12", "month_label": "December 2025", "txn_count": 18, "avg_ticket": 9855.39, "layer1_per_txn_eur": 72.62, "layer2_per_txn_eur": 138.12, "total_fx_per_txn_eur": 210.74, "month_total_fx_eur": 3793.24}, {"period": "2026-01", "month_label": "January 2026", "txn_count": 21, "avg_ticket": 5326.1, "layer1_per_txn_eur": 39.24, "layer2_per_txn_eur": 74.64, "total_fx_per_txn_eur": 113.89, "month_total_fx_eur": 2391.62}], "largest_single_transactions": [{"month": "September 2025", "disp_date": "19/09/25", "op_type": "Intl Card Networks", "gross": 122202.0, "fees_billed": 3177.25, "count": 4, "fx_cost_eur": 2613.01, "fx_pct": 2.138}, {"month": "September 2025", "disp_date": "07/09/25", "op_type": "Intl Card Networks", "gross": 121825.0, "fees_billed": 3211.39, "count": 6, "fx_cost_eur": 2604.95, "fx_pct": 2.138}, {"month": "December 2025", "disp_date": "09/12/25", "op_type": "Intl Card Networks", "gross": 107500.0, "fees_billed": 2795.0, "count": 1, "fx_cost_eur": 2298.65, "fx_pct": 2.138}, {"month": "November 2025", "disp_date": "19/11/25", "op_type": "Intl Card Networks", "gross": 53369.5, "fees_billed": 1387.61, "count": 1, "fx_cost_eur": 1141.19, "fx_pct": 2.138}, {"month": "January 2026", "disp_date": "15/01/26", "op_type": "Intl Card Networks", "gross": 46848.0, "fees_billed": 1218.05, "count": 2, "fx_cost_eur": 1001.74, "fx_pct": 2.138}, {"month": "November 2025", "disp_date": "20/11/25", "op_type": "Intl Card Networks", "gross": 44607.0, "fees_billed": 1159.78, "count": 1, "fx_cost_eur": 953.82, "fx_pct": 2.138}, {"month": "November 2025", "disp_date": "26/11/25", "op_type": "Intl Card Networks", "gross": 37900.0, "fees_billed": 1019.51, "count": 1, "fx_cost_eur": 810.41, "fx_pct": 2.138}, {"month": "September 2025", "disp_date": "06/09/25", "op_type": "Intl Card Networks", "gross": 33865.0, "fees_billed": 910.97, "count": 3, "fx_cost_eur": 724.13, "fx_pct": 2.138}, {"month": "November 2025", "disp_date": "11/11/25", "op_type": "Intl Card Networks", "gross": 33072.0, "fees_billed": 859.87, "count": 2, "fx_cost_eur": 707.17, "fx_pct": 2.138}, {"month": "January 2026", "disp_date": "12/01/26", "op_type": "Intl Card Networks", "gross": 31300.0, "fees_billed": 841.97, "count": 1, "fx_cost_eur": 669.28, "fx_pct": 2.138}]}, "observations": [{"category": "Reporting transparency", "severity": "high", "title": "No interchange tier breakdown", "detail": "The monthly PDF reports total interchange as a single number per contract. It does NOT disclose which interchange tiers were hit (e.g. consumer debit, consumer credit, premium credit, commercial, inter-regional). Visa and Mastercard publish dozens of tier categories with materially different rates - the merchant has zero visibility into which ones drove the bill."}, {"category": "Reporting transparency", "severity": "high", "title": "No card brand split (Visa / Mastercard / AMEX / etc.)", "detail": "All transactions are bucketed under the single label 'CIRCUITI INTERNAZIONALI' (international card networks). The PDF gives no Visa-vs-Mastercard-vs-AMEX share, no per-brand volume, and no per-brand fee allocation. Per the footer of every page, this detail is only available in the Nexi Business portal at business.nexi.it."}, {"category": "Reporting transparency", "severity": "high", "title": "No issuer country / cardholder geography", "detail": "There is no breakdown of which countries the cardholders' issuing banks are in. For a merchant whose blended IC + scheme is 245.8 bps (5x the EEA credit baseline), this is the single most important missing piece of information for understanding where the cost is coming from."}, {"category": "Reporting transparency", "severity": "medium", "title": "No card type split (debit vs credit vs prepaid vs commercial)", "detail": "The PDF distinguishes only Bancomat vs International Cards. Within International Cards there is no separation between consumer debit, consumer credit, prepaid, or commercial / corporate cards - even though IFR caps these very differently."}, {"category": "Reporting transparency", "severity": "medium", "title": "No BIN-level detail", "detail": "Individual transactions are listed only by date and reference ID. There is no card BIN range, masked PAN, or any issuer identifier in the daily detail."}, {"category": "Pricing model", "severity": "medium", "title": "Bundled (not interchange-plus) pricing", "detail": "The 'Commissioni Acquiring %' equals 'Totale Commissioni' - meaning the merchant is on a bundled rate (one combined rate that hides interchange, scheme, and acquirer markup as a single line). The per-offering breakdown does show interchange and scheme as informational pass-through, but the merchant's CONTRACTED rate appears to be a single bundled number. This is standard for Italian SMB acquiring but obscures the acquirer markup component from the merchant's normal view."}, {"category": "Data anomaly", "severity": "high", "title": "Negative implied acquirer markup in 1 month(s)", "detail": "Month(s) showing negative markup: September 2025. In normal months the formula 'Total Commissioni minus Interchange minus Scheme' yields a positive acquirer markup. When a month has substantial refund processing, Nexi credits the gross fees back, which reduces 'Total Commissioni' below the GROSS interchange and scheme totals shown in the per-offering breakdown. The negative number is therefore an artifact of how Nexi nets refund fee credits in the totals - it does NOT mean Nexi paid the merchant. The most extreme case here is September 2025 (-532.63 EUR)."}, {"category": "Refund activity", "severity": "high", "title": "Refunds exceeded 5% of volume in 2 month(s)", "detail": "2 month(s) had merchant-initiated refunds greater than 5% of gross volume. Highest: September 2025 with EUR 89,845.50 of refunds against EUR 253,379.50 of volume (35.5%). The Nexi PDF does not differentiate between voluntary refunds, partial reversals, and processor-initiated reversals - all show as negative entries in the daily detail."}, {"category": "Card mix", "severity": "medium", "title": "Zero Bancomat (Italian domestic debit) volume", "detail": "Across 5 month(s) and EUR 839,433.04 of total volume, the merchant processed zero Bancomat transactions. Either Bancomat acceptance is not enabled on the terminal, the customer base does not present Bancomat cards, or both. For a merchant in Italy this is unusual - the Bancomat network has near-universal Italian debit-card coverage."}, {"category": "Rate variance", "severity": "medium", "title": "Effective rate varies by 16 bps month-to-month", "detail": "Lowest month: January 2026 at 2.417% (241.7 bps). Highest month: November 2025 at 2.579% (257.9 bps). A spread of 16 bps month-to-month is consistent with cardholder mix shift (different mix of issuer countries, brand mix, debit/credit/commercial mix). It is NOT consistent with a single-tier flat rate."}, {"category": "Fixed fee disproportion", "severity": "low", "title": "Fixed monthly fees added more than 0.5 bps in 1 month(s)", "detail": "Nexi charges a flat EUR 2.50 'Commissione di Acquiring in Euro' + EUR 2.00 'Imposta di Bollo' (Italian stamp tax) per contract per month, regardless of volume. On low-volume months these flat fees become a larger share of the basis-point cost. Worst month: October 2025 with 1.0 bps of uplift on EUR 45,580.04 of volume."}, {"category": "Cost anomaly", "severity": "high", "title": "Combined IC + scheme rate is 8.2x the IFR-capped EEA debit baseline", "detail": "The EU Interchange Fee Regulation caps domestic and intra-EEA consumer card interchange at 0.20% (debit) and 0.30% (credit). Combined with typical scheme fees this puts the cheapest-possible blended pass-through cost at roughly 30-45 bps. This merchant is paying 245.8 bps - 216 bps above the EEA debit baseline. The gap can only come from non-EEA-issued cards, premium consumer card tiers within IFR limits, commercial / corporate cards (uncapped under IFR), or AMEX volume bundled in. The PDF does not let us identify which of these is driving the cost."}, {"category": "Account structure", "severity": "low", "title": "Payment Contract PC0000280938 appears in only 1 month with 1 transaction(s)", "detail": "Contract PC0000280938 is active only in 2025-09 with 1 transaction(s) totaling EUR 198.00. This is unusual - either a test transaction, a legacy terminal that fired once, a separate channel (e-commerce vs in-store) that the merchant did not realize was active, or a one-off booking. Worth confirming with the merchant."}], "merchant_setup": {"settlement_banks": ["MONTE DEI PASCHI DI SIENA"], "abi": ["01030"], "cab": ["01661"], "iban": ["IT80L0103001661000001388752"], "pos_codes": ["LN0003602146"], "payment_contracts": [{"contract_id": "PC0000280938", "pos_code": "LN0003602146", "bank": "MONTE DEI PASCHI DI SIENA", "abi": "01030", "cab": "01661", "iban": "IT80L0103001661000001388752", "first_seen": "2025-09", "last_seen": "2025-09", "months_active": 1, "total_volume": 198.0, "total_txns": 1, "total_fees": 5.25}, {"contract_id": "PC0001263218", "pos_code": "LN0003602146", "bank": "MONTE DEI PASCHI DI SIENA", "abi": "01030", "cab": "01661", "iban": "IT80L0103001661000001388752", "first_seen": "2025-09", "last_seen": "2026-01", "months_active": 5, "total_volume": 839235.04, "total_txns": 105, "total_fees": 21324.65}]}, "data_limitations": ["Nexi monthly Estratto Conto PDFs do NOT break down volume by card brand (Visa, Mastercard, AMEX, etc.).", "Per-brand, per-BIN, and per-issuer detail is only available in the Nexi Business portal at business.nexi.it under the 'Transazioni' section.", "All transactions in the daily detail are bucketed as 'CIRCUITI INTERNAZIONALI' (international card networks).", "Bancomat (Italian domestic debit) is reported separately - this merchant has 0 EUR Bancomat activity in the captured period.", "To enable per-brand analysis, export the Transazioni CSV from Nexi Business and re-run with the --transactions-csv flag (parser will be extended in a follow-up)."]}, "months": [{"period": "2025-09", "month_label": "September 2025", "currency": "EUR", "source_file": "Estratto conto Settembre 2025.pdf", "contract_count": 2, "intl_card_volume": 253379.5, "bancomat_volume": 0.0, "intl_pct_of_volume": 100.0, "rate_buildup": {"interchange_rate_pct": 1.9732, "scheme_rate_pct": 0.8119, "markup_rate_pct": -0.2102, "bundled_processing_rate_pct": 2.575, "fixed_acquirer_rate_pct": 0.001, "stamp_tax_rate_pct": 0.0008, "full_effective_rate_pct": 2.5767, "uplift_over_bundled_bps": 0.18}, "contracts": ["PC0000280938", "PC0001263218"], "volume": 253379.5, "transaction_count": 32, "net_sales": 163534.0, "refund_amount": 89845.5, "refund_count": 4, "refund_rate_pct": 35.459, "other_movements": 0.0, "total_cost": 6528.91, "commissions": 6524.41, "interchange": 4999.78, "scheme_fees": 2057.26, "acquirer_markup": -532.63, "acquiring_fee_eur": 2.5, "stamp_tax": 2.0, "total_debited": 6528.91, "net_settled": 253379.5, "effective_rate_pct": 2.575, "interchange_pct_of_volume": 1.973, "scheme_pct_of_volume": 0.812, "markup_pct_of_volume": -0.21, "avg_ticket": 7918.11, "chargebacks_count": 0, "chargebacks_amount": 0.0, "chargeback_rate_pct": 0.0, "fees_detail": {"interchange_fees": 4999.78, "scheme_fees": 2057.26, "acquirer_markup": -532.63, "acquiring_eur_fixed": 2.5, "stamp_tax": 2.0, "total_fees_and_taxes": 6528.91}, "daily": [{"disp_date": "05/09/25", "op_date": "04/09/25", "op_type": "Intl Card Networks", "gross": 198.0, "fees": 5.25, "net": 192.75, "count": 1, "contract": "PC0000280938", "ref_id": "889882977599"}, {"disp_date": "02/09/25", "op_date": "01/09/25", "op_type": "Intl Card Networks", "gross": 1648.0, "fees": 42.85, "net": 1605.15, "count": 1, "contract": "PC0001263218", "ref_id": "885227324699"}, {"disp_date": "06/09/25", "op_date": "05/09/25", "op_type": "Intl Card Networks", "gross": 33865.0, "fees": 910.97, "net": 32954.03, "count": 3, "contract": "PC0001263218", "ref_id": "891587032899"}, {"disp_date": "07/09/25", "op_date": "06/09/25", "op_type": "Intl Card Networks", "gross": 121825.0, "fees": 3211.39, "net": 118613.61, "count": 6, "contract": "PC0001263218", "ref_id": "893303840399"}, {"disp_date": "10/09/25", "op_date": "09/09/25", "op_type": "Intl Card Networks", "gross": -73000.0, "fees": -1929.5, "net": -71070.5, "count": 2, "contract": "PC0001263218", "ref_id": "897412605399"}, {"disp_date": "11/09/25", "op_date": "10/09/25", "op_type": "Intl Card Networks", "gross": -16845.5, "fees": -437.28, "net": -16408.22, "count": 2, "contract": "PC0001263218", "ref_id": "898975570199"}, {"disp_date": "16/09/25", "op_date": "15/09/25", "op_type": "Intl Card Networks", "gross": 190.0, "fees": 4.94, "net": 185.06, "count": 1, "contract": "PC0001263218", "ref_id": "906657658299"}, {"disp_date": "19/09/25", "op_date": "18/09/25", "op_type": "Intl Card Networks", "gross": 122202.0, "fees": 3177.25, "net": 119024.75, "count": 4, "contract": "PC0001263218", "ref_id": "911375996299"}, {"disp_date": "20/09/25", "op_date": "19/09/25", "op_type": "Intl Card Networks", "gross": 24520.0, "fees": 659.12, "net": 23860.88, "count": 3, "contract": "PC0001263218", "ref_id": "913057800199"}, {"disp_date": "23/09/25", "op_date": "22/09/25", "op_type": "Intl Card Networks", "gross": 6160.0, "fees": 160.16, "net": 5999.84, "count": 1, "contract": "PC0001263218", "ref_id": "917322381999"}, {"disp_date": "25/09/25", "op_date": "24/09/25", "op_type": "Intl Card Networks", "gross": 560.0, "fees": 14.56, "net": 545.44, "count": 1, "contract": "PC0001263218", "ref_id": "920336751899"}, {"disp_date": "26/09/25", "op_date": "25/09/25", "op_type": "Intl Card Networks", "gross": 8679.0, "fees": 233.33, "net": 8445.67, "count": 2, "contract": "PC0001263218", "ref_id": "921885878699"}, {"disp_date": "27/09/25", "op_date": "26/09/25", "op_type": "Intl Card Networks", "gross": 7230.0, "fees": 64.35, "net": 7165.65, "count": 2, "contract": "PC0001263218", "ref_id": "923524481399"}, {"disp_date": "29/09/25", "op_date": "28/09/25", "op_type": "Intl Card Networks", "gross": 750.0, "fees": 6.68, "net": 743.33, "count": 1, "contract": "PC0001263218", "ref_id": "926370831399"}, {"disp_date": "30/09/25", "op_date": "29/09/25", "op_type": "Intl Card Networks", "gross": 15398.0, "fees": 400.35, "net": 14997.65, "count": 2, "contract": "PC0001263218", "ref_id": "927772206599"}]}, {"period": "2025-10", "month_label": "October 2025", "currency": "EUR", "source_file": "Estratto conto Ottobre 2025.pdf", "contract_count": 1, "intl_card_volume": 45580.04, "bancomat_volume": 0.0, "intl_pct_of_volume": 100.0, "rate_buildup": {"interchange_rate_pct": 1.4604, "scheme_rate_pct": 0.6484, "markup_rate_pct": 0.431, "bundled_processing_rate_pct": 2.5397, "fixed_acquirer_rate_pct": 0.0055, "stamp_tax_rate_pct": 0.0044, "full_effective_rate_pct": 2.5496, "uplift_over_bundled_bps": 0.99}, "contracts": ["PC0001263218"], "volume": 45580.04, "transaction_count": 22, "net_sales": 36955.04, "refund_amount": 8625.0, "refund_count": 1, "refund_rate_pct": 18.923, "other_movements": -8625.0, "total_cost": 1162.11, "commissions": 1157.61, "interchange": 665.64, "scheme_fees": 295.54, "acquirer_markup": 196.43, "acquiring_fee_eur": 2.5, "stamp_tax": 2.0, "total_debited": 1162.11, "net_settled": 37179.29, "effective_rate_pct": 2.54, "interchange_pct_of_volume": 1.46, "scheme_pct_of_volume": 0.648, "markup_pct_of_volume": 0.431, "avg_ticket": 2071.82, "chargebacks_count": 0, "chargebacks_amount": 0.0, "chargeback_rate_pct": 0.0, "fees_detail": {"interchange_fees": 665.64, "scheme_fees": 295.54, "acquirer_markup": 196.43, "acquiring_eur_fixed": 2.5, "stamp_tax": 2.0, "total_fees_and_taxes": 1162.11}, "daily": [{"disp_date": "04/10/25", "op_date": "03/10/25", "op_type": "Intl Card Networks", "gross": 720.0, "fees": 18.72, "net": 701.28, "count": 1, "contract": "PC0001263218", "ref_id": "934810964699"}, {"disp_date": "05/10/25", "op_date": "04/10/25", "op_type": "Intl Card Networks", "gross": 6110.0, "fees": 158.86, "net": 5951.14, "count": 2, "contract": "PC0001263218", "ref_id": "936515218599"}, {"disp_date": "07/10/25", "op_date": "06/10/25", "op_type": "Intl Card Networks", "gross": 7699.0, "fees": 200.17, "net": 7498.83, "count": 1, "contract": "PC0001263218", "ref_id": "938950060799"}, {"disp_date": "07/10/25", "op_date": "06/10/25", "op_type": "DISPUTE", "gross": -8625.0, "fees": -224.25, "net": -8400.75, "count": 1, "contract": "PC0001263218", "ref_id": "938968875999"}, {"disp_date": "08/10/25", "op_date": "07/10/25", "op_type": "Intl Card Networks", "gross": 2649.0, "fees": 50.25, "net": 2598.75, "count": 2, "contract": "PC0001263218", "ref_id": "940427292899"}, {"disp_date": "10/10/25", "op_date": "09/10/25", "op_type": "Intl Card Networks", "gross": 1760.0, "fees": 45.76, "net": 1714.24, "count": 1, "contract": "PC0001263218", "ref_id": "943452080399"}, {"disp_date": "11/10/25", "op_date": "10/10/25", "op_type": "Intl Card Networks", "gross": 500.0, "fees": 13.0, "net": 487.0, "count": 1, "contract": "PC0001263218", "ref_id": "945099205599"}, {"disp_date": "12/10/25", "op_date": "11/10/25", "op_type": "Intl Card Networks", "gross": 1500.0, "fees": 39.0, "net": 1461.0, "count": 1, "contract": "PC0001263218", "ref_id": "946810110199"}, {"disp_date": "13/10/25", "op_date": "12/10/25", "op_type": "Intl Card Networks", "gross": 9900.0, "fees": 266.31, "net": 9633.69, "count": 1, "contract": "PC0001263218", "ref_id": "947915153699"}, {"disp_date": "14/10/25", "op_date": "13/10/25", "op_type": "Intl Card Networks", "gross": 530.0, "fees": 13.78, "net": 516.22, "count": 1, "contract": "PC0001263218", "ref_id": "949263764399"}, {"disp_date": "18/10/25", "op_date": "17/10/25", "op_type": "Intl Card Networks", "gross": 780.0, "fees": 20.98, "net": 759.02, "count": 1, "contract": "PC0001263218", "ref_id": "955359578499"}, {"disp_date": "20/10/25", "op_date": "19/10/25", "op_type": "Intl Card Networks", "gross": 1332.52, "fees": 34.65, "net": 1297.87, "count": 1, "contract": "PC0001263218", "ref_id": "958140909099"}, {"disp_date": "21/10/25", "op_date": "20/10/25", "op_type": "Intl Card Networks", "gross": 1322.52, "fees": 34.39, "net": 1288.13, "count": 1, "contract": "PC0001263218", "ref_id": "959463728299"}, {"disp_date": "23/10/25", "op_date": "22/10/25", "op_type": "Intl Card Networks", "gross": 1035.0, "fees": 9.98, "net": 1025.02, "count": 2, "contract": "PC0001263218", "ref_id": "962351297499"}, {"disp_date": "24/10/25", "op_date": "23/10/25", "op_type": "Intl Card Networks", "gross": 7340.0, "fees": 190.84, "net": 7149.16, "count": 2, "contract": "PC0001263218", "ref_id": "963795301999"}, {"disp_date": "26/10/25", "op_date": "25/10/25", "op_type": "Intl Card Networks", "gross": 720.0, "fees": 18.72, "net": 701.28, "count": 1, "contract": "PC0001263218", "ref_id": "967095312799"}, {"disp_date": "29/10/25", "op_date": "28/10/25", "op_type": "Intl Card Networks", "gross": 1297.0, "fees": 32.19, "net": 1264.81, "count": 2, "contract": "PC0001263218", "ref_id": "970977151899"}, {"disp_date": "01/11/25", "op_date": "31/10/25", "op_type": "Intl Card Networks", "gross": 385.0, "fees": 10.01, "net": 374.99, "count": 1, "contract": "PC0001263218", "ref_id": "976127417099"}]}, {"period": "2025-11", "month_label": "November 2025", "currency": "EUR", "source_file": "Estratto_conto_2025-11-30.pdf", "contract_count": 1, "intl_card_volume": 251228.5, "bancomat_volume": 0.0, "intl_pct_of_volume": 100.0, "rate_buildup": {"interchange_rate_pct": 1.4292, "scheme_rate_pct": 0.8599, "markup_rate_pct": 0.2898, "bundled_processing_rate_pct": 2.5789, "fixed_acquirer_rate_pct": 0.001, "stamp_tax_rate_pct": 0.0008, "full_effective_rate_pct": 2.5807, "uplift_over_bundled_bps": 0.18}, "contracts": ["PC0001263218"], "volume": 251228.5, "transaction_count": 13, "net_sales": 251228.5, "refund_amount": 0.0, "refund_count": 0, "refund_rate_pct": 0.0, "other_movements": 0.0, "total_cost": 6483.5, "commissions": 6479.0, "interchange": 3590.66, "scheme_fees": 2160.34, "acquirer_markup": 728.0, "acquiring_fee_eur": 2.5, "stamp_tax": 2.0, "total_debited": 6483.5, "net_settled": 251228.5, "effective_rate_pct": 2.579, "interchange_pct_of_volume": 1.429, "scheme_pct_of_volume": 0.86, "markup_pct_of_volume": 0.29, "avg_ticket": 19325.27, "chargebacks_count": 0, "chargebacks_amount": 0.0, "chargeback_rate_pct": 0.0, "fees_detail": {"interchange_fees": 3590.66, "scheme_fees": 2160.34, "acquirer_markup": 728.0, "acquiring_eur_fixed": 2.5, "stamp_tax": 2.0, "total_fees_and_taxes": 6483.5}, "daily": [{"disp_date": "02/11/25", "op_date": "01/11/25", "op_type": "Intl Card Networks", "gross": 8000.0, "fees": 208.0, "net": 7792.0, "count": 1, "contract": "PC0001263218", "ref_id": "977700024299"}, {"disp_date": "03/11/25", "op_date": "02/11/25", "op_type": "Intl Card Networks", "gross": 7000.0, "fees": 182.0, "net": 6818.0, "count": 1, "contract": "PC0001263218", "ref_id": "978684936399"}, {"disp_date": "04/11/25", "op_date": "03/11/25", "op_type": "Intl Card Networks", "gross": 10500.0, "fees": 282.45, "net": 10217.55, "count": 1, "contract": "PC0001263218", "ref_id": "980026824799"}, {"disp_date": "05/11/25", "op_date": "04/11/25", "op_type": "Intl Card Networks", "gross": 10250.0, "fees": 176.73, "net": 10073.28, "count": 2, "contract": "PC0001263218", "ref_id": "981473458299"}, {"disp_date": "06/11/25", "op_date": "05/11/25", "op_type": "Intl Card Networks", "gross": 2030.0, "fees": 54.61, "net": 1975.39, "count": 1, "contract": "PC0001263218", "ref_id": "982917673699"}, {"disp_date": "08/11/25", "op_date": "07/11/25", "op_type": "Intl Card Networks", "gross": 500.0, "fees": 4.45, "net": 495.55, "count": 1, "contract": "PC0001263218", "ref_id": "985947034299"}, {"disp_date": "11/11/25", "op_date": "10/11/25", "op_type": "Intl Card Networks", "gross": 33072.0, "fees": 859.87, "net": 32212.13, "count": 2, "contract": "PC0001263218", "ref_id": "989910589999"}, {"disp_date": "19/11/25", "op_date": "18/11/25", "op_type": "Intl Card Networks", "gross": 53369.5, "fees": 1387.61, "net": 51981.89, "count": 1, "contract": "PC0001263218", "ref_id": "1001091686699"}, {"disp_date": "20/11/25", "op_date": "19/11/25", "op_type": "Intl Card Networks", "gross": 44607.0, "fees": 1159.78, "net": 43447.22, "count": 1, "contract": "PC0001263218", "ref_id": "1002521278999"}, {"disp_date": "26/11/25", "op_date": "25/11/25", "op_type": "Intl Card Networks", "gross": 37900.0, "fees": 1019.51, "net": 36880.49, "count": 1, "contract": "PC0001263218", "ref_id": "1010807627199"}]}, {"period": "2025-12", "month_label": "December 2025", "currency": "EUR", "source_file": "Estratto_conto_2025-12-31.pdf", "contract_count": 1, "intl_card_volume": 177397.0, "bancomat_volume": 0.0, "intl_pct_of_volume": 100.0, "rate_buildup": {"interchange_rate_pct": 1.6629, "scheme_rate_pct": 0.8034, "markup_rate_pct": 0.0382, "bundled_processing_rate_pct": 2.5045, "fixed_acquirer_rate_pct": 0.0014, "stamp_tax_rate_pct": 0.0011, "full_effective_rate_pct": 2.507, "uplift_over_bundled_bps": 0.25}, "contracts": ["PC0001263218"], "volume": 177397.0, "transaction_count": 18, "net_sales": 176347.0, "refund_amount": 1050.0, "refund_count": 4, "refund_rate_pct": 0.592, "other_movements": 0.0, "total_cost": 4447.43, "commissions": 4442.93, "interchange": 2949.99, "scheme_fees": 1425.25, "acquirer_markup": 67.69, "acquiring_fee_eur": 2.5, "stamp_tax": 2.0, "total_debited": 4447.43, "net_settled": 177397.0, "effective_rate_pct": 2.505, "interchange_pct_of_volume": 1.663, "scheme_pct_of_volume": 0.803, "markup_pct_of_volume": 0.038, "avg_ticket": 9855.39, "chargebacks_count": 0, "chargebacks_amount": 0.0, "chargeback_rate_pct": 0.0, "fees_detail": {"interchange_fees": 2949.99, "scheme_fees": 1425.25, "acquirer_markup": 67.69, "acquiring_eur_fixed": 2.5, "stamp_tax": 2.0, "total_fees_and_taxes": 4447.43}, "daily": [{"disp_date": "07/12/25", "op_date": "06/12/25", "op_type": "Intl Card Networks", "gross": 1850.0, "fees": 48.1, "net": 1801.9, "count": 1, "contract": "PC0001263218", "ref_id": "1028173594299"}, {"disp_date": "09/12/25", "op_date": "08/12/25", "op_type": "Intl Card Networks", "gross": 107500.0, "fees": 2795.0, "net": 104705.0, "count": 1, "contract": "PC0001263218", "ref_id": "1030445765799"}, {"disp_date": "10/12/25", "op_date": "09/12/25", "op_type": "Intl Card Networks", "gross": 540.0, "fees": 14.04, "net": 525.96, "count": 1, "contract": "PC0001263218", "ref_id": "1031916364399"}, {"disp_date": "13/12/25", "op_date": "12/12/25", "op_type": "Intl Card Networks", "gross": 650.0, "fees": 16.9, "net": 633.1, "count": 1, "contract": "PC0001263218", "ref_id": "1036431848699"}, {"disp_date": "14/12/25", "op_date": "13/12/25", "op_type": "Intl Card Networks", "gross": 580.0, "fees": 15.08, "net": 564.92, "count": 1, "contract": "PC0001263218", "ref_id": "1038442189399"}, {"disp_date": "15/12/25", "op_date": "14/12/25", "op_type": "Intl Card Networks", "gross": 19800.0, "fees": 532.62, "net": 19267.38, "count": 1, "contract": "PC0001263218", "ref_id": "1039637469399"}, {"disp_date": "16/12/25", "op_date": "15/12/25", "op_type": "Intl Card Networks", "gross": 12000.0, "fees": 322.8, "net": 11677.2, "count": 1, "contract": "PC0001263218", "ref_id": "1041096293599"}, {"disp_date": "20/12/25", "op_date": "19/12/25", "op_type": "Intl Card Networks", "gross": 5367.0, "fees": 139.54, "net": 5227.46, "count": 2, "contract": "PC0001263218", "ref_id": "1047784565999"}, {"disp_date": "23/12/25", "op_date": "22/12/25", "op_type": "Intl Card Networks", "gross": 18625.0, "fees": 501.01, "net": 18123.99, "count": 2, "contract": "PC0001263218", "ref_id": "1052878882299"}, {"disp_date": "25/12/25", "op_date": "24/12/25", "op_type": "Intl Card Networks", "gross": -1050.0, "fees": -206.85, "net": -843.15, "count": 4, "contract": "PC0001263218", "ref_id": "1056595429699"}, {"disp_date": "26/12/25", "op_date": "25/12/25", "op_type": "Intl Card Networks", "gross": 2060.0, "fees": 18.33, "net": 2041.67, "count": 1, "contract": "PC0001263218", "ref_id": "1057226100399"}, {"disp_date": "27/12/25", "op_date": "26/12/25", "op_type": "Intl Card Networks", "gross": 2585.0, "fees": 67.21, "net": 2517.79, "count": 1, "contract": "PC0001263218", "ref_id": "1057836110199"}, {"disp_date": "01/01/26", "op_date": "31/12/25", "op_type": "Intl Card Networks", "gross": 6890.0, "fees": 179.14, "net": 6710.86, "count": 1, "contract": "PC0001263218", "ref_id": "1065386703999"}]}, {"period": "2026-01", "month_label": "January 2026", "currency": "EUR", "source_file": "Estratto conto Gennaio 2026.pdf", "contract_count": 1, "intl_card_volume": 111848.0, "bancomat_volume": 0.0, "intl_pct_of_volume": 100.0, "rate_buildup": {"interchange_rate_pct": 1.4811, "scheme_rate_pct": 0.7461, "markup_rate_pct": 0.1898, "bundled_processing_rate_pct": 2.4171, "fixed_acquirer_rate_pct": 0.0022, "stamp_tax_rate_pct": 0.0018, "full_effective_rate_pct": 2.4211, "uplift_over_bundled_bps": 0.4}, "contracts": ["PC0001263218"], "volume": 111848.0, "transaction_count": 21, "net_sales": 111598.0, "refund_amount": 250.0, "refund_count": 1, "refund_rate_pct": 0.224, "other_movements": 0.0, "total_cost": 2707.95, "commissions": 2703.45, "interchange": 1656.6, "scheme_fees": 834.51, "acquirer_markup": 212.34, "acquiring_fee_eur": 2.5, "stamp_tax": 2.0, "total_debited": 2707.95, "net_settled": 111848.0, "effective_rate_pct": 2.417, "interchange_pct_of_volume": 1.481, "scheme_pct_of_volume": 0.746, "markup_pct_of_volume": 0.19, "avg_ticket": 5326.1, "chargebacks_count": 0, "chargebacks_amount": 0.0, "chargeback_rate_pct": 0.0, "fees_detail": {"interchange_fees": 1656.6, "scheme_fees": 834.51, "acquirer_markup": 212.34, "acquiring_eur_fixed": 2.5, "stamp_tax": 2.0, "total_fees_and_taxes": 2707.95}, "daily": [{"disp_date": "03/01/26", "op_date": "02/01/26", "op_type": "Intl Card Networks", "gross": 250.0, "fees": 2.23, "net": 247.78, "count": 1, "contract": "PC0001263218", "ref_id": "1067566077799"}, {"disp_date": "04/01/26", "op_date": "03/01/26", "op_type": "Intl Card Networks", "gross": 198.0, "fees": 5.15, "net": 192.85, "count": 1, "contract": "PC0001263218", "ref_id": "1069031281799"}, {"disp_date": "08/01/26", "op_date": "07/01/26", "op_type": "Intl Card Networks", "gross": 1350.0, "fees": 35.8, "net": 1314.2, "count": 2, "contract": "PC0001263218", "ref_id": "1073603150299"}, {"disp_date": "09/01/26", "op_date": "08/01/26", "op_type": "Intl Card Networks", "gross": 792.0, "fees": 21.3, "net": 770.7, "count": 1, "contract": "PC0001263218", "ref_id": "1074967623299"}, {"disp_date": "10/01/26", "op_date": "09/01/26", "op_type": "Intl Card Networks", "gross": -250.0, "fees": -2.23, "net": -247.78, "count": 1, "contract": "PC0001263218", "ref_id": "1076422105899"}, {"disp_date": "12/01/26", "op_date": "11/01/26", "op_type": "Intl Card Networks", "gross": 31300.0, "fees": 841.97, "net": 30458.03, "count": 1, "contract": "PC0001263218", "ref_id": "1078869162599"}, {"disp_date": "14/01/26", "op_date": "13/01/26", "op_type": "Intl Card Networks", "gross": 972.0, "fees": 26.68, "net": 945.32, "count": 3, "contract": "PC0001263218", "ref_id": "1081512999899"}, {"disp_date": "15/01/26", "op_date": "14/01/26", "op_type": "Intl Card Networks", "gross": 46848.0, "fees": 1218.05, "net": 45629.95, "count": 2, "contract": "PC0001263218", "ref_id": "1082917443699"}, {"disp_date": "17/01/26", "op_date": "16/01/26", "op_type": "Intl Card Networks", "gross": 800.0, "fees": 20.8, "net": 779.2, "count": 1, "contract": "PC0001263218", "ref_id": "1085861407399"}, {"disp_date": "21/01/26", "op_date": "20/01/26", "op_type": "Intl Card Networks", "gross": 380.0, "fees": 9.88, "net": 370.12, "count": 1, "contract": "PC0001263218", "ref_id": "1090962652699"}, {"disp_date": "22/01/26", "op_date": "21/01/26", "op_type": "Intl Card Networks", "gross": 440.0, "fees": 11.84, "net": 428.16, "count": 1, "contract": "PC0001263218", "ref_id": "1092359232999"}, {"disp_date": "23/01/26", "op_date": "22/01/26", "op_type": "Intl Card Networks", "gross": 1098.0, "fees": 29.54, "net": 1068.46, "count": 2, "contract": "PC0001263218", "ref_id": "1093810422499"}, {"disp_date": "24/01/26", "op_date": "23/01/26", "op_type": "Intl Card Networks", "gross": 600.0, "fees": 5.34, "net": 594.66, "count": 1, "contract": "PC0001263218", "ref_id": "1095359016299"}, {"disp_date": "30/01/26", "op_date": "29/01/26", "op_type": "Intl Card Networks", "gross": 11475.0, "fees": 298.35, "net": 11176.65, "count": 1, "contract": "PC0001263218", "ref_id": "1103351707199"}, {"disp_date": "31/01/26", "op_date": "30/01/26", "op_type": "Intl Card Networks", "gross": 2220.0, "fees": 59.72, "net": 2160.28, "count": 1, "contract": "PC0001263218", "ref_id": "1104892837899"}, {"disp_date": "01/02/26", "op_date": "31/01/26", "op_type": "Intl Card Networks", "gross": 13375.0, "fees": 119.04, "net": 13255.96, "count": 1, "contract": "PC0001263218", "ref_id": "1107039539599"}]}]}};
 
 const PALETTE = {
   accent:'#00d4ff', green:'#00e5a0', yellow:'#ffc845',
@@ -546,7 +886,62 @@ document.getElementById('monthCount').textContent = meta.month_count;
 document.getElementById('generated').textContent = meta.generated;
 document.getElementById('dataSource').textContent = 'DATA: ' + meta.source_files.join(' . ');
 
-// KPIs
+// ============================================================
+// HERO STRIPS - The rates + volume people really want to see
+// ============================================================
+const rb = meta.rate_buildup;            // interchange/scheme/markup/effective bps
+const cbi = meta.cross_border_indicator;  // FX share + annual
+const ptFX = meta.per_transaction_fx;     // FX total and per-txn
+
+// Refund rate
+const totalRefundAmountHero = months.reduce((a, m) => a + (m.refund_amount || 0), 0);
+const totalRefundCountHero = months.reduce((a, m) => a + (m.refund_count || 0), 0);
+const refundRatePct = (totalRefundAmountHero / meta.total_volume) * 100;
+
+// Annualized run rate
+const monthsCount = Math.max(1, meta.month_count);
+const annualizedVolume = (meta.total_volume / monthsCount) * 12;
+const annualizedFees = (meta.total_fees / monthsCount) * 12;
+
+// ---- Row 1: Rates ----
+document.getElementById('heroEffRate').textContent = rb.full_effective_rate_pct.toFixed(3) + '%';
+document.getElementById('heroEffRateSub').textContent = '= ' + (rb.full_effective_rate_pct * 100).toFixed(0) + ' bps all-in';
+
+document.getElementById('heroIcRate').textContent = rb.interchange_rate_pct.toFixed(3) + '%';
+document.getElementById('heroIcRateSub').textContent = '= ' + (rb.interchange_rate_pct * 100).toFixed(0) + ' bps (to issuing banks)';
+
+document.getElementById('heroSchemeRate').textContent = rb.scheme_rate_pct.toFixed(3) + '%';
+document.getElementById('heroSchemeRateSub').textContent = '= ' + (rb.scheme_rate_pct * 100).toFixed(0) + ' bps (Visa / Mastercard)';
+
+document.getElementById('heroMarkup').textContent = rb.markup_rate_pct.toFixed(3) + '%';
+document.getElementById('heroMarkupSub').textContent = '= ' + (rb.markup_rate_pct * 100).toFixed(1) + ' bps (what Nexi keeps)';
+
+document.getElementById('heroFxRate').textContent = (ptFX.fx_pct_of_ticket).toFixed(2) + '%';
+document.getElementById('heroFxRateSub').textContent = '= ' + ptFX.total_fx_bps.toFixed(0) + ' bps (' + ((ptFX.total_fx_bps / (rb.full_effective_rate_pct * 100)) * 100).toFixed(0) + '% of effective rate)';
+
+document.getElementById('heroRefundRate').textContent = refundRatePct.toFixed(2) + '%';
+document.getElementById('heroRefundRateSub').textContent = fmtEUR(totalRefundAmountHero) + ' over ' + totalRefundCountHero + ' refund(s)';
+
+// ---- Row 2: Volume and money ----
+document.getElementById('heroVolume').textContent = fmtEUR(meta.total_volume);
+document.getElementById('heroVolumeSub').textContent = meta.month_count + ' months (' + meta.period_start + ' to ' + meta.period_end + ')';
+
+document.getElementById('heroTxns').textContent = fmtNumInt(meta.total_transactions);
+document.getElementById('heroTxnsSub').textContent = 'avg ' + fmtNumInt(meta.total_transactions / meta.month_count) + '/month';
+
+document.getElementById('heroTicket').textContent = fmtEURDec(meta.total_volume / meta.total_transactions);
+document.getElementById('heroTicketSub').textContent = 'avg per sale - luxury ticket';
+
+document.getElementById('heroFees').textContent = fmtEUR(meta.total_fees);
+document.getElementById('heroFeesSub').textContent = rb.full_effective_rate_pct.toFixed(3) + '% of volume';
+
+document.getElementById('heroFxCost').textContent = fmtEUR(ptFX.period_fx_total_eur);
+document.getElementById('heroFxCostSub').textContent = '~' + ((ptFX.period_fx_total_eur / meta.total_fees) * 100).toFixed(0) + '% of total fees';
+
+document.getElementById('heroAnnual').textContent = fmtEUR(annualizedVolume);
+document.getElementById('heroAnnualSub').textContent = 'volume / yr  (~' + fmtEUR(annualizedFees) + ' fees)';
+
+// KPIs (legacy, still populating hidden spans for compatibility)
 document.getElementById('kpi-volume').textContent = fmtEUR(meta.total_volume);
 document.getElementById('kpi-volume-sub').textContent = meta.month_count + ' months';
 document.getElementById('kpi-txns').textContent = fmtNumInt(meta.total_transactions);
@@ -661,7 +1056,7 @@ document.getElementById('setupGrid').innerHTML = setupCardLeft + setupCardRight;
 // CHARTS
 // ============================================================
 Chart.defaults.font.family = "'Space Mono', monospace";
-Chart.defaults.color = PALETTE.muted;
+Chart.defaults.color = PALETTE.text;   // use the bright text color by default so legends stay readable on dark theme
 Chart.defaults.borderColor = PALETTE.border;
 
 const labels = months.map(m => m.period);
@@ -934,6 +1329,167 @@ document.getElementById('cbRefTable').innerHTML = refRows.map(r => {
 }).join('');
 
 document.getElementById('cbInterpretation').innerHTML = '<strong>Factual summary:</strong> ' + cb.factual_summary;
+
+// ============================================================
+// EFFECTIVE RATE DECOMPOSITION
+// ============================================================
+const decomp = meta.effective_rate_decomposition;
+
+document.getElementById('decompFxBps').textContent = decomp.cross_border_fx_total_bps.toFixed(0) + ' bps';
+document.getElementById('decompFxShare').textContent = decomp.cross_border_fx_share_of_total.toFixed(1) + '% of total effective rate';
+document.getElementById('decompBaselineBps').textContent = decomp.domestic_baseline_total_bps.toFixed(0) + ' bps';
+document.getElementById('decompBaselineShare').textContent = decomp.domestic_baseline_share_of_total.toFixed(1) + '% of total effective rate';
+document.getElementById('decompTotalBps').textContent = decomp.full_effective_rate_bps.toFixed(0) + ' bps';
+document.getElementById('decompChartSub').textContent = 'Full rate ' + decomp.full_effective_rate_pct.toFixed(3) + '% = ' + decomp.cross_border_fx_share_of_total.toFixed(0) + '% cross-border / FX + ' + decomp.domestic_baseline_share_of_total.toFixed(0) + '% domestic baseline';
+
+// Sort components by bps descending for a cleaner chart
+const compsSorted = [...decomp.components].sort((a, b) => b.bps - a.bps);
+
+// Doughnut chart
+new Chart(document.getElementById('chartDecomp'), {
+  type: 'doughnut',
+  data: {
+    labels: compsSorted.map(c => c.name),
+    datasets: [{
+      data: compsSorted.map(c => c.bps),
+      backgroundColor: compsSorted.map(c => c.color_hex),
+      borderColor: PALETTE.border,
+      borderWidth: 2,
+    }]
+  },
+  options: {
+    responsive: true,
+    maintainAspectRatio: false,
+    cutout: '55%',
+    plugins: {
+      legend: {
+        position: 'right',
+        labels: {
+          boxWidth: 12,
+          padding: 10,
+          color: '#ffffff',
+          font: { size: 11, family: 'Space Mono', weight: '700' },
+          generateLabels: (chart) => {
+            const data = chart.data;
+            return data.labels.map((label, i) => {
+              const bps = data.datasets[0].data[i];
+              const pct = (bps / decomp.full_effective_rate_bps * 100).toFixed(1);
+              return {
+                text: `${bps.toFixed(0)} bps  (${pct}%) - ${label.length > 40 ? label.substring(0, 38) + '...' : label}`,
+                fillStyle: data.datasets[0].backgroundColor[i],
+                strokeStyle: data.datasets[0].backgroundColor[i],
+                fontColor: '#ffffff',
+                lineWidth: 0,
+                index: i,
+              };
+            });
+          }
+        }
+      },
+      tooltip: {
+        callbacks: {
+          label: ctx => {
+            const bps = ctx.parsed;
+            const pct = (bps / decomp.full_effective_rate_bps * 100).toFixed(1);
+            return ctx.label + ': ' + bps.toFixed(1) + ' bps (' + pct + '% of effective rate)';
+          }
+        }
+      }
+    }
+  }
+});
+
+// Full component breakdown table
+document.getElementById('decompTableBody').innerHTML = decomp.components.map(c => {
+  const bucketChip = c.bucket === 'fx'
+    ? `<span class="chip cyan">FX / Cross-Border</span>`
+    : `<span class="chip green">Domestic Baseline</span>`;
+  return `
+    <tr>
+      <td style="max-width:280px;white-space:normal">${c.name}</td>
+      <td>${bucketChip}</td>
+      <td style="color:${c.color_hex};font-weight:700">${c.bps.toFixed(1)}</td>
+      <td>${c.pct_of_volume.toFixed(3)}%</td>
+      <td>${c.pct_of_total_rate.toFixed(1)}%</td>
+      <td style="font-family:'Syne',sans-serif;font-size:11px;color:var(--muted);text-align:left;white-space:normal;max-width:360px">${c.description}</td>
+    </tr>
+  `;
+}).join('');
+
+document.getElementById('decompSummary').innerHTML = '<strong>Factual summary:</strong> ' + decomp.factual_summary;
+
+// ============================================================
+// PER-TRANSACTION FX COST
+// ============================================================
+const fx = meta.per_transaction_fx;
+
+document.getElementById('fxPctVal').textContent = fx.fx_pct_of_ticket.toFixed(2) + '%';
+document.getElementById('fxPctSub').textContent = '= ' + fx.total_fx_bps.toFixed(0) + ' bps applied to every ticket';
+document.getElementById('fxPerTxnVal').textContent = fmtEUR(fx.period_total_per_txn_eur);
+document.getElementById('fxPerTxnSub').textContent = 'on the EUR ' + fmtNumInt(fx.period_avg_ticket_eur) + ' average ticket';
+document.getElementById('fxTotalVal').textContent = fmtEUR(fx.period_fx_total_eur);
+document.getElementById('fxTotalSub').textContent = '~' + fmtEUR(fx.annualized_fx_total_eur) + ' / year annualized';
+
+// Per-month per-txn table
+document.getElementById('fxMonthlyBody').innerHTML = fx.monthly_breakdown.map(m => `
+  <tr>
+    <td>${m.period}</td>
+    <td>${m.txn_count}</td>
+    <td>${fmtEURDec(m.avg_ticket)}</td>
+    <td>${fmtEURDec(m.layer1_per_txn_eur)}</td>
+    <td>${fmtEURDec(m.layer2_per_txn_eur)}</td>
+    <td style="color:var(--accent);font-weight:700">${fmtEURDec(m.total_fx_per_txn_eur)}</td>
+    <td>${fmtEUR(m.month_total_fx_eur)}</td>
+  </tr>
+`).join('');
+
+// Largest single transactions table
+document.getElementById('fxLargestBody').innerHTML = fx.largest_single_transactions.map(t => `
+  <tr>
+    <td>${t.disp_date}</td>
+    <td>${t.month}</td>
+    <td>${t.count}</td>
+    <td>${fmtEURDec(t.gross)}</td>
+    <td>${fmtEURDec(t.fees_billed)}</td>
+    <td style="color:var(--orange);font-weight:700">${fmtEURDec(t.fx_cost_eur)}</td>
+    <td>${t.fx_pct.toFixed(2)}%</td>
+  </tr>
+`).join('');
+
+document.getElementById('fxNote').innerHTML = '<strong>Method note:</strong> ' + fx.method_note;
+
+// Per-month per-txn chart
+new Chart(document.getElementById('chartFXPerTxn'), {
+  type: 'bar',
+  data: {
+    labels: fx.monthly_breakdown.map(m => m.period),
+    datasets: [
+      { label: 'Layer 1 (Scheme XB)', data: fx.monthly_breakdown.map(m => m.layer1_per_txn_eur), backgroundColor: PALETTE.purple, stack: 'fx' },
+      { label: 'Layer 2 (IC tier uplift)', data: fx.monthly_breakdown.map(m => m.layer2_per_txn_eur), backgroundColor: PALETTE.accent, stack: 'fx' }
+    ]
+  },
+  options: {
+    responsive: true, maintainAspectRatio: false,
+    plugins: {
+      legend: { position: 'bottom', labels: { boxWidth: 12, font: { size: 10 } } },
+      tooltip: {
+        callbacks: {
+          label: ctx => ctx.dataset.label + ': ' + fmtEURDec(ctx.parsed.y) + ' / txn'
+        }
+      },
+      title: {
+        display: true,
+        text: fx.fx_pct_of_ticket.toFixed(2) + '% applied to each month\'s average ticket',
+        color: PALETTE.text,
+        font: { size: 11, family: 'Space Mono' }
+      }
+    },
+    scales: {
+      y: { stacked: true, ticks: { callback: v => fmtEUR(v) }, grid: { color: PALETTE.border }, title: { display: true, text: 'EUR per transaction', color: PALETTE.muted, font: { size: 10 } } },
+      x: { stacked: true, grid: { display: false } }
+    }
+  }
+});
 
 // ============================================================
 // NOTABLE OBSERVATIONS
