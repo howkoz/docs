@@ -1,0 +1,1061 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Nexi - Italian Acquirer Statement Dashboard</title>
+<link href="https://fonts.googleapis.com/css2?family=Space+Mono:wght@400;700&family=Syne:wght@400;600;700;800&display=swap" rel="stylesheet">
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js"></script>
+<style>
+:root {
+  --bg:#07090e; --surface:#0b0f19; --s2:#0e1420; --s3:#121a28;
+  --border:#162031; --border2:#1e2e42;
+  --text:#d4e4f4; --muted:#607d94; --dim:#2d4459;
+  --accent:#00d4ff; --green:#00e5a0; --yellow:#ffc845;
+  --red:#ff4d6a; --orange:#ff7a3d; --purple:#a78bfa; --sky:#38bdf8;
+}
+*,*::before,*::after{margin:0;padding:0;box-sizing:border-box}
+body{font-family:'Syne',sans-serif;background:var(--bg);color:var(--text);line-height:1.6;font-size:14px;min-height:100vh}
+body::before{content:'';position:fixed;inset:0;background-image:linear-gradient(rgba(0,212,255,0.012) 1px,transparent 1px),linear-gradient(90deg,rgba(0,212,255,0.012) 1px,transparent 1px);background-size:48px 48px;pointer-events:none;z-index:0}
+body::after{content:'';position:fixed;top:-200px;left:50%;transform:translateX(-50%);width:800px;height:360px;background:radial-gradient(ellipse at center,rgba(0,212,255,0.035) 0%,transparent 70%);pointer-events:none;z-index:0}
+.wrap{position:relative;z-index:1;max-width:1320px;margin:0 auto;padding:32px 24px}
+.page-header{margin-bottom:32px;padding-bottom:24px;border-bottom:1px solid var(--border)}
+.header-top{display:flex;align-items:flex-start;justify-content:space-between;flex-wrap:wrap;gap:16px}
+.header-left .badge{display:inline-flex;align-items:center;gap:8px;background:rgba(0,212,255,0.08);border:1px solid rgba(0,212,255,0.2);color:var(--accent);font-family:'Space Mono',monospace;font-size:9px;letter-spacing:2px;padding:4px 12px;border-radius:2px;text-transform:uppercase;margin-bottom:12px}
+.header-left h1{font-size:34px;font-weight:800;letter-spacing:-1.5px;line-height:1.1}
+.header-left h1 span{color:var(--accent)}
+.header-meta{display:flex;gap:20px;margin-top:10px;flex-wrap:wrap}
+.header-meta .meta{font-family:'Space Mono',monospace;font-size:10px;color:var(--dim)}
+.header-meta .meta span{color:var(--muted)}
+
+.banners{display:flex;flex-direction:column;gap:10px;margin-bottom:28px}
+.banner{border-radius:3px;padding:12px 18px;font-size:12px;line-height:1.6;display:flex;gap:12px;align-items:flex-start}
+.banner.info{background:rgba(0,212,255,0.06);border:1px solid rgba(0,212,255,0.2);color:var(--text)}
+.banner.danger{background:rgba(255,77,106,0.07);border:1px solid rgba(255,77,106,0.25);color:var(--text)}
+.banner.success{background:rgba(0,229,160,0.06);border:1px solid rgba(0,229,160,0.2);color:var(--text)}
+.banner-icon{font-size:15px;flex-shrink:0;margin-top:1px}
+.banner strong{color:var(--accent)}
+.banner.danger strong{color:var(--red)}
+.banner.success strong{color:var(--green)}
+
+.kpi-strip{display:grid;grid-template-columns:repeat(6,1fr);gap:12px;margin-bottom:28px}
+@media(max-width:1100px){.kpi-strip{grid-template-columns:repeat(3,1fr)}}
+@media(max-width:600px){.kpi-strip{grid-template-columns:repeat(2,1fr)}}
+.kpi-card{background:var(--surface);border:1px solid var(--border);border-radius:4px;padding:16px 18px;position:relative;overflow:hidden}
+.kpi-card::before{content:'';position:absolute;top:0;left:0;right:0;height:2px}
+.kpi-card.accent::before{background:var(--accent)}
+.kpi-card.warn::before{background:var(--yellow)}
+.kpi-card.danger::before{background:var(--red)}
+.kpi-card.blue::before{background:var(--sky)}
+.kpi-card.green::before{background:var(--green)}
+.kpi-card.purple::before{background:var(--purple)}
+.kpi-label{font-family:'Space Mono',monospace;font-size:9px;letter-spacing:2px;text-transform:uppercase;color:var(--muted);margin-bottom:8px}
+.kpi-value{font-family:'Space Mono',monospace;font-size:20px;font-weight:700;color:var(--text);letter-spacing:-0.5px}
+.kpi-value.accent{color:var(--accent)}
+.kpi-value.warn{color:var(--yellow)}
+.kpi-value.danger{color:var(--red)}
+.kpi-value.blue{color:var(--sky)}
+.kpi-value.green{color:var(--green)}
+.kpi-value.purple{color:var(--purple)}
+.kpi-sub{font-size:11px;color:var(--muted);margin-top:4px;font-family:'Space Mono',monospace}
+
+.charts-row{display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-bottom:16px}
+.charts-row.full{grid-template-columns:1fr}
+@media(max-width:900px){.charts-row{grid-template-columns:1fr}}
+.chart-card{background:var(--surface);border:1px solid var(--border);border-radius:4px;padding:20px}
+.chart-title{font-family:'Space Mono',monospace;font-size:10px;letter-spacing:1.5px;text-transform:uppercase;color:var(--muted);margin-bottom:4px}
+.chart-sub{font-size:11px;color:var(--dim);margin-bottom:16px}
+.chart-wrap{position:relative}
+.chart-wrap.tall{height:200px}
+.chart-wrap.std{height:230px}
+
+.table-section{background:var(--surface);border:1px solid var(--border);border-radius:4px;overflow:hidden;margin-top:16px}
+.table-header{padding:16px 20px;border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:space-between}
+.table-header h3{font-family:'Space Mono',monospace;font-size:10px;letter-spacing:1.5px;text-transform:uppercase;color:var(--muted)}
+.tbl-wrap{overflow-x:auto}
+table{width:100%;border-collapse:collapse;font-size:12px;min-width:980px}
+th{font-family:'Space Mono',monospace;font-size:9px;letter-spacing:1.5px;text-transform:uppercase;color:var(--dim);padding:9px 14px;background:var(--s3);border-bottom:1px solid var(--border);text-align:right;white-space:nowrap}
+th:first-child{text-align:left}
+td{padding:9px 14px;border-bottom:1px solid rgba(26,45,68,0.5);color:var(--muted);text-align:right;font-family:'Space Mono',monospace;font-size:11px;white-space:nowrap}
+td:first-child{text-align:left;font-family:'Syne',sans-serif;font-size:12px;font-weight:600;color:var(--text)}
+tr:last-child td{border-bottom:none}
+tr:hover td{background:rgba(0,212,255,0.02)}
+tr.refund-month td{color:var(--orange)}
+tr.refund-month td:first-child::after{content:' \\21BA';color:var(--orange);font-size:11px}
+
+.chip{display:inline-block;font-family:'Space Mono',monospace;font-size:10px;font-weight:700;padding:2px 8px;border-radius:2px;letter-spacing:0.5px}
+.chip.green{background:rgba(0,229,160,0.12);color:var(--green)}
+.chip.yellow{background:rgba(255,200,69,0.12);color:var(--yellow)}
+.chip.red{background:rgba(255,77,106,0.14);color:var(--red)}
+.chip.cyan{background:rgba(0,212,255,0.1);color:var(--accent)}
+
+/* MERCHANT SETUP GRID */
+.setup-grid{display:grid;grid-template-columns:1.3fr 1fr;gap:16px;margin-bottom:28px}
+@media(max-width:900px){.setup-grid{grid-template-columns:1fr}}
+.setup-card{background:var(--surface);border:1px solid var(--border);border-radius:4px;padding:18px 20px}
+.setup-card h3{font-family:'Space Mono',monospace;font-size:10px;letter-spacing:1.5px;text-transform:uppercase;color:var(--muted);margin-bottom:14px;display:flex;align-items:center;gap:8px}
+.setup-card h3::before{content:'';width:6px;height:6px;background:var(--accent);border-radius:50%}
+.setup-row{display:flex;justify-content:space-between;gap:16px;padding:7px 0;border-bottom:1px dashed rgba(26,45,68,0.5);font-family:'Space Mono',monospace;font-size:11px}
+.setup-row:last-child{border-bottom:none}
+.setup-row .key{color:var(--muted);text-transform:uppercase;letter-spacing:1px;font-size:9px}
+.setup-row .val{color:var(--text);text-align:right;font-weight:700;word-break:break-all}
+.setup-row .val.accent{color:var(--accent)}
+.contracts-table{width:100%;font-family:'Space Mono',monospace;font-size:10px;border-collapse:collapse;margin-top:8px}
+.contracts-table th{text-align:left;color:var(--dim);padding:6px 8px;font-size:9px;text-transform:uppercase;letter-spacing:1px;border-bottom:1px solid var(--border)}
+.contracts-table th:not(:first-child){text-align:right}
+.contracts-table td{padding:6px 8px;color:var(--text);border-bottom:1px solid rgba(26,45,68,0.3)}
+.contracts-table td:not(:first-child){text-align:right}
+.contracts-table tr:last-child td{border-bottom:none}
+.cardmix-bar{display:flex;height:28px;border-radius:3px;overflow:hidden;margin:8px 0 4px;border:1px solid var(--border2)}
+.cardmix-bar .seg{display:flex;align-items:center;justify-content:center;font-size:10px;font-weight:700;color:#0b0f19}
+.cardmix-bar .seg.intl{background:var(--accent)}
+.cardmix-bar .seg.banco{background:var(--purple)}
+.cardmix-legend{display:flex;gap:14px;font-size:10px;font-family:'Space Mono',monospace;color:var(--muted);margin-top:6px}
+.cardmix-legend .dot{display:inline-block;width:8px;height:8px;border-radius:50%;margin-right:5px;vertical-align:middle}
+.note{font-family:'Space Mono',monospace;font-size:9px;color:var(--dim);margin-top:10px;line-height:1.5}
+
+/* RATE BUILDUP SECTION */
+.rate-buildup-section{margin-top:32px;padding-top:24px;border-top:1px solid var(--border)}
+.rate-buildup-header{margin-bottom:20px}
+.rate-buildup-header h2{font-size:22px;font-weight:800;letter-spacing:-0.5px;line-height:1.2;color:var(--text);margin-bottom:8px}
+.rate-buildup-header h2::before{content:'';display:inline-block;width:8px;height:8px;background:var(--accent);border-radius:50%;margin-right:10px;vertical-align:middle}
+.rate-buildup-header p{font-size:12px;color:var(--muted);max-width:880px;line-height:1.6}
+
+/* OBSERVATIONS SECTION */
+.observations-section{margin-top:32px;padding-top:24px;border-top:1px solid var(--border)}
+.obs-card{background:var(--surface);border:1px solid var(--border);border-radius:4px;padding:16px 20px;margin-bottom:12px;border-left-width:4px}
+.obs-card.high{border-left-color:var(--red)}
+.obs-card.medium{border-left-color:var(--yellow)}
+.obs-card.low{border-left-color:var(--sky)}
+.obs-head{display:flex;justify-content:space-between;align-items:center;gap:12px;margin-bottom:8px}
+.obs-title{font-size:13px;font-weight:700;color:var(--text)}
+.obs-meta{display:flex;gap:8px;align-items:center}
+.obs-cat{font-family:'Space Mono',monospace;font-size:9px;color:var(--muted);text-transform:uppercase;letter-spacing:1px}
+.obs-sev{font-family:'Space Mono',monospace;font-size:9px;font-weight:700;padding:2px 8px;border-radius:2px;letter-spacing:1px;text-transform:uppercase}
+.obs-sev.high{background:rgba(255,77,106,0.14);color:var(--red)}
+.obs-sev.medium{background:rgba(255,200,69,0.12);color:var(--yellow)}
+.obs-sev.low{background:rgba(56,189,248,0.1);color:var(--sky)}
+.obs-detail{font-size:12px;color:var(--muted);line-height:1.6}
+
+/* CROSS-BORDER SECTION */
+.cross-border-section{margin-top:32px;padding-top:24px;border-top:1px solid var(--border)}
+.cb-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:14px;margin-bottom:18px}
+@media(max-width:900px){.cb-grid{grid-template-columns:1fr}}
+.cb-card{background:var(--surface);border:1px solid var(--border);border-radius:4px;padding:18px 22px;position:relative;overflow:hidden}
+.cb-card::before{content:'';position:absolute;top:0;left:0;right:0;height:3px}
+.cb-headline::before{background:var(--accent)}
+.cb-loading::before{background:var(--orange)}
+.cb-share::before{background:var(--purple)}
+.cb-label{font-family:'Space Mono',monospace;font-size:9px;letter-spacing:1.5px;text-transform:uppercase;color:var(--muted);margin-bottom:10px}
+.cb-value{font-family:'Space Mono',monospace;font-size:28px;font-weight:700;color:var(--text);letter-spacing:-0.5px;line-height:1.1}
+.cb-headline .cb-value{color:var(--accent)}
+.cb-loading .cb-value{color:var(--orange)}
+.cb-share .cb-value{color:var(--purple)}
+.cb-sub{font-size:11px;color:var(--muted);margin-top:6px;font-family:'Space Mono',monospace;line-height:1.4}
+
+/* ============================================================ */
+/* PRINT MEDIA - converts the dark dashboard to a light, paginated
+   document for PDF export via headless Edge / Chrome.            */
+/* ============================================================ */
+@media print {
+  @page {
+    size: A4 portrait;
+    margin: 14mm 12mm 16mm 12mm;
+  }
+  body{background:#ffffff !important;color:#0b0f19 !important;font-size:10px}
+  body::before, body::after{display:none !important}
+  .wrap{max-width:none;padding:0;margin:0}
+  .page-header{padding-bottom:14px;margin-bottom:14px;border-bottom:2px solid #1A1F36}
+  .header-left h1{font-size:24px;color:#1A1F36}
+  .header-left h1 span{color:#0070C0}
+  .header-left .badge{background:#EAF4FB;color:#0070C0;border-color:#0070C0}
+  .header-meta .meta{color:#666;font-size:9px}
+  .header-meta .meta span{color:#0b0f19;font-weight:700}
+
+  /* Banners */
+  .banner{background:#F4F7FC !important;border:1px solid #c0d4e8 !important;color:#0b0f19 !important;font-size:10px;padding:8px 12px}
+  .banner.danger{background:#FBEDED !important;border-color:#C40000 !important}
+  .banner.success{background:#E8F8EE !important;border-color:#2E7D32 !important}
+  .banner strong{color:#0070C0 !important}
+  .banner.danger strong{color:#C40000 !important}
+  .banner.success strong{color:#2E7D32 !important}
+
+  /* Setup grid */
+  .setup-grid{display:grid;grid-template-columns:1.3fr 1fr;gap:12px;page-break-inside:avoid}
+  .setup-card{background:#ffffff !important;border:1px solid #cbd5e1 !important;padding:12px 14px}
+  .setup-card h3{color:#1A1F36 !important;font-size:11px}
+  .setup-card h3::before{background:#0070C0 !important}
+  .setup-row{border-bottom:1px dashed #e2e8f0 !important;padding:5px 0;font-size:9px}
+  .setup-row .key{color:#666 !important;font-size:8px}
+  .setup-row .val{color:#0b0f19 !important}
+  .setup-row .val.accent{color:#0070C0 !important}
+  .contracts-table th{color:#666 !important;border-bottom-color:#cbd5e1 !important;font-size:8px}
+  .contracts-table td{color:#0b0f19 !important;border-bottom-color:#e2e8f0 !important;font-size:9px}
+  .cardmix-bar{border-color:#cbd5e1 !important}
+  .note{color:#666 !important}
+
+  /* KPI strip */
+  .kpi-strip{grid-template-columns:repeat(6,1fr) !important;gap:8px;page-break-inside:avoid}
+  .kpi-card{background:#ffffff !important;border:1px solid #cbd5e1 !important;padding:10px 12px}
+  .kpi-label{color:#666 !important;font-size:8px}
+  .kpi-value{color:#0b0f19 !important;font-size:14px}
+  .kpi-value.accent{color:#0070C0 !important}
+  .kpi-value.warn{color:#B07000 !important}
+  .kpi-value.danger{color:#C40000 !important}
+  .kpi-value.green{color:#2E7D32 !important}
+  .kpi-value.purple{color:#6F42C1 !important}
+  .kpi-sub{color:#666 !important;font-size:9px}
+
+  /* Charts */
+  .charts-row{gap:10px;page-break-inside:avoid}
+  .chart-card{background:#ffffff !important;border:1px solid #cbd5e1 !important;padding:12px 14px;page-break-inside:avoid}
+  .chart-title{color:#666 !important;font-size:9px}
+  .chart-sub{color:#999 !important;font-size:9px}
+  .chart-wrap.tall{height:200px !important}
+  .chart-wrap.std{height:200px !important}
+  canvas{max-height:200px !important}
+
+  /* Tables */
+  .table-section{background:#ffffff !important;border:1px solid #cbd5e1 !important;page-break-inside:avoid;margin-top:12px}
+  .table-header{background:#F4F7FC !important;border-bottom-color:#cbd5e1 !important;padding:10px 14px}
+  .table-header h3{color:#1A1F36 !important;font-size:10px}
+  table{font-size:9px;min-width:0 !important}
+  th{background:#1A1F36 !important;color:#ffffff !important;border-bottom-color:#1A1F36 !important;padding:6px 8px;font-size:8px}
+  td{color:#0b0f19 !important;border-bottom-color:#e2e8f0 !important;padding:6px 8px;font-size:9px}
+  td:first-child{color:#0b0f19 !important;font-weight:700}
+  tr:hover td{background:transparent !important}
+  .chip.green{background:#E8F8EE !important;color:#2E7D32 !important}
+  .chip.yellow{background:#FFF7E0 !important;color:#B07000 !important}
+  .chip.red{background:#FBEDED !important;color:#C40000 !important}
+
+  /* Rate buildup */
+  .rate-buildup-section{border-top-color:#1A1F36 !important;page-break-before:always}
+  .rate-buildup-header h2{color:#1A1F36 !important;font-size:18px}
+  .rate-buildup-header h2::before{background:#0070C0 !important}
+  .rate-buildup-header p{color:#666 !important;font-size:10px}
+
+  /* Observations */
+  .observations-section{border-top-color:#1A1F36 !important;page-break-before:always}
+  .obs-card{background:#ffffff !important;border:1px solid #cbd5e1 !important;padding:10px 14px;margin-bottom:8px;page-break-inside:avoid}
+  .obs-card.high{border-left:4px solid #C40000 !important}
+  .obs-card.medium{border-left:4px solid #B07000 !important}
+  .obs-card.low{border-left:4px solid #0070C0 !important}
+  .obs-title{color:#1A1F36 !important;font-size:11px}
+  .obs-cat{color:#666 !important;font-size:8px}
+  .obs-sev.high{background:#FBEDED !important;color:#C40000 !important}
+  .obs-sev.medium{background:#FFF7E0 !important;color:#B07000 !important}
+  .obs-sev.low{background:#EAF4FB !important;color:#0070C0 !important}
+  .obs-detail{color:#444 !important;font-size:9px;line-height:1.5}
+
+  /* Cross-border */
+  .cross-border-section{border-top-color:#1A1F36 !important;page-break-before:always}
+  .cb-grid{display:grid;grid-template-columns:repeat(3,1fr) !important;gap:10px;page-break-inside:avoid}
+  .cb-card{background:#ffffff !important;border:1px solid #cbd5e1 !important;padding:12px 14px}
+  .cb-label{color:#666 !important;font-size:8px}
+  .cb-value{color:#1A1F36 !important;font-size:18px}
+  .cb-headline .cb-value{color:#0070C0 !important}
+  .cb-loading .cb-value{color:#C45000 !important}
+  .cb-share .cb-value{color:#6F42C1 !important}
+  .cb-sub{color:#666 !important;font-size:9px}
+
+  /* Footer */
+  .footer{border-top-color:#cbd5e1 !important}
+  .footer span{color:#666 !important;font-size:8px}
+
+  /* Page break helpers */
+  .page-break{page-break-before:always}
+  .avoid-break{page-break-inside:avoid}
+}
+
+.footer{margin-top:40px;padding-top:16px;border-top:1px solid var(--border);display:flex;justify-content:space-between;flex-wrap:wrap;gap:8px}
+.footer span{font-family:'Space Mono',monospace;font-size:9px;color:var(--dim)}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <div class="page-header">
+    <div class="header-top">
+      <div class="header-left">
+        <div class="badge">Italian Acquirer / Nexi Group</div>
+        <h1>Nexi <span>Statement Analysis</span></h1>
+        <div class="header-meta">
+          <div class="meta">MERCHANT: <span id="merchant"></span></div>
+          <div class="meta">CITY: <span id="city"></span></div>
+          <div class="meta">CURRENCY: <span id="currency"></span></div>
+          <div class="meta">PERIOD: <span id="period"></span></div>
+          <div class="meta">MONTHS: <span id="monthCount"></span></div>
+          <div class="meta">GENERATED: <span id="generated"></span></div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="banners" id="banners"></div>
+
+  <!-- MERCHANT ACQUIRER SETUP -->
+  <div class="setup-grid" id="setupGrid"></div>
+
+  <div class="kpi-strip">
+    <div class="kpi-card accent"><div class="kpi-label">Total Volume</div><div class="kpi-value accent" id="kpi-volume"></div><div class="kpi-sub" id="kpi-volume-sub"></div></div>
+    <div class="kpi-card blue"><div class="kpi-label">Transactions</div><div class="kpi-value blue" id="kpi-txns"></div><div class="kpi-sub" id="kpi-txns-sub"></div></div>
+    <div class="kpi-card warn"><div class="kpi-label">Total Fees</div><div class="kpi-value warn" id="kpi-fees"></div><div class="kpi-sub" id="kpi-fees-sub"></div></div>
+    <div class="kpi-card danger"><div class="kpi-label">Effective Rate</div><div class="kpi-value danger" id="kpi-rate"></div><div class="kpi-sub" id="kpi-rate-sub"></div></div>
+    <div class="kpi-card green"><div class="kpi-label">Net Settled</div><div class="kpi-value green" id="kpi-settled"></div><div class="kpi-sub" id="kpi-settled-sub"></div></div>
+    <div class="kpi-card purple"><div class="kpi-label">Refunds</div><div class="kpi-value purple" id="kpi-refunds"></div><div class="kpi-sub" id="kpi-refunds-sub"></div></div>
+  </div>
+
+  <div class="charts-row">
+    <div class="chart-card">
+      <div class="chart-title">Monthly Volume</div>
+      <div class="chart-sub">Gross processed per month - all card types in EUR</div>
+      <div class="chart-wrap std"><canvas id="chartVolume"></canvas></div>
+    </div>
+    <div class="chart-card">
+      <div class="chart-title">Effective Rate by Month</div>
+      <div class="chart-sub">Total fees as % of gross volume - lower is better</div>
+      <div class="chart-wrap std"><canvas id="chartRate"></canvas></div>
+    </div>
+  </div>
+
+  <div class="charts-row">
+    <div class="chart-card">
+      <div class="chart-title">Fee Composition</div>
+      <div class="chart-sub">Where the money goes: issuer interchange, card scheme fees, Nexi acquirer markup, stamp tax</div>
+      <div class="chart-wrap tall"><canvas id="chartFees"></canvas></div>
+    </div>
+    <div class="chart-card">
+      <div class="chart-title">Transaction Count vs Avg Ticket</div>
+      <div class="chart-sub">Volume distribution check</div>
+      <div class="chart-wrap tall"><canvas id="chartTxns"></canvas></div>
+    </div>
+  </div>
+
+  <div class="charts-row full">
+    <div class="chart-card">
+      <div class="chart-title">Cumulative Fees Paid To Nexi</div>
+      <div class="chart-sub">Year to date total cost of acquiring</div>
+      <div class="chart-wrap tall"><canvas id="chartCumFees"></canvas></div>
+    </div>
+  </div>
+
+  <!-- ============================================================ -->
+  <!-- RATE BUILDUP: Processing Rate -> Full Effective Rate          -->
+  <!-- ============================================================ -->
+  <div class="rate-buildup-section">
+    <div class="rate-buildup-header">
+      <h2>Processing Rate &#8594; Full Effective Rate</h2>
+      <p>Where every basis point comes from. Start with the bundled processing rate Nexi quotes you (interchange + scheme + acquirer markup), then add the things hidden below the headline rate (fixed monthly acquirer fee + Italian stamp tax) to land at the true all-in cost of acquiring.</p>
+    </div>
+
+    <div class="charts-row">
+      <div class="chart-card">
+        <div class="chart-title">Period Total - Rate Build-up Waterfall</div>
+        <div class="chart-sub">Each segment shows what % of volume it adds to the all-in rate</div>
+        <div class="chart-wrap tall" style="height:260px"><canvas id="chartWaterfall"></canvas></div>
+      </div>
+      <div class="chart-card">
+        <div class="chart-title">Per-Month Rate Composition</div>
+        <div class="chart-sub">Stacked basis points - shows variance month to month</div>
+        <div class="chart-wrap tall" style="height:260px"><canvas id="chartRateMonthly"></canvas></div>
+      </div>
+    </div>
+
+    <div class="table-section">
+      <div class="table-header">
+        <h3>Rate Build-up Per Month (basis points)</h3>
+        <span style="font-family:'Space Mono',monospace;font-size:9px;color:var(--dim)">1 BPS = 0.01% = 1/100 OF A PERCENT</span>
+      </div>
+      <div class="tbl-wrap">
+        <table>
+          <thead>
+            <tr>
+              <th style="text-align:left">Period</th>
+              <th>Interchange (bps)</th>
+              <th>Scheme (bps)</th>
+              <th>Acquirer Markup (bps)</th>
+              <th style="background:rgba(0,212,255,0.08);color:var(--accent)">Bundled Rate (bps)</th>
+              <th>+ Fixed Acquirer (bps)</th>
+              <th>+ Stamp Tax (bps)</th>
+              <th style="background:rgba(255,77,106,0.08);color:var(--red)">Full Effective (bps)</th>
+              <th>Uplift (bps)</th>
+            </tr>
+          </thead>
+          <tbody id="rateBuildupBody"></tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+
+  <!-- ============================================================ -->
+  <!-- CROSS-BORDER COST INDICATOR (descriptive only)                -->
+  <!-- ============================================================ -->
+  <div class="cross-border-section">
+    <div class="rate-buildup-header">
+      <h2>Cross-Border Cost Indicator</h2>
+      <p>Where this merchant sits on the issuer interchange spectrum. EU regulation (IFR) caps interchange on European-issued consumer cards. Cards issued outside the EEA (US, UK post-Brexit, Switzerland, Asia, Middle East) carry inter-regional interchange tiers several multiples higher. The chart and table below show the merchant's actual blended rate against typical European market reference rates for each card category.</p>
+    </div>
+
+    <div class="cb-grid">
+      <div class="cb-card cb-headline">
+        <div class="cb-label">Actual blended Interchange + Scheme</div>
+        <div class="cb-value" id="cbActual"></div>
+        <div class="cb-sub" id="cbActualSub"></div>
+      </div>
+      <div class="cb-card cb-loading">
+        <div class="cb-label">Loading over EEA debit baseline</div>
+        <div class="cb-value" id="cbLoading"></div>
+        <div class="cb-sub">vs IFR-capped 30 bps EEA debit reference</div>
+      </div>
+      <div class="cb-card cb-share">
+        <div class="cb-label">Acquirer markup (Nexi)</div>
+        <div class="cb-value" id="cbMarkup"></div>
+        <div class="cb-sub" id="cbMarkupSub"></div>
+      </div>
+    </div>
+
+    <div class="charts-row full">
+      <div class="chart-card">
+        <div class="chart-title">Where this merchant sits on the interchange spectrum</div>
+        <div class="chart-sub">Merchant's actual blended rate vs typical European market reference rates by card category. Lower = cheaper.</div>
+        <div class="chart-wrap tall" style="height:280px"><canvas id="chartCBSpectrum"></canvas></div>
+      </div>
+    </div>
+
+    <div class="table-section">
+      <div class="table-header">
+        <h3>Reference Rate Card</h3>
+        <span style="font-family:'Space Mono',monospace;font-size:9px;color:var(--dim)">TYPICAL EUROPEAN MARKET RATES (DESCRIPTIVE)</span>
+      </div>
+      <div class="tbl-wrap">
+        <table>
+          <thead>
+            <tr>
+              <th style="text-align:left">Card Category</th>
+              <th>Combined IC + Scheme (bps)</th>
+              <th>vs This Merchant</th>
+              <th>What This Category Is</th>
+            </tr>
+          </thead>
+          <tbody id="cbRefTable"></tbody>
+        </table>
+      </div>
+    </div>
+
+    <div class="banner info" style="margin-top:14px">
+      <span class="banner-icon">i</span>
+      <div id="cbInterpretation"></div>
+    </div>
+  </div>
+
+  <!-- ============================================================ -->
+  <!-- NOTABLE OBSERVATIONS                                          -->
+  <!-- ============================================================ -->
+  <div class="observations-section">
+    <div class="rate-buildup-header">
+      <h2>Notable Observations</h2>
+      <p>Things that stand out in the data - missing fields, reporting opacity, anomalies, and unusual patterns. Each entry is a factual observation from the statements, not a recommendation. Severity is assigned based on impact on the merchant's ability to understand or audit their own acquiring costs.</p>
+    </div>
+    <div id="observationsList"></div>
+  </div>
+
+  <div class="table-section">
+    <div class="table-header">
+      <h3>Monthly Detail</h3>
+      <span style="font-family:'Space Mono',monospace;font-size:9px;color:var(--dim)">NEWEST FIRST</span>
+    </div>
+    <div class="tbl-wrap">
+      <table>
+        <thead>
+          <tr>
+            <th style="text-align:left">Period</th>
+            <th>Volume</th>
+            <th>Txns</th>
+            <th>Avg Ticket</th>
+            <th>Refunds</th>
+            <th>Total Fees</th>
+            <th>Effective Rate</th>
+            <th>Interchange</th>
+            <th>Scheme</th>
+            <th>Acquirer Markup</th>
+            <th>Stamp Tax</th>
+            <th>Net Settled</th>
+          </tr>
+        </thead>
+        <tbody id="tableBody"></tbody>
+      </table>
+    </div>
+  </div>
+
+  <div class="table-section">
+    <div class="table-header">
+      <h3>Fee Composition % - Where the Fees Go</h3>
+      <span style="font-family:'Space Mono',monospace;font-size:9px;color:var(--dim)">SHARE OF TOTAL FEES</span>
+    </div>
+    <div class="tbl-wrap">
+      <table>
+        <thead>
+          <tr>
+            <th style="text-align:left">Period</th>
+            <th>Interchange %</th>
+            <th>Scheme %</th>
+            <th>Acquirer Markup %</th>
+            <th>Stamp Tax + Fixed</th>
+          </tr>
+        </thead>
+        <tbody id="feeBreakdown"></tbody>
+      </table>
+    </div>
+  </div>
+
+  <div class="footer">
+    <span>NEXI . OVER THE LUX S.R.L. . UNICITY INTERNATIONAL PAYMENT OPERATIONS</span>
+    <span id="dataSource"></span>
+  </div>
+</div>
+
+<script>
+// ============================================================
+// EMBEDDED DATA
+// ============================================================
+const NEXI_DATA = {"nexi_eur": {"meta": {"processor": "Nexi", "merchant": "OVER THE LUX S.R.L.", "merchant_pi": "06979100960", "country": "Italy", "city": "Milan", "currency": "EUR", "period_start": "2025-09", "period_end": "2026-01", "month_count": 5, "source_files": ["Estratto conto Settembre 2025.pdf", "Estratto conto Ottobre 2025.pdf", "Estratto_conto_2025-11-30.pdf", "Estratto_conto_2025-12-31.pdf", "Estratto conto Gennaio 2026.pdf"], "generated": "2026-04-14", "total_volume": 839433.04, "total_fees": 21329.9, "total_transactions": 106, "blended_effective_rate_pct": 2.538, "card_mix": {"intl_card_volume": 839433.04, "bancomat_volume": 0.0, "intl_pct": 100.0, "bancomat_pct": 0.0}, "rate_buildup": {"interchange_rate_pct": 1.6514, "scheme_rate_pct": 0.8068, "markup_rate_pct": 0.08, "bundled_processing_rate_pct": 2.5383, "fixed_acquirer_rate_pct": 0.0015, "stamp_tax_rate_pct": 0.0012, "full_effective_rate_pct": 2.541, "uplift_over_bundled_bps": 0.27}, "cross_border_indicator": {"actual_combined_ic_scheme_bps": 245.8, "actual_full_effective_bps": 254.1, "reference_rates_bps": {"eea_consumer_debit": 30.0, "eea_consumer_credit": 45.0, "eea_premium_credit": 90.0, "intra_eea_cross_border": 100.0, "commercial_corporate": 220.0, "inter_regional_credit_cnp": 250.0, "amex_typical": 260.0}, "bancomat_baseline_bps": 26.0, "loading_over_eea_debit_bps": 215.8, "loading_over_eea_credit_bps": 200.8, "estimated_inter_regional_share_vs_debit": 98.1, "estimated_inter_regional_share_vs_credit": 98.0, "annualized_volume_eur": 2014639.3, "nexi_markup_bps": 8.0, "nexi_markup_annual_eur": 1612.39, "factual_summary": "Combined interchange + scheme rate of 245.8 bps is 8.2x the IFR-capped EEA consumer debit baseline (30 bps) and 5.5x the EEA consumer credit baseline (45 bps). Nexi acquirer markup component: 8.0 bps (~€1,612 annualized). All transactions in the daily detail are bucketed as international card networks; no per-brand, per-BIN, or per-issuer detail is available from the monthly PDF."}, "observations": [{"category": "Reporting transparency", "severity": "high", "title": "No interchange tier breakdown", "detail": "The monthly PDF reports total interchange as a single number per contract. It does NOT disclose which interchange tiers were hit (e.g. consumer debit, consumer credit, premium credit, commercial, inter-regional). Visa and Mastercard publish dozens of tier categories with materially different rates - the merchant has zero visibility into which ones drove the bill."}, {"category": "Reporting transparency", "severity": "high", "title": "No card brand split (Visa / Mastercard / AMEX / etc.)", "detail": "All transactions are bucketed under the single label 'CIRCUITI INTERNAZIONALI' (international card networks). The PDF gives no Visa-vs-Mastercard-vs-AMEX share, no per-brand volume, and no per-brand fee allocation. Per the footer of every page, this detail is only available in the Nexi Business portal at business.nexi.it."}, {"category": "Reporting transparency", "severity": "high", "title": "No issuer country / cardholder geography", "detail": "There is no breakdown of which countries the cardholders' issuing banks are in. For a merchant whose blended IC + scheme is 245.8 bps (5x the EEA credit baseline), this is the single most important missing piece of information for understanding where the cost is coming from."}, {"category": "Reporting transparency", "severity": "medium", "title": "No card type split (debit vs credit vs prepaid vs commercial)", "detail": "The PDF distinguishes only Bancomat vs International Cards. Within International Cards there is no separation between consumer debit, consumer credit, prepaid, or commercial / corporate cards - even though IFR caps these very differently."}, {"category": "Reporting transparency", "severity": "medium", "title": "No BIN-level detail", "detail": "Individual transactions are listed only by date and reference ID. There is no card BIN range, masked PAN, or any issuer identifier in the daily detail."}, {"category": "Pricing model", "severity": "medium", "title": "Bundled (not interchange-plus) pricing", "detail": "The 'Commissioni Acquiring %' equals 'Totale Commissioni' - meaning the merchant is on a bundled rate (one combined rate that hides interchange, scheme, and acquirer markup as a single line). The per-offering breakdown does show interchange and scheme as informational pass-through, but the merchant's CONTRACTED rate appears to be a single bundled number. This is standard for Italian SMB acquiring but obscures the acquirer markup component from the merchant's normal view."}, {"category": "Data anomaly", "severity": "high", "title": "Negative implied acquirer markup in 1 month(s)", "detail": "Month(s) showing negative markup: September 2025. In normal months the formula 'Total Commissioni minus Interchange minus Scheme' yields a positive acquirer markup. When a month has substantial refund processing, Nexi credits the gross fees back, which reduces 'Total Commissioni' below the GROSS interchange and scheme totals shown in the per-offering breakdown. The negative number is therefore an artifact of how Nexi nets refund fee credits in the totals - it does NOT mean Nexi paid the merchant. The most extreme case here is September 2025 (-532.63 EUR)."}, {"category": "Refund activity", "severity": "high", "title": "Refunds exceeded 5% of volume in 2 month(s)", "detail": "2 month(s) had merchant-initiated refunds greater than 5% of gross volume. Highest: September 2025 with EUR 89,845.50 of refunds against EUR 253,379.50 of volume (35.5%). The Nexi PDF does not differentiate between voluntary refunds, partial reversals, and processor-initiated reversals - all show as negative entries in the daily detail."}, {"category": "Card mix", "severity": "medium", "title": "Zero Bancomat (Italian domestic debit) volume", "detail": "Across 5 month(s) and EUR 839,433.04 of total volume, the merchant processed zero Bancomat transactions. Either Bancomat acceptance is not enabled on the terminal, the customer base does not present Bancomat cards, or both. For a merchant in Italy this is unusual - the Bancomat network has near-universal Italian debit-card coverage."}, {"category": "Rate variance", "severity": "medium", "title": "Effective rate varies by 16 bps month-to-month", "detail": "Lowest month: January 2026 at 2.417% (241.7 bps). Highest month: November 2025 at 2.579% (257.9 bps). A spread of 16 bps month-to-month is consistent with cardholder mix shift (different mix of issuer countries, brand mix, debit/credit/commercial mix). It is NOT consistent with a single-tier flat rate."}, {"category": "Fixed fee disproportion", "severity": "low", "title": "Fixed monthly fees added more than 0.5 bps in 1 month(s)", "detail": "Nexi charges a flat EUR 2.50 'Commissione di Acquiring in Euro' + EUR 2.00 'Imposta di Bollo' (Italian stamp tax) per contract per month, regardless of volume. On low-volume months these flat fees become a larger share of the basis-point cost. Worst month: October 2025 with 1.0 bps of uplift on EUR 45,580.04 of volume."}, {"category": "Cost anomaly", "severity": "high", "title": "Combined IC + scheme rate is 8.2x the IFR-capped EEA debit baseline", "detail": "The EU Interchange Fee Regulation caps domestic and intra-EEA consumer card interchange at 0.20% (debit) and 0.30% (credit). Combined with typical scheme fees this puts the cheapest-possible blended pass-through cost at roughly 30-45 bps. This merchant is paying 245.8 bps - 216 bps above the EEA debit baseline. The gap can only come from non-EEA-issued cards, premium consumer card tiers within IFR limits, commercial / corporate cards (uncapped under IFR), or AMEX volume bundled in. The PDF does not let us identify which of these is driving the cost."}, {"category": "Account structure", "severity": "low", "title": "Payment Contract PC0000280938 appears in only 1 month with 1 transaction(s)", "detail": "Contract PC0000280938 is active only in 2025-09 with 1 transaction(s) totaling EUR 198.00. This is unusual - either a test transaction, a legacy terminal that fired once, a separate channel (e-commerce vs in-store) that the merchant did not realize was active, or a one-off booking. Worth confirming with the merchant."}], "merchant_setup": {"settlement_banks": ["MONTE DEI PASCHI DI SIENA"], "abi": ["01030"], "cab": ["01661"], "iban": ["IT80L0103001661000001388752"], "pos_codes": ["LN0003602146"], "payment_contracts": [{"contract_id": "PC0000280938", "pos_code": "LN0003602146", "bank": "MONTE DEI PASCHI DI SIENA", "abi": "01030", "cab": "01661", "iban": "IT80L0103001661000001388752", "first_seen": "2025-09", "last_seen": "2025-09", "months_active": 1, "total_volume": 198.0, "total_txns": 1, "total_fees": 5.25}, {"contract_id": "PC0001263218", "pos_code": "LN0003602146", "bank": "MONTE DEI PASCHI DI SIENA", "abi": "01030", "cab": "01661", "iban": "IT80L0103001661000001388752", "first_seen": "2025-09", "last_seen": "2026-01", "months_active": 5, "total_volume": 839235.04, "total_txns": 105, "total_fees": 21324.65}]}, "data_limitations": ["Nexi monthly Estratto Conto PDFs do NOT break down volume by card brand (Visa, Mastercard, AMEX, etc.).", "Per-brand, per-BIN, and per-issuer detail is only available in the Nexi Business portal at business.nexi.it under the 'Transazioni' section.", "All transactions in the daily detail are bucketed as 'CIRCUITI INTERNAZIONALI' (international card networks).", "Bancomat (Italian domestic debit) is reported separately - this merchant has 0 EUR Bancomat activity in the captured period.", "To enable per-brand analysis, export the Transazioni CSV from Nexi Business and re-run with the --transactions-csv flag (parser will be extended in a follow-up)."]}, "months": [{"period": "2025-09", "month_label": "September 2025", "currency": "EUR", "source_file": "Estratto conto Settembre 2025.pdf", "contract_count": 2, "intl_card_volume": 253379.5, "bancomat_volume": 0.0, "intl_pct_of_volume": 100.0, "rate_buildup": {"interchange_rate_pct": 1.9732, "scheme_rate_pct": 0.8119, "markup_rate_pct": -0.2102, "bundled_processing_rate_pct": 2.575, "fixed_acquirer_rate_pct": 0.001, "stamp_tax_rate_pct": 0.0008, "full_effective_rate_pct": 2.5767, "uplift_over_bundled_bps": 0.18}, "contracts": ["PC0000280938", "PC0001263218"], "volume": 253379.5, "transaction_count": 32, "net_sales": 163534.0, "refund_amount": 89845.5, "refund_count": 4, "refund_rate_pct": 35.459, "other_movements": 0.0, "total_cost": 6528.91, "commissions": 6524.41, "interchange": 4999.78, "scheme_fees": 2057.26, "acquirer_markup": -532.63, "acquiring_fee_eur": 2.5, "stamp_tax": 2.0, "total_debited": 6528.91, "net_settled": 253379.5, "effective_rate_pct": 2.575, "interchange_pct_of_volume": 1.973, "scheme_pct_of_volume": 0.812, "markup_pct_of_volume": -0.21, "avg_ticket": 7918.11, "chargebacks_count": 0, "chargebacks_amount": 0.0, "chargeback_rate_pct": 0.0, "fees_detail": {"interchange_fees": 4999.78, "scheme_fees": 2057.26, "acquirer_markup": -532.63, "acquiring_eur_fixed": 2.5, "stamp_tax": 2.0, "total_fees_and_taxes": 6528.91}, "daily": [{"disp_date": "05/09/25", "op_date": "04/09/25", "op_type": "Intl Card Networks", "gross": 198.0, "fees": 5.25, "net": 192.75, "count": 1, "contract": "PC0000280938", "ref_id": "889882977599"}, {"disp_date": "02/09/25", "op_date": "01/09/25", "op_type": "Intl Card Networks", "gross": 1648.0, "fees": 42.85, "net": 1605.15, "count": 1, "contract": "PC0001263218", "ref_id": "885227324699"}, {"disp_date": "06/09/25", "op_date": "05/09/25", "op_type": "Intl Card Networks", "gross": 33865.0, "fees": 910.97, "net": 32954.03, "count": 3, "contract": "PC0001263218", "ref_id": "891587032899"}, {"disp_date": "07/09/25", "op_date": "06/09/25", "op_type": "Intl Card Networks", "gross": 121825.0, "fees": 3211.39, "net": 118613.61, "count": 6, "contract": "PC0001263218", "ref_id": "893303840399"}, {"disp_date": "10/09/25", "op_date": "09/09/25", "op_type": "Intl Card Networks", "gross": -73000.0, "fees": -1929.5, "net": -71070.5, "count": 2, "contract": "PC0001263218", "ref_id": "897412605399"}, {"disp_date": "11/09/25", "op_date": "10/09/25", "op_type": "Intl Card Networks", "gross": -16845.5, "fees": -437.28, "net": -16408.22, "count": 2, "contract": "PC0001263218", "ref_id": "898975570199"}, {"disp_date": "16/09/25", "op_date": "15/09/25", "op_type": "Intl Card Networks", "gross": 190.0, "fees": 4.94, "net": 185.06, "count": 1, "contract": "PC0001263218", "ref_id": "906657658299"}, {"disp_date": "19/09/25", "op_date": "18/09/25", "op_type": "Intl Card Networks", "gross": 122202.0, "fees": 3177.25, "net": 119024.75, "count": 4, "contract": "PC0001263218", "ref_id": "911375996299"}, {"disp_date": "20/09/25", "op_date": "19/09/25", "op_type": "Intl Card Networks", "gross": 24520.0, "fees": 659.12, "net": 23860.88, "count": 3, "contract": "PC0001263218", "ref_id": "913057800199"}, {"disp_date": "23/09/25", "op_date": "22/09/25", "op_type": "Intl Card Networks", "gross": 6160.0, "fees": 160.16, "net": 5999.84, "count": 1, "contract": "PC0001263218", "ref_id": "917322381999"}, {"disp_date": "25/09/25", "op_date": "24/09/25", "op_type": "Intl Card Networks", "gross": 560.0, "fees": 14.56, "net": 545.44, "count": 1, "contract": "PC0001263218", "ref_id": "920336751899"}, {"disp_date": "26/09/25", "op_date": "25/09/25", "op_type": "Intl Card Networks", "gross": 8679.0, "fees": 233.33, "net": 8445.67, "count": 2, "contract": "PC0001263218", "ref_id": "921885878699"}, {"disp_date": "27/09/25", "op_date": "26/09/25", "op_type": "Intl Card Networks", "gross": 7230.0, "fees": 64.35, "net": 7165.65, "count": 2, "contract": "PC0001263218", "ref_id": "923524481399"}, {"disp_date": "29/09/25", "op_date": "28/09/25", "op_type": "Intl Card Networks", "gross": 750.0, "fees": 6.68, "net": 743.33, "count": 1, "contract": "PC0001263218", "ref_id": "926370831399"}, {"disp_date": "30/09/25", "op_date": "29/09/25", "op_type": "Intl Card Networks", "gross": 15398.0, "fees": 400.35, "net": 14997.65, "count": 2, "contract": "PC0001263218", "ref_id": "927772206599"}]}, {"period": "2025-10", "month_label": "October 2025", "currency": "EUR", "source_file": "Estratto conto Ottobre 2025.pdf", "contract_count": 1, "intl_card_volume": 45580.04, "bancomat_volume": 0.0, "intl_pct_of_volume": 100.0, "rate_buildup": {"interchange_rate_pct": 1.4604, "scheme_rate_pct": 0.6484, "markup_rate_pct": 0.431, "bundled_processing_rate_pct": 2.5397, "fixed_acquirer_rate_pct": 0.0055, "stamp_tax_rate_pct": 0.0044, "full_effective_rate_pct": 2.5496, "uplift_over_bundled_bps": 0.99}, "contracts": ["PC0001263218"], "volume": 45580.04, "transaction_count": 22, "net_sales": 36955.04, "refund_amount": 8625.0, "refund_count": 1, "refund_rate_pct": 18.923, "other_movements": -8625.0, "total_cost": 1162.11, "commissions": 1157.61, "interchange": 665.64, "scheme_fees": 295.54, "acquirer_markup": 196.43, "acquiring_fee_eur": 2.5, "stamp_tax": 2.0, "total_debited": 1162.11, "net_settled": 37179.29, "effective_rate_pct": 2.54, "interchange_pct_of_volume": 1.46, "scheme_pct_of_volume": 0.648, "markup_pct_of_volume": 0.431, "avg_ticket": 2071.82, "chargebacks_count": 0, "chargebacks_amount": 0.0, "chargeback_rate_pct": 0.0, "fees_detail": {"interchange_fees": 665.64, "scheme_fees": 295.54, "acquirer_markup": 196.43, "acquiring_eur_fixed": 2.5, "stamp_tax": 2.0, "total_fees_and_taxes": 1162.11}, "daily": [{"disp_date": "04/10/25", "op_date": "03/10/25", "op_type": "Intl Card Networks", "gross": 720.0, "fees": 18.72, "net": 701.28, "count": 1, "contract": "PC0001263218", "ref_id": "934810964699"}, {"disp_date": "05/10/25", "op_date": "04/10/25", "op_type": "Intl Card Networks", "gross": 6110.0, "fees": 158.86, "net": 5951.14, "count": 2, "contract": "PC0001263218", "ref_id": "936515218599"}, {"disp_date": "07/10/25", "op_date": "06/10/25", "op_type": "Intl Card Networks", "gross": 7699.0, "fees": 200.17, "net": 7498.83, "count": 1, "contract": "PC0001263218", "ref_id": "938950060799"}, {"disp_date": "07/10/25", "op_date": "06/10/25", "op_type": "DISPUTE", "gross": -8625.0, "fees": -224.25, "net": -8400.75, "count": 1, "contract": "PC0001263218", "ref_id": "938968875999"}, {"disp_date": "08/10/25", "op_date": "07/10/25", "op_type": "Intl Card Networks", "gross": 2649.0, "fees": 50.25, "net": 2598.75, "count": 2, "contract": "PC0001263218", "ref_id": "940427292899"}, {"disp_date": "10/10/25", "op_date": "09/10/25", "op_type": "Intl Card Networks", "gross": 1760.0, "fees": 45.76, "net": 1714.24, "count": 1, "contract": "PC0001263218", "ref_id": "943452080399"}, {"disp_date": "11/10/25", "op_date": "10/10/25", "op_type": "Intl Card Networks", "gross": 500.0, "fees": 13.0, "net": 487.0, "count": 1, "contract": "PC0001263218", "ref_id": "945099205599"}, {"disp_date": "12/10/25", "op_date": "11/10/25", "op_type": "Intl Card Networks", "gross": 1500.0, "fees": 39.0, "net": 1461.0, "count": 1, "contract": "PC0001263218", "ref_id": "946810110199"}, {"disp_date": "13/10/25", "op_date": "12/10/25", "op_type": "Intl Card Networks", "gross": 9900.0, "fees": 266.31, "net": 9633.69, "count": 1, "contract": "PC0001263218", "ref_id": "947915153699"}, {"disp_date": "14/10/25", "op_date": "13/10/25", "op_type": "Intl Card Networks", "gross": 530.0, "fees": 13.78, "net": 516.22, "count": 1, "contract": "PC0001263218", "ref_id": "949263764399"}, {"disp_date": "18/10/25", "op_date": "17/10/25", "op_type": "Intl Card Networks", "gross": 780.0, "fees": 20.98, "net": 759.02, "count": 1, "contract": "PC0001263218", "ref_id": "955359578499"}, {"disp_date": "20/10/25", "op_date": "19/10/25", "op_type": "Intl Card Networks", "gross": 1332.52, "fees": 34.65, "net": 1297.87, "count": 1, "contract": "PC0001263218", "ref_id": "958140909099"}, {"disp_date": "21/10/25", "op_date": "20/10/25", "op_type": "Intl Card Networks", "gross": 1322.52, "fees": 34.39, "net": 1288.13, "count": 1, "contract": "PC0001263218", "ref_id": "959463728299"}, {"disp_date": "23/10/25", "op_date": "22/10/25", "op_type": "Intl Card Networks", "gross": 1035.0, "fees": 9.98, "net": 1025.02, "count": 2, "contract": "PC0001263218", "ref_id": "962351297499"}, {"disp_date": "24/10/25", "op_date": "23/10/25", "op_type": "Intl Card Networks", "gross": 7340.0, "fees": 190.84, "net": 7149.16, "count": 2, "contract": "PC0001263218", "ref_id": "963795301999"}, {"disp_date": "26/10/25", "op_date": "25/10/25", "op_type": "Intl Card Networks", "gross": 720.0, "fees": 18.72, "net": 701.28, "count": 1, "contract": "PC0001263218", "ref_id": "967095312799"}, {"disp_date": "29/10/25", "op_date": "28/10/25", "op_type": "Intl Card Networks", "gross": 1297.0, "fees": 32.19, "net": 1264.81, "count": 2, "contract": "PC0001263218", "ref_id": "970977151899"}, {"disp_date": "01/11/25", "op_date": "31/10/25", "op_type": "Intl Card Networks", "gross": 385.0, "fees": 10.01, "net": 374.99, "count": 1, "contract": "PC0001263218", "ref_id": "976127417099"}]}, {"period": "2025-11", "month_label": "November 2025", "currency": "EUR", "source_file": "Estratto_conto_2025-11-30.pdf", "contract_count": 1, "intl_card_volume": 251228.5, "bancomat_volume": 0.0, "intl_pct_of_volume": 100.0, "rate_buildup": {"interchange_rate_pct": 1.4292, "scheme_rate_pct": 0.8599, "markup_rate_pct": 0.2898, "bundled_processing_rate_pct": 2.5789, "fixed_acquirer_rate_pct": 0.001, "stamp_tax_rate_pct": 0.0008, "full_effective_rate_pct": 2.5807, "uplift_over_bundled_bps": 0.18}, "contracts": ["PC0001263218"], "volume": 251228.5, "transaction_count": 13, "net_sales": 251228.5, "refund_amount": 0.0, "refund_count": 0, "refund_rate_pct": 0.0, "other_movements": 0.0, "total_cost": 6483.5, "commissions": 6479.0, "interchange": 3590.66, "scheme_fees": 2160.34, "acquirer_markup": 728.0, "acquiring_fee_eur": 2.5, "stamp_tax": 2.0, "total_debited": 6483.5, "net_settled": 251228.5, "effective_rate_pct": 2.579, "interchange_pct_of_volume": 1.429, "scheme_pct_of_volume": 0.86, "markup_pct_of_volume": 0.29, "avg_ticket": 19325.27, "chargebacks_count": 0, "chargebacks_amount": 0.0, "chargeback_rate_pct": 0.0, "fees_detail": {"interchange_fees": 3590.66, "scheme_fees": 2160.34, "acquirer_markup": 728.0, "acquiring_eur_fixed": 2.5, "stamp_tax": 2.0, "total_fees_and_taxes": 6483.5}, "daily": [{"disp_date": "02/11/25", "op_date": "01/11/25", "op_type": "Intl Card Networks", "gross": 8000.0, "fees": 208.0, "net": 7792.0, "count": 1, "contract": "PC0001263218", "ref_id": "977700024299"}, {"disp_date": "03/11/25", "op_date": "02/11/25", "op_type": "Intl Card Networks", "gross": 7000.0, "fees": 182.0, "net": 6818.0, "count": 1, "contract": "PC0001263218", "ref_id": "978684936399"}, {"disp_date": "04/11/25", "op_date": "03/11/25", "op_type": "Intl Card Networks", "gross": 10500.0, "fees": 282.45, "net": 10217.55, "count": 1, "contract": "PC0001263218", "ref_id": "980026824799"}, {"disp_date": "05/11/25", "op_date": "04/11/25", "op_type": "Intl Card Networks", "gross": 10250.0, "fees": 176.73, "net": 10073.28, "count": 2, "contract": "PC0001263218", "ref_id": "981473458299"}, {"disp_date": "06/11/25", "op_date": "05/11/25", "op_type": "Intl Card Networks", "gross": 2030.0, "fees": 54.61, "net": 1975.39, "count": 1, "contract": "PC0001263218", "ref_id": "982917673699"}, {"disp_date": "08/11/25", "op_date": "07/11/25", "op_type": "Intl Card Networks", "gross": 500.0, "fees": 4.45, "net": 495.55, "count": 1, "contract": "PC0001263218", "ref_id": "985947034299"}, {"disp_date": "11/11/25", "op_date": "10/11/25", "op_type": "Intl Card Networks", "gross": 33072.0, "fees": 859.87, "net": 32212.13, "count": 2, "contract": "PC0001263218", "ref_id": "989910589999"}, {"disp_date": "19/11/25", "op_date": "18/11/25", "op_type": "Intl Card Networks", "gross": 53369.5, "fees": 1387.61, "net": 51981.89, "count": 1, "contract": "PC0001263218", "ref_id": "1001091686699"}, {"disp_date": "20/11/25", "op_date": "19/11/25", "op_type": "Intl Card Networks", "gross": 44607.0, "fees": 1159.78, "net": 43447.22, "count": 1, "contract": "PC0001263218", "ref_id": "1002521278999"}, {"disp_date": "26/11/25", "op_date": "25/11/25", "op_type": "Intl Card Networks", "gross": 37900.0, "fees": 1019.51, "net": 36880.49, "count": 1, "contract": "PC0001263218", "ref_id": "1010807627199"}]}, {"period": "2025-12", "month_label": "December 2025", "currency": "EUR", "source_file": "Estratto_conto_2025-12-31.pdf", "contract_count": 1, "intl_card_volume": 177397.0, "bancomat_volume": 0.0, "intl_pct_of_volume": 100.0, "rate_buildup": {"interchange_rate_pct": 1.6629, "scheme_rate_pct": 0.8034, "markup_rate_pct": 0.0382, "bundled_processing_rate_pct": 2.5045, "fixed_acquirer_rate_pct": 0.0014, "stamp_tax_rate_pct": 0.0011, "full_effective_rate_pct": 2.507, "uplift_over_bundled_bps": 0.25}, "contracts": ["PC0001263218"], "volume": 177397.0, "transaction_count": 18, "net_sales": 176347.0, "refund_amount": 1050.0, "refund_count": 4, "refund_rate_pct": 0.592, "other_movements": 0.0, "total_cost": 4447.43, "commissions": 4442.93, "interchange": 2949.99, "scheme_fees": 1425.25, "acquirer_markup": 67.69, "acquiring_fee_eur": 2.5, "stamp_tax": 2.0, "total_debited": 4447.43, "net_settled": 177397.0, "effective_rate_pct": 2.505, "interchange_pct_of_volume": 1.663, "scheme_pct_of_volume": 0.803, "markup_pct_of_volume": 0.038, "avg_ticket": 9855.39, "chargebacks_count": 0, "chargebacks_amount": 0.0, "chargeback_rate_pct": 0.0, "fees_detail": {"interchange_fees": 2949.99, "scheme_fees": 1425.25, "acquirer_markup": 67.69, "acquiring_eur_fixed": 2.5, "stamp_tax": 2.0, "total_fees_and_taxes": 4447.43}, "daily": [{"disp_date": "07/12/25", "op_date": "06/12/25", "op_type": "Intl Card Networks", "gross": 1850.0, "fees": 48.1, "net": 1801.9, "count": 1, "contract": "PC0001263218", "ref_id": "1028173594299"}, {"disp_date": "09/12/25", "op_date": "08/12/25", "op_type": "Intl Card Networks", "gross": 107500.0, "fees": 2795.0, "net": 104705.0, "count": 1, "contract": "PC0001263218", "ref_id": "1030445765799"}, {"disp_date": "10/12/25", "op_date": "09/12/25", "op_type": "Intl Card Networks", "gross": 540.0, "fees": 14.04, "net": 525.96, "count": 1, "contract": "PC0001263218", "ref_id": "1031916364399"}, {"disp_date": "13/12/25", "op_date": "12/12/25", "op_type": "Intl Card Networks", "gross": 650.0, "fees": 16.9, "net": 633.1, "count": 1, "contract": "PC0001263218", "ref_id": "1036431848699"}, {"disp_date": "14/12/25", "op_date": "13/12/25", "op_type": "Intl Card Networks", "gross": 580.0, "fees": 15.08, "net": 564.92, "count": 1, "contract": "PC0001263218", "ref_id": "1038442189399"}, {"disp_date": "15/12/25", "op_date": "14/12/25", "op_type": "Intl Card Networks", "gross": 19800.0, "fees": 532.62, "net": 19267.38, "count": 1, "contract": "PC0001263218", "ref_id": "1039637469399"}, {"disp_date": "16/12/25", "op_date": "15/12/25", "op_type": "Intl Card Networks", "gross": 12000.0, "fees": 322.8, "net": 11677.2, "count": 1, "contract": "PC0001263218", "ref_id": "1041096293599"}, {"disp_date": "20/12/25", "op_date": "19/12/25", "op_type": "Intl Card Networks", "gross": 5367.0, "fees": 139.54, "net": 5227.46, "count": 2, "contract": "PC0001263218", "ref_id": "1047784565999"}, {"disp_date": "23/12/25", "op_date": "22/12/25", "op_type": "Intl Card Networks", "gross": 18625.0, "fees": 501.01, "net": 18123.99, "count": 2, "contract": "PC0001263218", "ref_id": "1052878882299"}, {"disp_date": "25/12/25", "op_date": "24/12/25", "op_type": "Intl Card Networks", "gross": -1050.0, "fees": -206.85, "net": -843.15, "count": 4, "contract": "PC0001263218", "ref_id": "1056595429699"}, {"disp_date": "26/12/25", "op_date": "25/12/25", "op_type": "Intl Card Networks", "gross": 2060.0, "fees": 18.33, "net": 2041.67, "count": 1, "contract": "PC0001263218", "ref_id": "1057226100399"}, {"disp_date": "27/12/25", "op_date": "26/12/25", "op_type": "Intl Card Networks", "gross": 2585.0, "fees": 67.21, "net": 2517.79, "count": 1, "contract": "PC0001263218", "ref_id": "1057836110199"}, {"disp_date": "01/01/26", "op_date": "31/12/25", "op_type": "Intl Card Networks", "gross": 6890.0, "fees": 179.14, "net": 6710.86, "count": 1, "contract": "PC0001263218", "ref_id": "1065386703999"}]}, {"period": "2026-01", "month_label": "January 2026", "currency": "EUR", "source_file": "Estratto conto Gennaio 2026.pdf", "contract_count": 1, "intl_card_volume": 111848.0, "bancomat_volume": 0.0, "intl_pct_of_volume": 100.0, "rate_buildup": {"interchange_rate_pct": 1.4811, "scheme_rate_pct": 0.7461, "markup_rate_pct": 0.1898, "bundled_processing_rate_pct": 2.4171, "fixed_acquirer_rate_pct": 0.0022, "stamp_tax_rate_pct": 0.0018, "full_effective_rate_pct": 2.4211, "uplift_over_bundled_bps": 0.4}, "contracts": ["PC0001263218"], "volume": 111848.0, "transaction_count": 21, "net_sales": 111598.0, "refund_amount": 250.0, "refund_count": 1, "refund_rate_pct": 0.224, "other_movements": 0.0, "total_cost": 2707.95, "commissions": 2703.45, "interchange": 1656.6, "scheme_fees": 834.51, "acquirer_markup": 212.34, "acquiring_fee_eur": 2.5, "stamp_tax": 2.0, "total_debited": 2707.95, "net_settled": 111848.0, "effective_rate_pct": 2.417, "interchange_pct_of_volume": 1.481, "scheme_pct_of_volume": 0.746, "markup_pct_of_volume": 0.19, "avg_ticket": 5326.1, "chargebacks_count": 0, "chargebacks_amount": 0.0, "chargeback_rate_pct": 0.0, "fees_detail": {"interchange_fees": 1656.6, "scheme_fees": 834.51, "acquirer_markup": 212.34, "acquiring_eur_fixed": 2.5, "stamp_tax": 2.0, "total_fees_and_taxes": 2707.95}, "daily": [{"disp_date": "03/01/26", "op_date": "02/01/26", "op_type": "Intl Card Networks", "gross": 250.0, "fees": 2.23, "net": 247.78, "count": 1, "contract": "PC0001263218", "ref_id": "1067566077799"}, {"disp_date": "04/01/26", "op_date": "03/01/26", "op_type": "Intl Card Networks", "gross": 198.0, "fees": 5.15, "net": 192.85, "count": 1, "contract": "PC0001263218", "ref_id": "1069031281799"}, {"disp_date": "08/01/26", "op_date": "07/01/26", "op_type": "Intl Card Networks", "gross": 1350.0, "fees": 35.8, "net": 1314.2, "count": 2, "contract": "PC0001263218", "ref_id": "1073603150299"}, {"disp_date": "09/01/26", "op_date": "08/01/26", "op_type": "Intl Card Networks", "gross": 792.0, "fees": 21.3, "net": 770.7, "count": 1, "contract": "PC0001263218", "ref_id": "1074967623299"}, {"disp_date": "10/01/26", "op_date": "09/01/26", "op_type": "Intl Card Networks", "gross": -250.0, "fees": -2.23, "net": -247.78, "count": 1, "contract": "PC0001263218", "ref_id": "1076422105899"}, {"disp_date": "12/01/26", "op_date": "11/01/26", "op_type": "Intl Card Networks", "gross": 31300.0, "fees": 841.97, "net": 30458.03, "count": 1, "contract": "PC0001263218", "ref_id": "1078869162599"}, {"disp_date": "14/01/26", "op_date": "13/01/26", "op_type": "Intl Card Networks", "gross": 972.0, "fees": 26.68, "net": 945.32, "count": 3, "contract": "PC0001263218", "ref_id": "1081512999899"}, {"disp_date": "15/01/26", "op_date": "14/01/26", "op_type": "Intl Card Networks", "gross": 46848.0, "fees": 1218.05, "net": 45629.95, "count": 2, "contract": "PC0001263218", "ref_id": "1082917443699"}, {"disp_date": "17/01/26", "op_date": "16/01/26", "op_type": "Intl Card Networks", "gross": 800.0, "fees": 20.8, "net": 779.2, "count": 1, "contract": "PC0001263218", "ref_id": "1085861407399"}, {"disp_date": "21/01/26", "op_date": "20/01/26", "op_type": "Intl Card Networks", "gross": 380.0, "fees": 9.88, "net": 370.12, "count": 1, "contract": "PC0001263218", "ref_id": "1090962652699"}, {"disp_date": "22/01/26", "op_date": "21/01/26", "op_type": "Intl Card Networks", "gross": 440.0, "fees": 11.84, "net": 428.16, "count": 1, "contract": "PC0001263218", "ref_id": "1092359232999"}, {"disp_date": "23/01/26", "op_date": "22/01/26", "op_type": "Intl Card Networks", "gross": 1098.0, "fees": 29.54, "net": 1068.46, "count": 2, "contract": "PC0001263218", "ref_id": "1093810422499"}, {"disp_date": "24/01/26", "op_date": "23/01/26", "op_type": "Intl Card Networks", "gross": 600.0, "fees": 5.34, "net": 594.66, "count": 1, "contract": "PC0001263218", "ref_id": "1095359016299"}, {"disp_date": "30/01/26", "op_date": "29/01/26", "op_type": "Intl Card Networks", "gross": 11475.0, "fees": 298.35, "net": 11176.65, "count": 1, "contract": "PC0001263218", "ref_id": "1103351707199"}, {"disp_date": "31/01/26", "op_date": "30/01/26", "op_type": "Intl Card Networks", "gross": 2220.0, "fees": 59.72, "net": 2160.28, "count": 1, "contract": "PC0001263218", "ref_id": "1104892837899"}, {"disp_date": "01/02/26", "op_date": "31/01/26", "op_type": "Intl Card Networks", "gross": 13375.0, "fees": 119.04, "net": 13255.96, "count": 1, "contract": "PC0001263218", "ref_id": "1107039539599"}]}]}};
+
+const PALETTE = {
+  accent:'#00d4ff', green:'#00e5a0', yellow:'#ffc845',
+  red:'#ff4d6a', orange:'#ff7a3d', purple:'#a78bfa', sky:'#38bdf8',
+  text:'#d4e4f4', muted:'#607d94', dim:'#2d4459', border:'#162031'
+};
+
+function fmtEUR(v) {
+  return new Intl.NumberFormat('en-US', {style:'currency', currency:'EUR', maximumFractionDigits:0}).format(v);
+}
+function fmtEURDec(v) {
+  return new Intl.NumberFormat('en-US', {style:'currency', currency:'EUR', minimumFractionDigits:2, maximumFractionDigits:2}).format(v);
+}
+function fmtNumInt(v) { return new Intl.NumberFormat('en-US').format(Math.round(v)); }
+function fmtPct(v) { return v.toFixed(3) + '%'; }
+function fmtPct2(v) { return v.toFixed(1) + '%'; }
+
+const meta = NEXI_DATA.nexi_eur.meta;
+const months = NEXI_DATA.nexi_eur.months;
+
+document.getElementById('merchant').textContent = meta.merchant;
+document.getElementById('city').textContent = meta.city;
+document.getElementById('currency').textContent = meta.currency;
+document.getElementById('period').textContent = meta.period_start + ' to ' + meta.period_end;
+document.getElementById('monthCount').textContent = meta.month_count;
+document.getElementById('generated').textContent = meta.generated;
+document.getElementById('dataSource').textContent = 'DATA: ' + meta.source_files.join(' . ');
+
+// KPIs
+document.getElementById('kpi-volume').textContent = fmtEUR(meta.total_volume);
+document.getElementById('kpi-volume-sub').textContent = meta.month_count + ' months';
+document.getElementById('kpi-txns').textContent = fmtNumInt(meta.total_transactions);
+document.getElementById('kpi-txns-sub').textContent = 'avg ' + fmtNumInt(meta.total_transactions / meta.month_count) + '/mo';
+document.getElementById('kpi-fees').textContent = fmtEUR(meta.total_fees);
+document.getElementById('kpi-fees-sub').textContent = 'all costs combined';
+document.getElementById('kpi-rate').textContent = fmtPct(meta.blended_effective_rate_pct);
+document.getElementById('kpi-rate-sub').textContent = 'blended fees / volume';
+
+const totalSettled = months.reduce((a,m) => a + (m.net_settled || 0), 0);
+document.getElementById('kpi-settled').textContent = fmtEUR(totalSettled);
+document.getElementById('kpi-settled-sub').textContent = 'after fees + refunds';
+
+const totalRefunds = months.reduce((a,m) => a + m.refund_amount, 0);
+const totalRefundCount = months.reduce((a,m) => a + m.refund_count, 0);
+document.getElementById('kpi-refunds').textContent = fmtEUR(totalRefunds);
+document.getElementById('kpi-refunds-sub').textContent = totalRefundCount + ' refund(s)';
+
+// Banners
+const banners = [];
+const monthsWithRefunds = months.filter(m => m.refund_amount > 0).length;
+if (monthsWithRefunds > 0) {
+  banners.push({type:'info', text:'<strong>Refund activity detected:</strong> ' + monthsWithRefunds + ' of ' + months.length + ' months had merchant-initiated refunds, totaling ' + fmtEUR(totalRefunds) + ' across ' + totalRefundCount + ' transactions.'});
+}
+const highestRate = months.reduce((max, m) => m.effective_rate_pct > max.effective_rate_pct ? m : max, months[0]);
+const lowestRate = months.reduce((min, m) => (m.effective_rate_pct > 0 && m.effective_rate_pct < min.effective_rate_pct) ? m : min, {effective_rate_pct: 999});
+if (highestRate && lowestRate.period) {
+  banners.push({type:'info', text:'<strong>Effective rate range:</strong> ' + fmtPct(lowestRate.effective_rate_pct) + ' (' + lowestRate.period + ') to ' + fmtPct(highestRate.effective_rate_pct) + ' (' + highestRate.period + '). Variance is driven by merchant category mix and the fixed Imposta di Bollo (Italian stamp tax) being a larger share of small months.'});
+}
+const totalIC = months.reduce((a,m) => a + m.interchange, 0);
+const totalScheme = months.reduce((a,m) => a + m.scheme_fees, 0);
+const totalMarkup = months.reduce((a,m) => a + m.acquirer_markup, 0);
+const icShare = (totalIC / meta.total_fees * 100).toFixed(1);
+const schemeShare = (totalScheme / meta.total_fees * 100).toFixed(1);
+const markupShare = (totalMarkup / meta.total_fees * 100).toFixed(1);
+banners.push({type:'success', text:'<strong>Fee composition (full period):</strong> Issuer interchange ' + icShare + '% (' + fmtEUR(totalIC) + ') . Card scheme/network ' + schemeShare + '% (' + fmtEUR(totalScheme) + ') . Nexi acquirer markup ' + markupShare + '% (' + fmtEUR(totalMarkup) + '). Interchange and scheme fees are passed through unchanged - only the markup is negotiable.'});
+
+// Always include the data-limitations notice so users know what the PDF does and does not contain
+banners.push({type:'danger', text:'<strong>Statement does NOT contain card brand or issuer detail:</strong> Nexi monthly Estratto Conto PDFs roll all card transactions into one bucket called "CIRCUITI INTERNAZIONALI" (international card networks). Per-brand (Visa / Mastercard / AMEX), per-card-type (debit / credit / prepaid), per-BIN, and per-issuer breakdowns are only available in the Nexi Business portal at <strong>business.nexi.it</strong> under the "Transazioni" section. Export the per-transaction CSV from there if you need brand-level analysis.'});
+
+document.getElementById('banners').innerHTML = banners.map(b =>
+  '<div class="banner ' + b.type + '"><span class="banner-icon">' + (b.type === 'danger' ? '!' : (b.type === 'success' ? '+' : 'i')) + '</span><div>' + b.text + '</div></div>'
+).join('');
+
+// ============================================================
+// MERCHANT ACQUIRER SETUP PANEL
+// ============================================================
+const setup = meta.merchant_setup;
+const cardmix = meta.card_mix;
+const setupCardLeft = `
+  <div class="setup-card">
+    <h3>Merchant Acquirer Setup</h3>
+    <div class="setup-row"><span class="key">Merchant</span><span class="val">${meta.merchant}</span></div>
+    <div class="setup-row"><span class="key">Tax ID / Partita IVA</span><span class="val">${meta.merchant_pi}</span></div>
+    <div class="setup-row"><span class="key">Country / City</span><span class="val">${meta.country} / ${meta.city}</span></div>
+    <div class="setup-row"><span class="key">Acquirer</span><span class="val accent">Nexi (Italy)</span></div>
+    <div class="setup-row"><span class="key">Settlement Bank</span><span class="val">${setup.settlement_banks.join(', ') || '-'}</span></div>
+    <div class="setup-row"><span class="key">ABI / CAB</span><span class="val">${setup.abi.join(', ') || '-'} / ${setup.cab.join(', ') || '-'}</span></div>
+    <div class="setup-row"><span class="key">IBAN</span><span class="val">${setup.iban.join(', ') || '-'}</span></div>
+    <div class="setup-row"><span class="key">POS Code(s)</span><span class="val">${setup.pos_codes.join(', ') || '-'}</span></div>
+    <div class="setup-row"><span class="key">Payment Contracts</span><span class="val">${setup.payment_contracts.length} active</span></div>
+    <table class="contracts-table">
+      <thead><tr><th>Contract ID</th><th>Active</th><th>Months</th><th>Volume</th><th>Txns</th><th>Fees</th></tr></thead>
+      <tbody>
+        ${setup.payment_contracts.map(c => `
+          <tr>
+            <td>${c.contract_id}</td>
+            <td>${c.first_seen}<br><span style="color:var(--dim)">to ${c.last_seen}</span></td>
+            <td>${c.months_active}</td>
+            <td>${fmtEUR(c.total_volume)}</td>
+            <td>${fmtNumInt(c.total_txns)}</td>
+            <td>${fmtEUR(c.total_fees)}</td>
+          </tr>
+        `).join('')}
+      </tbody>
+    </table>
+    <div class="note">Multiple Payment Contracts under the same merchant typically indicate separate POS terminals or e-commerce / MOTO splits. Contract PC0000280938 only appears in September 2025 with a single 198 EUR transaction - likely a test or legacy terminal.</div>
+  </div>
+`;
+const intlPct = cardmix.intl_pct;
+const bancoPct = cardmix.bancomat_pct;
+const setupCardRight = `
+  <div class="setup-card">
+    <h3>Card Mix &amp; Brand Coverage</h3>
+    <div class="setup-row"><span class="key">International Cards</span><span class="val accent">${fmtEUR(cardmix.intl_card_volume)}</span></div>
+    <div class="setup-row"><span class="key">Bancomat (IT debit)</span><span class="val">${fmtEUR(cardmix.bancomat_volume)}</span></div>
+    <div class="cardmix-bar">
+      <div class="seg intl" style="width:${intlPct}%">${intlPct > 8 ? intlPct.toFixed(1) + '%' : ''}</div>
+      ${bancoPct > 0 ? `<div class="seg banco" style="width:${bancoPct}%">${bancoPct > 8 ? bancoPct.toFixed(1) + '%' : ''}</div>` : ''}
+    </div>
+    <div class="cardmix-legend">
+      <span><span class="dot" style="background:var(--accent)"></span>International Cards</span>
+      <span><span class="dot" style="background:var(--purple)"></span>Bancomat (Italian domestic debit)</span>
+    </div>
+    <div class="note">
+      <strong style="color:var(--text)">Brand-level breakdown unavailable in monthly PDF.</strong><br>
+      Nexi reports only two card categories at the statement level:
+      Bancomat (Italian domestic debit network) and International Cards
+      (Visa, Mastercard, AMEX, Maestro, JCB, Diners, etc all combined).
+      <br><br>
+      To get a Visa-vs-Mastercard-vs-AMEX split, plus issuing bank, BIN ranges,
+      and country of issuer, you must export the per-transaction CSV from
+      <strong style="color:var(--accent)">business.nexi.it</strong> under the
+      &quot;Transazioni&quot; section. Drop that CSV into the source folder and
+      re-run the analyzer with the planned --transactions-csv flag.
+    </div>
+  </div>
+`;
+document.getElementById('setupGrid').innerHTML = setupCardLeft + setupCardRight;
+
+// ============================================================
+// CHARTS
+// ============================================================
+Chart.defaults.font.family = "'Space Mono', monospace";
+Chart.defaults.color = PALETTE.muted;
+Chart.defaults.borderColor = PALETTE.border;
+
+const labels = months.map(m => m.period);
+
+new Chart(document.getElementById('chartVolume'), {
+  type: 'bar',
+  data: {
+    labels: labels,
+    datasets: [{
+      label: 'Volume (EUR)',
+      data: months.map(m => m.volume),
+      backgroundColor: 'rgba(0,212,255,0.5)',
+      borderColor: PALETTE.accent,
+      borderWidth: 1.5,
+      borderRadius: 2
+    }]
+  },
+  options: {
+    responsive: true, maintainAspectRatio: false,
+    plugins: { legend: { display: false } },
+    scales: {
+      y: { ticks: { callback: v => fmtEUR(v) }, grid: { color: PALETTE.border } },
+      x: { grid: { display: false } }
+    }
+  }
+});
+
+new Chart(document.getElementById('chartRate'), {
+  type: 'line',
+  data: {
+    labels: labels,
+    datasets: [{
+      label: 'Effective Rate (%)',
+      data: months.map(m => m.effective_rate_pct),
+      borderColor: PALETTE.red,
+      backgroundColor: 'rgba(255,77,106,0.1)',
+      borderWidth: 2,
+      tension: 0.3,
+      fill: true,
+      pointBackgroundColor: PALETTE.red,
+      pointRadius: 4
+    }]
+  },
+  options: {
+    responsive: true, maintainAspectRatio: false,
+    plugins: { legend: { display: false } },
+    scales: {
+      y: { ticks: { callback: v => v.toFixed(2) + '%' }, grid: { color: PALETTE.border } },
+      x: { grid: { display: false } }
+    }
+  }
+});
+
+new Chart(document.getElementById('chartFees'), {
+  type: 'bar',
+  data: {
+    labels: labels,
+    datasets: [
+      { label: 'Interchange', data: months.map(m => m.interchange), backgroundColor: PALETTE.accent, stack: 's' },
+      { label: 'Scheme', data: months.map(m => m.scheme_fees), backgroundColor: PALETTE.purple, stack: 's' },
+      { label: 'Acquirer Markup', data: months.map(m => m.acquirer_markup), backgroundColor: PALETTE.yellow, stack: 's' },
+      { label: 'Stamp Tax + Fixed', data: months.map(m => m.stamp_tax + m.acquiring_fee_eur), backgroundColor: PALETTE.orange, stack: 's' }
+    ]
+  },
+  options: {
+    responsive: true, maintainAspectRatio: false,
+    plugins: { legend: { position: 'bottom', labels: { boxWidth: 12, font: { size: 10 } } } },
+    scales: {
+      y: { stacked: true, ticks: { callback: v => fmtEUR(v) }, grid: { color: PALETTE.border } },
+      x: { stacked: true, grid: { display: false } }
+    }
+  }
+});
+
+new Chart(document.getElementById('chartTxns'), {
+  type: 'bar',
+  data: {
+    labels: labels,
+    datasets: [
+      { label: 'Txn Count', data: months.map(m => m.transaction_count), backgroundColor: PALETTE.sky, yAxisID: 'y' },
+      { label: 'Avg Ticket (EUR)', data: months.map(m => m.avg_ticket), type: 'line', borderColor: PALETTE.green, backgroundColor: 'transparent', borderWidth: 2, tension: 0.3, pointBackgroundColor: PALETTE.green, pointRadius: 4, yAxisID: 'y1' }
+    ]
+  },
+  options: {
+    responsive: true, maintainAspectRatio: false,
+    plugins: { legend: { position: 'bottom', labels: { boxWidth: 12, font: { size: 10 } } } },
+    scales: {
+      y: { position: 'left', grid: { color: PALETTE.border }, title: { display: true, text: 'Count', color: PALETTE.muted } },
+      y1: { position: 'right', grid: { display: false }, ticks: { callback: v => fmtEUR(v) }, title: { display: true, text: 'Avg Ticket', color: PALETTE.muted } },
+      x: { grid: { display: false } }
+    }
+  }
+});
+
+let cum = 0;
+const cumFees = months.map(m => { cum += m.total_cost; return cum; });
+new Chart(document.getElementById('chartCumFees'), {
+  type: 'line',
+  data: {
+    labels: labels,
+    datasets: [{
+      label: 'Cumulative Fees',
+      data: cumFees,
+      borderColor: PALETTE.yellow,
+      backgroundColor: 'rgba(255,200,69,0.15)',
+      borderWidth: 2,
+      tension: 0.2,
+      fill: true,
+      pointBackgroundColor: PALETTE.yellow,
+      pointRadius: 4
+    }]
+  },
+  options: {
+    responsive: true, maintainAspectRatio: false,
+    plugins: { legend: { display: false } },
+    scales: {
+      y: { ticks: { callback: v => fmtEUR(v) }, grid: { color: PALETTE.border } },
+      x: { grid: { display: false } }
+    }
+  }
+});
+
+// ============================================================
+// MONTHLY TABLE
+// ============================================================
+const sortedDesc = [...months].sort((a,b) => b.period.localeCompare(a.period));
+document.getElementById('tableBody').innerHTML = sortedDesc.map(m => {
+  const refundClass = m.refund_amount > 0 ? 'refund-month' : '';
+  return '<tr class="' + refundClass + '">' +
+    '<td>' + m.period + '</td>' +
+    '<td>' + fmtEUR(m.volume) + '</td>' +
+    '<td>' + fmtNumInt(m.transaction_count) + '</td>' +
+    '<td>' + fmtEURDec(m.avg_ticket) + '</td>' +
+    '<td>' + (m.refund_amount > 0 ? fmtEUR(m.refund_amount) + ' (' + m.refund_count + ')' : '-') + '</td>' +
+    '<td>' + fmtEUR(m.total_cost) + '</td>' +
+    '<td><span class="chip ' + (m.effective_rate_pct < 2.5 ? 'green' : m.effective_rate_pct < 3 ? 'yellow' : 'red') + '">' + fmtPct(m.effective_rate_pct) + '</span></td>' +
+    '<td>' + fmtEUR(m.interchange) + '</td>' +
+    '<td>' + fmtEUR(m.scheme_fees) + '</td>' +
+    '<td>' + fmtEUR(m.acquirer_markup) + '</td>' +
+    '<td>' + fmtEURDec(m.stamp_tax) + '</td>' +
+    '<td>' + fmtEUR(m.net_settled) + '</td>' +
+  '</tr>';
+}).join('');
+
+// ============================================================
+// RATE BUILDUP CHARTS + TABLE
+// ============================================================
+const periodBuildup = meta.rate_buildup;
+
+// Period waterfall: horizontal stacked bar showing the FULL build-up
+// from Interchange -> Scheme -> Markup = Bundled, then + Fixed + Stamp = Effective
+new Chart(document.getElementById('chartWaterfall'), {
+  type: 'bar',
+  data: {
+    labels: ['Issuer Interchange', 'Card Scheme Fees', 'Nexi Acquirer Markup', 'Fixed Acquirer Fee', 'Italian Stamp Tax'],
+    datasets: [{
+      label: 'bps of volume',
+      data: [
+        periodBuildup.interchange_rate_pct * 100,
+        periodBuildup.scheme_rate_pct * 100,
+        periodBuildup.markup_rate_pct * 100,
+        periodBuildup.fixed_acquirer_rate_pct * 100,
+        periodBuildup.stamp_tax_rate_pct * 100
+      ],
+      backgroundColor: [
+        PALETTE.accent,
+        PALETTE.purple,
+        PALETTE.yellow,
+        PALETTE.sky,
+        PALETTE.orange
+      ],
+      borderColor: PALETTE.border,
+      borderWidth: 1
+    }]
+  },
+  options: {
+    indexAxis: 'y',
+    responsive: true,
+    maintainAspectRatio: false,
+    plugins: {
+      legend: { display: false },
+      tooltip: {
+        callbacks: {
+          label: ctx => ctx.parsed.x.toFixed(2) + ' bps  (' + (ctx.parsed.x / 100).toFixed(4) + '% of volume)'
+        }
+      },
+      title: {
+        display: true,
+        text: 'Bundled rate ' + periodBuildup.bundled_processing_rate_pct.toFixed(3) + '% + ' + periodBuildup.uplift_over_bundled_bps.toFixed(1) + ' bps uplift  =  ' + periodBuildup.full_effective_rate_pct.toFixed(3) + '% effective',
+        color: PALETTE.text,
+        font: { size: 12, family: 'Space Mono' }
+      }
+    },
+    scales: {
+      x: {
+        ticks: { callback: v => v.toFixed(0) + ' bps' },
+        grid: { color: PALETTE.border },
+        title: { display: true, text: 'Basis points (1 bps = 0.01%)', color: PALETTE.muted, font: { size: 10 } }
+      },
+      y: { grid: { display: false } }
+    }
+  }
+});
+
+// Per-month stacked rate composition (in bps)
+new Chart(document.getElementById('chartRateMonthly'), {
+  type: 'bar',
+  data: {
+    labels: labels,
+    datasets: [
+      { label: 'Interchange', data: months.map(m => m.rate_buildup.interchange_rate_pct * 100), backgroundColor: PALETTE.accent, stack: 'r' },
+      { label: 'Scheme', data: months.map(m => m.rate_buildup.scheme_rate_pct * 100), backgroundColor: PALETTE.purple, stack: 'r' },
+      { label: 'Acquirer Markup', data: months.map(m => m.rate_buildup.markup_rate_pct * 100), backgroundColor: PALETTE.yellow, stack: 'r' },
+      { label: 'Fixed Acq Fee', data: months.map(m => m.rate_buildup.fixed_acquirer_rate_pct * 100), backgroundColor: PALETTE.sky, stack: 'r' },
+      { label: 'Stamp Tax', data: months.map(m => m.rate_buildup.stamp_tax_rate_pct * 100), backgroundColor: PALETTE.orange, stack: 'r' }
+    ]
+  },
+  options: {
+    responsive: true, maintainAspectRatio: false,
+    plugins: {
+      legend: { position: 'bottom', labels: { boxWidth: 12, font: { size: 9 } } },
+      tooltip: {
+        callbacks: {
+          label: ctx => ctx.dataset.label + ': ' + ctx.parsed.y.toFixed(1) + ' bps'
+        }
+      }
+    },
+    scales: {
+      y: { stacked: true, ticks: { callback: v => v.toFixed(0) + ' bps' }, grid: { color: PALETTE.border } },
+      x: { stacked: true, grid: { display: false } }
+    }
+  }
+});
+
+// ============================================================
+// CROSS-BORDER COST INDICATOR (descriptive only)
+// ============================================================
+const cb = meta.cross_border_indicator;
+
+document.getElementById('cbActual').textContent = cb.actual_combined_ic_scheme_bps.toFixed(0) + ' bps';
+document.getElementById('cbActualSub').textContent = '= ' + (cb.actual_combined_ic_scheme_bps / 100).toFixed(3) + '% of every transaction';
+document.getElementById('cbLoading').textContent = '+' + cb.loading_over_eea_debit_bps.toFixed(0) + ' bps';
+document.getElementById('cbMarkup').textContent = cb.nexi_markup_bps.toFixed(1) + ' bps';
+document.getElementById('cbMarkupSub').textContent = '~' + fmtEUR(cb.nexi_markup_annual_eur) + ' / year annualized';
+
+const refRows = [
+  {label: 'EEA-issued consumer DEBIT (IFR-capped)',          bps: cb.reference_rates_bps.eea_consumer_debit,        meaning: 'Italian / European debit cards. The cheapest possible category. IFR caps interchange at 20 bps.'},
+  {label: 'EEA-issued consumer CREDIT (IFR-capped)',         bps: cb.reference_rates_bps.eea_consumer_credit,       meaning: 'Italian / European basic credit cards. IFR caps interchange at 30 bps.'},
+  {label: 'EEA premium credit (Visa Infinite, MC World Elite)', bps: cb.reference_rates_bps.eea_premium_credit,    meaning: 'High-tier consumer credit. Still EEA-issued but premium tier within IFR limits.'},
+  {label: 'Intra-EEA cross-border consumer',                 bps: cb.reference_rates_bps.intra_eea_cross_border,    meaning: 'European cardholder traveling within the EEA. Same IFR caps but higher scheme fees.'},
+  {label: 'Commercial / corporate cards',                    bps: cb.reference_rates_bps.commercial_corporate,      meaning: 'Business, purchasing, fleet cards. UNCAPPED under IFR. 1.5-2.5% interchange typical.'},
+  {label: 'Inter-regional consumer credit (CNP)',            bps: cb.reference_rates_bps.inter_regional_credit_cnp, meaning: 'Non-EEA cards (US, post-Brexit UK, Switzerland, Asia, ME) used in Italy. The largest pass-through tier.'},
+  {label: 'AMEX (typical bundled MSC)',                      bps: cb.reference_rates_bps.amex_typical,              meaning: 'American Express has its own pricing - typically 1.5-3% all-in.'},
+];
+
+document.getElementById('cbRefTable').innerHTML = refRows.map(r => {
+  const diff = cb.actual_combined_ic_scheme_bps - r.bps;
+  let chip;
+  if (Math.abs(diff) <= 25) chip = `<span class="chip cyan">~ matches actual</span>`;
+  else if (diff > 0) chip = `<span class="chip green">${diff.toFixed(0)} bps below actual</span>`;
+  else chip = `<span class="chip red">${Math.abs(diff).toFixed(0)} bps above actual</span>`;
+  return `
+    <tr>
+      <td>${r.label}</td>
+      <td>${r.bps.toFixed(0)} bps</td>
+      <td>${chip}</td>
+      <td style="font-family:'Syne',sans-serif;font-size:11px;color:var(--muted);text-align:left;white-space:normal">${r.meaning}</td>
+    </tr>
+  `;
+}).join('');
+
+document.getElementById('cbInterpretation').innerHTML = '<strong>Factual summary:</strong> ' + cb.factual_summary;
+
+// ============================================================
+// NOTABLE OBSERVATIONS
+// ============================================================
+const observations = meta.observations || [];
+// Sort by severity high > medium > low, then by category
+const sevOrder = {high: 0, medium: 1, low: 2};
+observations.sort((a, b) => (sevOrder[a.severity] - sevOrder[b.severity]) || a.category.localeCompare(b.category));
+
+document.getElementById('observationsList').innerHTML = observations.map(obs => `
+  <div class="obs-card ${obs.severity}">
+    <div class="obs-head">
+      <div class="obs-title">${obs.title}</div>
+      <div class="obs-meta">
+        <span class="obs-cat">${obs.category}</span>
+        <span class="obs-sev ${obs.severity}">${obs.severity}</span>
+      </div>
+    </div>
+    <div class="obs-detail">${obs.detail}</div>
+  </div>
+`).join('');
+
+// Spectrum bar chart
+const spectrumLabels = [
+  'EEA Consumer Debit',
+  'EEA Consumer Credit',
+  'EEA Premium Credit',
+  'Intra-EEA Cross-Border',
+  'Commercial / Corporate',
+  'Inter-Regional Credit',
+  'AMEX',
+  'YOUR ACTUAL',
+];
+const spectrumVals = [
+  cb.reference_rates_bps.eea_consumer_debit,
+  cb.reference_rates_bps.eea_consumer_credit,
+  cb.reference_rates_bps.eea_premium_credit,
+  cb.reference_rates_bps.intra_eea_cross_border,
+  cb.reference_rates_bps.commercial_corporate,
+  cb.reference_rates_bps.inter_regional_credit_cnp,
+  cb.reference_rates_bps.amex_typical,
+  cb.actual_combined_ic_scheme_bps,
+];
+const spectrumColors = [
+  PALETTE.green, PALETTE.green, PALETTE.sky, PALETTE.sky,
+  PALETTE.yellow, PALETTE.orange, PALETTE.purple,
+  PALETTE.red,  // YOUR ACTUAL highlighted
+];
+
+new Chart(document.getElementById('chartCBSpectrum'), {
+  type: 'bar',
+  data: {
+    labels: spectrumLabels,
+    datasets: [{
+      label: 'Combined IC + Scheme (bps)',
+      data: spectrumVals,
+      backgroundColor: spectrumColors,
+      borderColor: spectrumLabels.map((l, i) => l === 'YOUR ACTUAL' ? '#ffffff' : PALETTE.border),
+      borderWidth: spectrumLabels.map(l => l === 'YOUR ACTUAL' ? 2 : 1),
+    }]
+  },
+  options: {
+    indexAxis: 'y',
+    responsive: true,
+    maintainAspectRatio: false,
+    plugins: {
+      legend: { display: false },
+      tooltip: {
+        callbacks: {
+          label: ctx => ctx.parsed.x.toFixed(1) + ' bps  (' + (ctx.parsed.x / 100).toFixed(3) + '%)'
+        }
+      },
+      title: {
+        display: true,
+        text: 'Lower = cheaper. The merchant is sitting at ' + cb.actual_combined_ic_scheme_bps.toFixed(0) + ' bps - between Commercial Cards and Inter-Regional Credit.',
+        color: PALETTE.text,
+        font: { size: 11, family: 'Space Mono' }
+      }
+    },
+    scales: {
+      x: {
+        ticks: { callback: v => v.toFixed(0) + ' bps' },
+        grid: { color: PALETTE.border },
+        title: { display: true, text: 'Combined Interchange + Scheme (bps)', color: PALETTE.muted, font: { size: 10 } }
+      },
+      y: { grid: { display: false }, ticks: { font: { size: 10 } } }
+    }
+  }
+});
+
+// Per-month rate buildup table
+const fmtBps = v => (v * 100).toFixed(1);
+document.getElementById('rateBuildupBody').innerHTML = sortedDesc.map(m => {
+  const r = m.rate_buildup;
+  return '<tr>' +
+    '<td>' + m.period + '</td>' +
+    '<td>' + fmtBps(r.interchange_rate_pct) + '</td>' +
+    '<td>' + fmtBps(r.scheme_rate_pct) + '</td>' +
+    '<td style="' + (r.markup_rate_pct < 0 ? 'color:var(--orange)' : '') + '">' + fmtBps(r.markup_rate_pct) + '</td>' +
+    '<td style="background:rgba(0,212,255,0.04);color:var(--accent);font-weight:700">' + fmtBps(r.bundled_processing_rate_pct) + '</td>' +
+    '<td>' + fmtBps(r.fixed_acquirer_rate_pct) + '</td>' +
+    '<td>' + fmtBps(r.stamp_tax_rate_pct) + '</td>' +
+    '<td style="background:rgba(255,77,106,0.04);color:var(--red);font-weight:700">' + fmtBps(r.full_effective_rate_pct) + '</td>' +
+    '<td><span class="chip ' + (r.uplift_over_bundled_bps < 1 ? 'green' : r.uplift_over_bundled_bps < 5 ? 'yellow' : 'red') + '">+' + r.uplift_over_bundled_bps.toFixed(1) + '</span></td>' +
+  '</tr>';
+}).join('');
+
+// Fee breakdown table
+document.getElementById('feeBreakdown').innerHTML = sortedDesc.map(m => {
+  const tot = m.total_cost || 1;
+  const ic = (m.interchange / tot * 100);
+  const sf = (m.scheme_fees / tot * 100);
+  const am = (m.acquirer_markup / tot * 100);
+  const st = ((m.stamp_tax + m.acquiring_fee_eur) / tot * 100);
+  return '<tr>' +
+    '<td>' + m.period + '</td>' +
+    '<td>' + fmtPct2(ic) + '</td>' +
+    '<td>' + fmtPct2(sf) + '</td>' +
+    '<td>' + fmtPct2(am) + '</td>' +
+    '<td>' + fmtPct2(st) + '</td>' +
+  '</tr>';
+}).join('');
+</script>
+</body>
+</html>
