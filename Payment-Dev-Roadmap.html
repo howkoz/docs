@@ -13,7 +13,8 @@
   --r1:#fb5a7e; --r1-soft:rgba(251,90,126,.13);
   --r2:#fbbf24; --r2-soft:rgba(251,191,36,.13);
   --r3:#60a5fa; --r3-soft:rgba(96,165,250,.13);
-  --green:#34d399; --purple:#a78bfa;
+  --green:#34d399; --green-soft:rgba(52,211,153,.13);
+  --purple:#a78bfa;
   --mono:ui-monospace,'SF Mono','JetBrains Mono',Menlo,Consolas,monospace;
   --sans:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,Helvetica,Arial,sans-serif;
 }
@@ -27,7 +28,6 @@ body{background-image:
   linear-gradient(90deg,rgba(255,255,255,.014) 1px,transparent 1px);
   background-size:100% 100%,100% 100%,46px 46px,46px 46px}
 
-/* ── NAV ── */
 .nav{position:sticky;top:0;z-index:100;background:rgba(8,11,18,.92);
   backdrop-filter:blur(14px);border-bottom:1px solid var(--border);
   display:flex;align-items:center;justify-content:space-between;padding:0 26px;height:58px}
@@ -55,7 +55,6 @@ body{background-image:
   font-weight:600;margin-bottom:9px;display:flex;align-items:center;gap:8px}
 .eyebrow::before{content:'';width:22px;height:1px;background:var(--cyan);opacity:.6}
 
-/* ── HERO ── */
 .hero{background:linear-gradient(135deg,#0e1626 0%,#10182a 60%,#141d33 100%);
   border:1px solid var(--border);border-radius:16px;padding:30px 36px;margin-bottom:20px;
   position:relative;overflow:hidden}
@@ -66,13 +65,12 @@ body{background-image:
 .hero>*{position:relative}
 .hero h1{font-size:26px;font-weight:800;letter-spacing:-.5px;line-height:1.2;margin-bottom:10px}
 .hero h1 b{color:var(--cyan)}
-.hero-sub{font-size:13.5px;color:var(--muted);max-width:720px;line-height:1.62}
+.hero-sub{font-size:13.5px;color:var(--muted);max-width:740px;line-height:1.62}
 .hero-sub b{color:var(--ink)}
 
-/* ── CAPACITY SELECTOR ── */
+/* CAPACITY SELECTOR */
 .cap-bar{display:flex;align-items:center;gap:9px;background:var(--surface);
-  border:1px solid var(--border);border-radius:12px;padding:13px 18px;margin-bottom:18px;
-  flex-wrap:wrap}
+  border:1px solid var(--border);border-radius:12px;padding:13px 18px;margin-bottom:14px;flex-wrap:wrap}
 .cap-label{font-family:var(--mono);font-size:10px;font-weight:700;letter-spacing:1.5px;
   color:var(--cyan);margin-right:5px;display:flex;align-items:center;gap:7px}
 .cap-label::before{content:'';width:7px;height:7px;border-radius:50%;background:var(--cyan);
@@ -86,7 +84,39 @@ body{background-image:
 .cap-readout{margin-left:auto;font-size:12.5px;color:var(--muted)}
 .cap-readout b{color:var(--cyan);font-family:var(--mono);font-weight:700}
 
-/* ── ROADMAP COLUMNS ── */
+/* REVIEW BAR */
+.review-bar{display:flex;align-items:center;gap:16px;background:var(--surface);
+  border:1px solid var(--border);border-radius:12px;padding:13px 18px;margin-bottom:18px;
+  flex-wrap:wrap}
+.rv-id{display:flex;align-items:center;gap:9px}
+.rv-lbl{font-family:var(--mono);font-size:10px;font-weight:700;letter-spacing:1.2px;color:var(--dim)}
+.rv-name{background:var(--bg2);border:1px solid var(--border2);border-radius:8px;
+  padding:8px 13px;font-size:12.5px;font-family:var(--mono);color:var(--ink);width:170px}
+.rv-name:focus{outline:none;border-color:var(--cyan);box-shadow:0 0 0 3px var(--cyan-soft)}
+.rv-name.nudge{border-color:var(--r1);box-shadow:0 0 0 3px var(--r1-soft);animation:shake .4s}
+@keyframes shake{0%,100%{transform:translateX(0)}25%{transform:translateX(-4px)}75%{transform:translateX(4px)}}
+.rv-prog{flex:1;min-width:260px}
+.rv-prog-top{display:flex;justify-content:space-between;font-family:var(--mono);
+  font-size:10px;color:var(--dim);margin-bottom:5px}
+.rv-prog-top b{color:var(--cyan)}
+.rv-bar{height:9px;border-radius:5px;background:var(--bg2);display:flex;overflow:hidden;
+  border:1px solid var(--border)}
+.rv-seg{transition:width .4s ease}
+.rv-seg.approved{background:var(--green)} .rv-seg.on_hold{background:var(--r2)}
+.rv-seg.rejected{background:var(--r1)} .rv-seg.pending{background:var(--border2)}
+.rv-legend{display:flex;gap:13px;flex-wrap:wrap;margin-top:6px;font-family:var(--mono);font-size:9.5px}
+.rv-legend span{color:var(--muted)}
+.rv-legend b{font-weight:700}
+.conn{display:flex;align-items:center;gap:7px;font-family:var(--mono);font-size:10px;
+  font-weight:700;color:var(--muted);white-space:nowrap}
+.conn-dot{width:8px;height:8px;border-radius:50%;background:var(--dim)}
+.conn.live .conn-dot{background:var(--green);box-shadow:0 0 8px var(--green);animation:pulse 2.4s infinite}
+.conn.live{color:var(--green)}
+.conn.saving .conn-dot{background:var(--cyan);box-shadow:0 0 8px var(--cyan)}
+.conn.saving{color:var(--cyan)}
+.conn.offline .conn-dot{background:var(--r1)} .conn.offline{color:var(--r1)}
+
+/* ROADMAP */
 .road-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:16px}
 @media(max-width:980px){.road-grid{grid-template-columns:1fr}}
 .road-col{background:var(--surface);border:1px solid var(--border);border-radius:14px;overflow:hidden}
@@ -104,17 +134,20 @@ body{background-image:
 .road-head-meta b{color:var(--ink)}
 .road-body{padding:11px}
 .mini{background:var(--bg2);border:1px solid var(--border);border-radius:10px;
-  padding:12px 13px;margin-bottom:9px;cursor:pointer;transition:all .14s}
-.mini:hover{border-color:var(--cyan);transform:translateX(3px);box-shadow:-3px 0 0 var(--cyan)}
+  padding:12px 13px;margin-bottom:9px;transition:all .14s}
 .mini:last-child{margin-bottom:0}
+.mini.st-approved{background:var(--green-soft);border-color:rgba(52,211,153,.32)}
+.mini.st-on_hold{background:var(--r2-soft);border-color:rgba(251,191,36,.32)}
+.mini.st-rejected{background:var(--r1-soft);border-color:rgba(251,90,126,.32)}
+.mini-head{cursor:pointer}
+.mini-head:hover .mini-name{color:var(--cyan)}
 .mini-top{display:flex;justify-content:space-between;align-items:flex-start;gap:9px}
-.mini-name{font-size:12.5px;font-weight:700;line-height:1.35}
+.mini-name{font-size:12.5px;font-weight:700;line-height:1.35;transition:color .12s}
 .mini-meta{font-size:10px;color:var(--muted);margin-top:7px;display:flex;gap:6px;
   flex-wrap:wrap;align-items:center;font-family:var(--mono)}
 .mini-chip{background:var(--surface2);border:1px solid var(--border2);border-radius:5px;
   padding:1px 6px;font-size:9px;font-weight:600;color:var(--muted)}
 .mini-blk{color:var(--r1);font-weight:700}
-/* resource + timing strip on each card */
 .mini-rt{display:flex;align-items:center;gap:8px;margin-top:9px;padding-top:9px;
   border-top:1px solid var(--border);font-family:var(--mono);font-size:10.5px}
 .mrt-block{display:flex;align-items:center;gap:5px}
@@ -124,16 +157,45 @@ body{background-image:
 .mini-rt .sep{width:1px;height:14px;background:var(--border2)}
 .mini-rt.pending{color:var(--dim)}
 
-/* effort size badge */
+/* DECISION CONTROLS */
+.mini-dec{margin-top:10px;padding-top:10px;border-top:1px solid var(--border)}
+.st-badge{font-family:var(--mono);font-size:9px;font-weight:700;letter-spacing:.6px;
+  display:flex;align-items:center;gap:6px;margin-bottom:8px}
+.st-badge::before{content:'';width:7px;height:7px;border-radius:50%;background:var(--dim)}
+.st-badge.approved{color:var(--green)} .st-badge.approved::before{background:var(--green);box-shadow:0 0 7px var(--green)}
+.st-badge.on_hold{color:var(--r2)} .st-badge.on_hold::before{background:var(--r2);box-shadow:0 0 7px var(--r2)}
+.st-badge.rejected{color:var(--r1)} .st-badge.rejected::before{background:var(--r1);box-shadow:0 0 7px var(--r1)}
+.st-badge.pending{color:var(--dim)}
+.st-badge .by{color:var(--muted);font-weight:600}
+.dbtns{display:flex;gap:5px}
+.dbtn{flex:1;background:var(--bg2);border:1px solid var(--border2);border-radius:7px;
+  padding:7px 4px;font-size:10px;font-weight:700;cursor:pointer;font-family:var(--mono);
+  color:var(--muted);transition:all .13s;letter-spacing:.3px}
+.dbtn:hover{transform:translateY(-1px)}
+.dbtn.approve:hover{border-color:var(--green);color:var(--green)}
+.dbtn.hold:hover{border-color:var(--r2);color:var(--r2)}
+.dbtn.reject:hover{border-color:var(--r1);color:var(--r1)}
+.dbtn.approve.on{background:var(--green);color:#04140c;border-color:var(--green);
+  box-shadow:0 0 12px rgba(52,211,153,.4)}
+.dbtn.hold.on{background:var(--r2);color:#1a1200;border-color:var(--r2);
+  box-shadow:0 0 12px rgba(251,191,36,.4)}
+.dbtn.reject.on{background:var(--r1);color:#1a0309;border-color:var(--r1);
+  box-shadow:0 0 12px rgba(251,90,126,.4)}
+.dnote{width:100%;margin-top:7px;background:var(--bg2);border:1px solid var(--border);
+  border-radius:6px;padding:6px 9px;font-size:10.5px;font-family:var(--mono);color:var(--ink)}
+.dnote::placeholder{color:var(--dim)}
+.dnote:focus{outline:none;border-color:var(--cyan)}
+
+/* effort size */
 .esz{font-family:var(--mono);font-size:9.5px;font-weight:700;padding:2px 7px;
   border-radius:5px;white-space:nowrap;flex-shrink:0;letter-spacing:.5px}
-.esz.xs,.esz.s{background:rgba(52,211,153,.16);color:var(--green)}
+.esz.xs,.esz.s{background:var(--green-soft);color:var(--green)}
 .esz.m{background:var(--cyan-soft);color:var(--cyan)}
 .esz.l{background:var(--r2-soft);color:var(--r2)}
 .esz.xl{background:var(--r1-soft);color:var(--r1)}
 .esz.tbd{background:var(--surface2);color:var(--dim)}
 
-/* ── BLOCKERS ── */
+/* BLOCKERS */
 .blk-intro{background:var(--r1-soft);border:1px solid rgba(251,90,126,.4);
   border-radius:12px;padding:17px 21px;margin-bottom:22px;font-size:13.5px;color:#ffc2cf}
 .blk-intro b{color:#fff;font-weight:800}
@@ -153,7 +215,7 @@ body{background-image:
 .blk-meta{font-family:var(--mono);font-size:10px;color:var(--muted);margin-top:9px;
   display:flex;gap:7px;flex-wrap:wrap}
 
-/* ── TICKET MAP ── */
+/* TICKET MAP */
 .tk-intro{font-size:13px;color:var(--muted);margin-bottom:20px;max-width:760px}
 .tk-init{background:var(--surface);border:1px solid var(--border);border-radius:13px;
   margin-bottom:13px;overflow:hidden}
@@ -187,7 +249,7 @@ a.tk-pill::after{content:' \2197';font-size:8px;opacity:.6}
 .tlink{color:var(--cyan);font-weight:700;text-decoration:underline;text-underline-offset:2px}
 .tlink:hover{color:#8af0fb}
 
-/* ── TABLE ── */
+/* TABLE */
 .controls{display:flex;gap:10px;align-items:center;flex-wrap:wrap;margin-bottom:14px}
 .search{flex:1;min-width:220px;background:var(--surface);border:1px solid var(--border2);
   border-radius:9px;padding:10px 14px;font-size:13px;font-family:inherit;color:var(--ink)}
@@ -223,7 +285,7 @@ tbody tr{cursor:pointer;transition:background .12s}
 tbody tr:hover{background:var(--surface2)}
 tbody tr.expanded{background:var(--cyan-soft)}
 .t-num{color:var(--dim);font-weight:700;font-family:var(--mono)}
-.t-proj{font-weight:700;max-width:300px}
+.t-proj{font-weight:700;max-width:280px}
 .t-rank{display:inline-block;width:22px;height:22px;line-height:22px;text-align:center;
   border-radius:6px;font-weight:700;font-size:11px;color:#0a0a0a;font-family:var(--mono)}
 .t-rank.r1{background:var(--r1)} .t-rank.r2{background:var(--r2)} .t-rank.r3{background:var(--r3)}
@@ -234,13 +296,23 @@ tbody tr.expanded{background:var(--cyan-soft)}
 .t-blocked{color:var(--r1);font-weight:700;font-size:11px;font-family:var(--mono)}
 .t-ready{color:var(--green);font-weight:700;font-family:var(--mono)}
 .t-pend{color:var(--dim);font-weight:700;font-family:var(--mono)}
+.t-rv{font-family:var(--mono);font-size:10px;font-weight:700;padding:3px 8px;border-radius:20px;
+  white-space:nowrap}
+.t-rv.approved{background:var(--green-soft);color:var(--green)}
+.t-rv.on_hold{background:var(--r2-soft);color:var(--r2)}
+.t-rv.rejected{background:var(--r1-soft);color:var(--r1)}
+.t-rv.pending{background:var(--surface2);color:var(--dim)}
 .detail-row td{background:var(--bg2);padding:0}
 .detail-inner{padding:17px 20px;border-left:3px solid var(--cyan)}
 .detail-desc{font-size:13px;line-height:1.62;margin-bottom:13px}
-.detail-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:13px}
+.detail-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:13px;margin-bottom:14px}
 .detail-cell .dl{font-family:var(--mono);color:var(--dim);font-weight:700;
   text-transform:uppercase;font-size:9px;letter-spacing:.6px;margin-bottom:3px}
 .detail-cell .dv{font-weight:600;font-size:11.5px}
+.detail-dec{background:var(--surface);border:1px solid var(--border);border-radius:10px;
+  padding:14px 16px}
+.detail-dec-lbl{font-family:var(--mono);font-size:9px;font-weight:700;letter-spacing:1px;
+  color:var(--cyan);margin-bottom:9px}
 .tkt-chip{display:inline-block;background:var(--cyan-soft);color:var(--cyan);
   border-radius:5px;padding:2px 7px;font-size:10px;font-weight:700;margin:2px 3px 2px 0;
   font-family:var(--mono)}
@@ -260,7 +332,7 @@ a.tkt-chip:hover{background:var(--cyan);color:#04141a}
     <div class="nav-title">PAYMENT DEVELOPMENT ROADMAP <span>&nbsp;// unicity payment ops</span></div>
   </div>
   <div class="nav-tabs" id="navTabs">
-    <button class="nav-tab active" data-tab="roadmap">Roadmap</button>
+    <button class="nav-tab active" data-tab="roadmap">Roadmap &amp; Review</button>
     <button class="nav-tab" data-tab="blockers">Action Needed</button>
     <button class="nav-tab" data-tab="tickets">Ticket Map</button>
     <button class="nav-tab" data-tab="all">All Initiatives</button>
@@ -270,14 +342,14 @@ a.tkt-chip:hover{background:var(--cyan);color:#04141a}
 
 <div class="wrap">
 
-  <!-- ═══════ ROADMAP (landing) ═══════ -->
+  <!-- ROADMAP + REVIEW -->
   <div class="panel active" id="tab-roadmap">
     <div class="hero">
-      <div class="eyebrow">2026 PAYMENT EXPANSION // EXECUTION VIEW</div>
-      <h1>45 payment initiatives &mdash; <b>Now, Next &amp; Later.</b></h1>
-      <div class="hero-sub">Every initiative opens a market, a payment method, or a revenue-recovery lever.
-        Set the <b>developer capacity</b> below and every card updates with the time to deliver.
-        Effort sizing &mdash; <b>XS / S / M / L / XL</b> &mdash; gives relative scale at a glance.</div>
+      <div class="eyebrow">2026 PAYMENT EXPANSION // MANAGEMENT REVIEW</div>
+      <h1>45 payment initiatives &mdash; <b>review &amp; decide.</b></h1>
+      <div class="hero-sub">Set <b>developer capacity</b> to see the time to deliver, then mark each initiative
+        <b>Approve</b>, <b>Hold</b>, or <b>Reject</b>. Decisions save instantly and sync to everyone
+        reviewing &mdash; the input sticks.</div>
     </div>
 
     <div class="cap-bar">
@@ -288,28 +360,41 @@ a.tkt-chip:hover{background:var(--cyan);color:#04141a}
       <span class="cap-readout" id="capReadout"></span>
     </div>
 
+    <div class="review-bar">
+      <div class="rv-id">
+        <span class="rv-lbl">REVIEWING AS</span>
+        <input class="rv-name" id="rvName" placeholder="your name" maxlength="40" autocomplete="off">
+      </div>
+      <div class="rv-prog">
+        <div class="rv-prog-top"><span>REVIEW PROGRESS</span><span id="rvProgTxt"></span></div>
+        <div class="rv-bar" id="rvBar"></div>
+        <div class="rv-legend" id="rvLegend"></div>
+      </div>
+      <div class="conn" id="conn"><span class="conn-dot"></span><span id="connTxt">Connecting…</span></div>
+    </div>
+
     <div class="road-grid" id="roadGrid"></div>
   </div>
 
-  <!-- ═══════ BLOCKERS ═══════ -->
+  <!-- BLOCKERS -->
   <div class="panel" id="tab-blockers">
     <div class="blk-intro" id="blkIntro"></div>
     <div id="blkGroups"></div>
   </div>
 
-  <!-- ═══════ TICKET MAP ═══════ -->
+  <!-- TICKET MAP -->
   <div class="panel" id="tab-tickets">
     <div class="hero" style="padding:24px 32px;margin-bottom:18px">
       <div class="eyebrow">TRACEABILITY // CLICKUP</div>
       <h1 style="font-size:22px">Ticket Map</h1>
       <div class="hero-sub" style="font-size:13px">Every initiative and the ClickUp tickets it rolls up.
-        Click any initiative to expand its scope and child tickets.</div>
+        Click an initiative to expand; ticket IDs link straight to ClickUp.</div>
     </div>
     <div class="tk-intro" id="tkSummary"></div>
     <div id="tkList"></div>
   </div>
 
-  <!-- ═══════ ALL ═══════ -->
+  <!-- ALL -->
   <div class="panel" id="tab-all">
     <div class="controls">
       <input type="text" class="search" id="search" placeholder="Search initiatives, markets, processors, methods...">
@@ -328,9 +413,12 @@ a.tkt-chip:hover{background:var(--cyan);color:#04141a}
         <button class="fbtn" data-f="cat" data-v="Hosted Payment Page">Hosted Payment Page</button>
         <button class="fbtn" data-f="cat" data-v="Tool - Strategic Platform">Strategic Tools</button>
       </div>
-      <div class="fgroup"><span class="flabel">Status</span>
-        <button class="fbtn on" data-f="blk" data-v="all">All</button>
-        <button class="fbtn" data-f="blk" data-v="blocked">Blocked Only</button>
+      <div class="fgroup"><span class="flabel">Review</span>
+        <button class="fbtn on" data-f="rv" data-v="all">All</button>
+        <button class="fbtn" data-f="rv" data-v="approved">Approved</button>
+        <button class="fbtn" data-f="rv" data-v="on_hold">On Hold</button>
+        <button class="fbtn" data-f="rv" data-v="rejected">Rejected</button>
+        <button class="fbtn" data-f="rv" data-v="pending">Pending</button>
       </div>
     </div>
     <div class="tbl-wrap">
@@ -343,7 +431,7 @@ a.tkt-chip:hover{background:var(--cyan);color:#04141a}
           <th data-s="processor">Processor<span class="arr">&#9650;&#9660;</span></th>
           <th data-s="effort">Effort<span class="arr">&#9650;&#9660;</span></th>
           <th data-s="effort">Timeline<span class="arr">&#9650;&#9660;</span></th>
-          <th data-s="status">Status<span class="arr">&#9650;&#9660;</span></th>
+          <th data-s="review">Review<span class="arr">&#9650;&#9660;</span></th>
         </tr></thead>
         <tbody id="tblBody"></tbody>
       </table>
@@ -352,16 +440,86 @@ a.tkt-chip:hover{background:var(--cyan);color:#04141a}
   </div>
 
   <div class="foot">
-    SOURCE: Payment_Dev_Estimation_2026-05-12 // DEV WORK ITEMS &nbsp;&middot;&nbsp;
-    SPRINT = 2 WEEKS &nbsp;&middot;&nbsp; TIMELINE = SPRINT ESTIMATE AT SELECTED DEV CAPACITY &nbsp;&middot;&nbsp;
-    GENERATED <span id="genDate"></span>
+    SOURCE: Payment_Dev_Estimation_2026-05-12 &nbsp;&middot;&nbsp; SPRINT = 2 WEEKS &nbsp;&middot;&nbsp;
+    DECISIONS SAVED LIVE TO SUPABASE &nbsp;&middot;&nbsp; GENERATED <span id="genDate"></span>
   </div>
 </div>
 
 <script>
 // ════════════════════════════════════════════════════════════
+// SUPABASE  —  live decision persistence (Option A: anon read+write)
+// ════════════════════════════════════════════════════════════
+const SUPA_URL='https://ogkgxmlkgiaqzgkpevpg.supabase.co';
+const SUPA_KEY='eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im9na2d4bWxrZ2lhcXpna3BldnBnIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzEyMjM2NzYsImV4cCI6MjA4Njc5OTY3Nn0.9UXljhDWpEfbG8oLvZnJpw5CP6cFKbOyfwsQpUeidg4';
+const SUPA_H={'apikey':SUPA_KEY,'Authorization':'Bearer '+SUPA_KEY,'Content-Type':'application/json'};
+let decisions={};                       // { initiative_num: {status,decided_by,decision_note,updated_at} }
+let reviewer=localStorage.getItem('roadmap_reviewer')||'';
+
+function setConn(state){
+  const el=document.getElementById('conn');
+  el.className='conn '+state;
+  document.getElementById('connTxt').textContent=
+    state==='live'?'Live · synced':state==='saving'?'Saving…':'Offline · retrying';
+}
+async function loadDecisions(){
+  try{
+    const r=await fetch(SUPA_URL+'/rest/v1/roadmap_decisions?select=*',{headers:SUPA_H});
+    if(!r.ok) throw new Error(r.status);
+    const rows=await r.json();
+    decisions={};
+    rows.forEach(d=>decisions[d.initiative_num]=d);
+    setConn('live');
+    return true;
+  }catch(e){ setConn('offline'); return false; }
+}
+function decOf(num){return decisions[num]||{status:'pending',decided_by:null,decision_note:null};}
+async function saveDecision(num,status){
+  if(!reviewer){
+    const el=document.getElementById('rvName');
+    el.classList.add('nudge'); el.focus();
+    setTimeout(()=>el.classList.remove('nudge'),700);
+    return;
+  }
+  const prev=decOf(num).status;
+  if(prev===status){ // toggle off -> back to pending
+    status='pending';
+  }
+  setConn('saving');
+  const row={initiative_num:num,status:status,decided_by:reviewer,
+    decision_note:decOf(num).decision_note||null,updated_at:new Date().toISOString()};
+  try{
+    const r=await fetch(SUPA_URL+'/rest/v1/roadmap_decisions',{method:'POST',
+      headers:Object.assign({},SUPA_H,{'Prefer':'resolution=merge-duplicates,return=minimal'}),
+      body:JSON.stringify(row)});
+    if(!r.ok) throw new Error(r.status);
+    decisions[num]=row;
+    fetch(SUPA_URL+'/rest/v1/roadmap_decision_log',{method:'POST',headers:SUPA_H,
+      body:JSON.stringify({initiative_num:num,old_status:prev,new_status:status,
+        decided_by:reviewer,note:row.decision_note})});
+    setConn('live');
+    renderRoadmap();renderProgress();
+    if(document.getElementById('tab-all').classList.contains('active'))renderTable();
+  }catch(e){ setConn('offline'); }
+}
+async function saveNote(num,note){
+  if(!reviewer){return;}
+  setConn('saving');
+  const d=decOf(num);
+  const row={initiative_num:num,status:d.status||'pending',
+    decided_by:d.decided_by||reviewer,decision_note:note||null,
+    updated_at:new Date().toISOString()};
+  try{
+    const r=await fetch(SUPA_URL+'/rest/v1/roadmap_decisions',{method:'POST',
+      headers:Object.assign({},SUPA_H,{'Prefer':'resolution=merge-duplicates,return=minimal'}),
+      body:JSON.stringify(row)});
+    if(!r.ok) throw new Error(r.status);
+    decisions[num]=row;
+    setConn('live');
+  }catch(e){ setConn('offline'); }
+}
+
+// ════════════════════════════════════════════════════════════
 // DATA  —  Dev Work Items (45 initiatives)
-// s1/s2/s3 = sprint estimate at 1 / 2 / 3 developers
 // ════════════════════════════════════════════════════════════
 const ITEMS = [
 {num:1,project:"Europe Nuvei BV Full Integration",rank:1,category:"Credit Card",market:"Europe (32 markets)",processor:"Nuvei",method:"Credit Card (3DS2) + APMs",description:"Nuvei Europe BV: 3DS2 server-to-server + APM rollout + PSD2/SCA foundation.",tickets:"TKT-6329, TKT-6440",s1:4.3,s2:2.2,s3:1.5,bn:null,bnr:null},
@@ -419,9 +577,30 @@ const total=ITEMS.length;
 const blocked=ITEMS.filter(i=>i.bn);
 const unestimated=ITEMS.filter(i=>!i.estimated);
 function esc(s){const d=document.createElement('div');d.textContent=s==null?'':s;return d.innerHTML;}
-
-// ── ClickUp ticket linking ──
-// Custom IDs (TKT-####) -> /t/<team>/TKT-#### ; raw task IDs (86e...) -> /t/<id>
+function shortCat(c){return c==='Tool - Strategic Platform'?'Strategic Tool':
+  c==='Hosted Payment Page'?'HPP':c==='Strategic Program'?'Strategic':c;}
+const RANKMETA={1:{cls:'r1',name:'NOW',sub:'RANK 1'},2:{cls:'r2',name:'NEXT',sub:'RANK 2'},
+  3:{cls:'r3',name:'LATER',sub:'RANK 3'}};
+const STLABEL={approved:'APPROVED',on_hold:'ON HOLD',rejected:'REJECTED',pending:'PENDING REVIEW'};
+function effort(it){
+  if(!it.estimated) return {sz:'TBD',cls:'tbd'};
+  const s=it.s1;
+  if(s<1) return {sz:'XS',cls:'xs'};
+  if(s<2) return {sz:'S',cls:'s'};
+  if(s<4) return {sz:'M',cls:'m'};
+  if(s<8) return {sz:'L',cls:'l'};
+  return {sz:'XL',cls:'xl'};
+}
+function devSprints(it,n){return n===1?it.s1:n===2?it.s2:it.s3;}
+function dur(sprints){
+  if(sprints==null||sprints<=0) return 'TBD';
+  const wk=sprints*2;
+  if(wk<11.5) return '~'+Math.round(wk)+' wks';
+  const mo=wk/4.345;
+  if(mo<18) return '~'+(mo<10?mo.toFixed(1):Math.round(mo))+' mo';
+  return '~'+(mo/12).toFixed(1)+' yrs';
+}
+// ClickUp ticket linking
 const CU_TEAM='55477';
 function linkifyTickets(s){
   s=String(s).replace(/TKT-\d+/g,m=>
@@ -442,33 +621,9 @@ function ticketTokenHTML(tok,baseCls){
   const cls=/TKT|86e/i.test(t)?baseCls:baseCls+' note';
   return '<span class="'+cls+'">'+linkifyTickets(esc(t))+'</span>';
 }
-function shortCat(c){return c==='Tool - Strategic Platform'?'Strategic Tool':
-  c==='Hosted Payment Page'?'HPP':c==='Strategic Program'?'Strategic':c;}
-const RANKMETA={1:{cls:'r1',name:'NOW',sub:'RANK 1'},2:{cls:'r2',name:'NEXT',sub:'RANK 2'},
-  3:{cls:'r3',name:'LATER',sub:'RANK 3'}};
-// effort sizing from 1-dev sprint estimate
-function effort(it){
-  if(!it.estimated) return {sz:'TBD',cls:'tbd'};
-  const s=it.s1;
-  if(s<1) return {sz:'XS',cls:'xs'};
-  if(s<2) return {sz:'S',cls:'s'};
-  if(s<4) return {sz:'M',cls:'m'};
-  if(s<8) return {sz:'L',cls:'l'};
-  return {sz:'XL',cls:'xl'};
-}
-function devSprints(it,n){return n===1?it.s1:n===2?it.s2:it.s3;}
-// duration formatter: small -> weeks, mid -> months, large -> years
-function dur(sprints){
-  if(sprints==null||sprints<=0) return 'TBD';
-  const wk=sprints*2;
-  if(wk<11.5) return '~'+Math.round(wk)+' wks';
-  const mo=wk/4.345;
-  if(mo<18) return '~'+(mo<10?mo.toFixed(1):Math.round(mo))+' mo';
-  return '~'+(mo/12).toFixed(1)+' yrs';
-}
 
 // ════════════════════════════════════════════════════════════
-// ROADMAP  (with dev-capacity selector + per-card resource/timing)
+// ROADMAP + REVIEW
 // ════════════════════════════════════════════════════════════
 let devCap=2;
 function renderRoadmap(){
@@ -489,14 +644,14 @@ function renderRoadmap(){
       n+' dev'+(n>1?'s':'')+' &middot; '+its.filter(i=>i.bn).length+' blocked</div>'+
       '</div><div class="road-body">';
     its.forEach(it=>{
-      const e=effort(it), sp=devSprints(it,n);
-      h+='<div class="mini" data-num="'+it.num+'"><div class="mini-top">'+
+      const e=effort(it), sp=devSprints(it,n), d=decOf(it.num), st=d.status||'pending';
+      h+='<div class="mini st-'+st+'" data-num="'+it.num+'">'+
+        '<div class="mini-head" data-go="'+it.num+'"><div class="mini-top">'+
         '<div class="mini-name">'+esc(it.project)+'</div>'+
         '<div class="esz '+e.cls+'">'+e.sz+'</div></div>'+
         '<div class="mini-meta"><span class="mini-chip">'+esc(shortCat(it.category))+'</span>'+
         '<span class="mini-chip">'+esc(it.processor||'')+'</span>'+
         (it.bn?'<span class="mini-blk">&#9888; '+esc(it.bn)+'</span>':'')+'</div>';
-      // resource + timing strip
       if(it.estimated){
         h+='<div class="mini-rt">'+
           '<div class="mrt-block"><span class="mrt-ico">&#9201;</span>'+
@@ -506,20 +661,57 @@ function renderRoadmap(){
           '<span class="mrt-val">'+n+' dev'+(n>1?'s':'')+'</span><span class="mrt-lbl">RESOURCE</span></div>'+
           '</div>';
       }else{
-        h+='<div class="mini-rt pending">'+
-          '<div class="mrt-block"><span class="mrt-ico">&#9201;</span>'+
+        h+='<div class="mini-rt pending"><div class="mrt-block"><span class="mrt-ico">&#9201;</span>'+
           '<span class="mrt-lbl">TIMELINE PENDING DEV ESTIMATE</span></div></div>';
       }
-      h+='</div>';
+      h+='</div>'; // close mini-head
+      // decision controls
+      h+='<div class="mini-dec">'+
+        '<div class="st-badge '+st+'">'+STLABEL[st]+
+        (d.decided_by?' <span class="by">&middot; '+esc(d.decided_by)+'</span>':'')+'</div>'+
+        '<div class="dbtns" data-num="'+it.num+'">'+
+        '<button class="dbtn approve'+(st==='approved'?' on':'')+'" data-act="approved">&#10003; Approve</button>'+
+        '<button class="dbtn hold'+(st==='on_hold'?' on':'')+'" data-act="on_hold">&#10073;&#10073; Hold</button>'+
+        '<button class="dbtn reject'+(st==='rejected'?' on':'')+'" data-act="rejected">&#10007; Reject</button>'+
+        '</div>'+
+        '<input class="dnote" data-num="'+it.num+'" maxlength="240" placeholder="Add a note (optional)..." value="'+
+        esc(d.decision_note||'')+'">'+
+        '</div>';
+      h+='</div>'; // close mini
     });
     h+='</div></div>';
   });
   document.getElementById('roadGrid').innerHTML=h;
-  document.querySelectorAll('#roadGrid .mini').forEach(el=>
-    el.onclick=()=>{switchTab('all');setTimeout(()=>openDetail(+el.dataset.num),130);});
+  // wire: card-head -> table detail
+  document.querySelectorAll('#roadGrid .mini-head').forEach(el=>
+    el.onclick=()=>{switchTab('all');setTimeout(()=>openDetail(+el.dataset.go),130);});
+  // wire: decision buttons
+  document.querySelectorAll('#roadGrid .dbtn').forEach(b=>
+    b.onclick=e=>{e.stopPropagation();saveDecision(+b.parentElement.dataset.num,b.dataset.act);});
+  // wire: note inputs
+  document.querySelectorAll('#roadGrid .dnote').forEach(inp=>{
+    inp.onclick=e=>e.stopPropagation();
+    inp.onchange=()=>saveNote(+inp.dataset.num,inp.value.trim());
+  });
 }
 
-// ── BLOCKERS ──
+// REVIEW PROGRESS
+function renderProgress(){
+  const c={approved:0,on_hold:0,rejected:0,pending:0};
+  ITEMS.forEach(it=>{const s=decOf(it.num).status||'pending';c[s]=(c[s]||0)+1;});
+  const decided=c.approved+c.on_hold+c.rejected;
+  document.getElementById('rvProgTxt').innerHTML=
+    '<b>'+decided+'</b> / '+total+' decided';
+  const seg=s=>'<div class="rv-seg '+s+'" style="width:'+(c[s]/total*100)+'%"></div>';
+  document.getElementById('rvBar').innerHTML=seg('approved')+seg('on_hold')+seg('rejected')+seg('pending');
+  document.getElementById('rvLegend').innerHTML=
+    '<span style="color:var(--green)"><b>'+c.approved+'</b> Approved</span>'+
+    '<span style="color:var(--r2)"><b>'+c.on_hold+'</b> On Hold</span>'+
+    '<span style="color:var(--r1)"><b>'+c.rejected+'</b> Rejected</span>'+
+    '<span style="color:var(--dim)"><b>'+c.pending+'</b> Pending</span>';
+}
+
+// BLOCKERS
 function renderBlockers(){
   document.getElementById('blkIntro').innerHTML=
     '<b>'+blocked.length+' initiatives are scoped and ready &mdash; but cannot start.</b> '+
@@ -551,7 +743,7 @@ function renderBlockers(){
     el.onclick=()=>{switchTab('all');setTimeout(()=>openDetail(+el.dataset.num),130);});
 }
 
-// ── TICKET MAP ──
+// TICKET MAP
 function ticketCount(t){
   if(!t)return 0;
   const m=t.match(/\((\d+)\s+tickets?\)/i);
@@ -589,12 +781,12 @@ function renderTickets(){
     hd.onclick=()=>hd.parentElement.classList.toggle('open'));
 }
 
-// ── TABLE ──
-let filt={rank:'all',cat:'all',blk:'all'},sortKey='num',sortDir=1,openNum=null;
+// TABLE
+let filt={rank:'all',cat:'all',rv:'all'},sortKey='num',sortDir=1,openNum=null;
 function passFilter(it){
   if(filt.rank!=='all'&&it.rank!=+filt.rank)return false;
   if(filt.cat!=='all'&&it.category!==filt.cat)return false;
-  if(filt.blk==='blocked'&&!it.bn)return false;
+  if(filt.rv!=='all'&&(decOf(it.num).status||'pending')!==filt.rv)return false;
   const q=document.getElementById('search').value.toLowerCase().trim();
   if(q){const hay=(it.project+' '+it.market+' '+it.processor+' '+it.method+' '+
     it.category+' '+it.description).toLowerCase();if(hay.indexOf(q)<0)return false;}
@@ -605,16 +797,14 @@ function renderTable(){
   rows.sort((a,b)=>{
     let av,bv;
     if(sortKey==='effort'){av=a.s1||-1;bv=b.s1||-1;}
-    else if(sortKey==='status'){av=a.bn?2:(a.estimated?1:0);bv=b.bn?2:(b.estimated?1:0);}
+    else if(sortKey==='review'){av=decOf(a.num).status||'pending';bv=decOf(b.num).status||'pending';}
     else{av=a[sortKey];bv=b[sortKey];}
     if(typeof av==='string'){av=av.toLowerCase();bv=(bv||'').toLowerCase();}
     return av<bv?-sortDir:av>bv?sortDir:0;
   });
   let h='';
   rows.forEach(it=>{
-    const e=effort(it);
-    const st=it.bn?'<span class="t-blocked">&#9888; BLOCKED</span>':
-      (it.estimated?'<span class="t-ready">READY</span>':'<span class="t-pend">PENDING EST.</span>');
+    const e=effort(it), d=decOf(it.num), st=d.status||'pending';
     const tl=it.estimated?'<span class="t-time">'+dur(devSprints(it,devCap))+'</span>':
       '<span class="t-pend">—</span>';
     h+='<tr data-num="'+it.num+'"'+(it.num===openNum?' class="expanded"':'')+'>'+
@@ -625,7 +815,7 @@ function renderTable(){
       '<td>'+esc(it.processor||'')+'</td>'+
       '<td><span class="esz '+e.cls+'">'+e.sz+'</span></td>'+
       '<td>'+tl+'</td>'+
-      '<td>'+st+'</td></tr>';
+      '<td><span class="t-rv '+st+'">'+STLABEL[st]+'</span></td></tr>';
     if(it.num===openNum){
       h+='<tr class="detail-row"><td colspan="8"><div class="detail-inner">'+
         '<div class="detail-desc">'+esc(it.description)+'</div><div class="detail-grid">'+
@@ -635,17 +825,36 @@ function renderTable(){
           (dur(it.s1)+' / '+dur(it.s2)+' / '+dur(it.s3)):'Pending dev estimate')+
         (it.bn?cell('Blocked On',it.bn+' — '+it.bnr):'')+
         cellRaw('ClickUp Tickets',ticketChips(it.tickets))+
+        '</div>'+
+        '<div class="detail-dec"><div class="detail-dec-lbl">MANAGEMENT REVIEW</div>'+
+        '<div class="st-badge '+st+'" style="margin-bottom:9px">'+STLABEL[st]+
+        (d.decided_by?' <span class="by">&middot; '+esc(d.decided_by)+
+          (d.updated_at?' &middot; '+new Date(d.updated_at).toLocaleDateString():'')+'</span>':'')+'</div>'+
+        '<div class="dbtns" data-num="'+it.num+'" style="max-width:340px">'+
+        '<button class="dbtn approve'+(st==='approved'?' on':'')+'" data-act="approved">&#10003; Approve</button>'+
+        '<button class="dbtn hold'+(st==='on_hold'?' on':'')+'" data-act="on_hold">&#10073;&#10073; Hold</button>'+
+        '<button class="dbtn reject'+(st==='rejected'?' on':'')+'" data-act="rejected">&#10007; Reject</button>'+
+        '</div>'+
+        '<input class="dnote" data-num="'+it.num+'" maxlength="240" style="max-width:340px" '+
+        'placeholder="Add a note (optional)..." value="'+esc(d.decision_note||'')+'">'+
         '</div></div></td></tr>';
     }
   });
   document.getElementById('tblBody').innerHTML=h||
     '<tr><td colspan="8" class="empty">No initiatives match. Use Clear All Filters to reset.</td></tr>';
-  const any=filt.rank!=='all'||filt.cat!=='all'||filt.blk!=='all'||
+  const any=filt.rank!=='all'||filt.cat!=='all'||filt.rv!=='all'||
     document.getElementById('search').value.trim()!=='';
   document.getElementById('clearBtn').classList.toggle('hidden',!any);
   document.getElementById('tblCount').innerHTML=any?
     'SHOWING <span class="count-filtered">'+rows.length+' OF '+total+'</span> // FILTERS ACTIVE':
-    'SHOWING ALL '+total+' INITIATIVES // TIMELINE COLUMN REFLECTS '+devCap+'-DEV CAPACITY';
+    'SHOWING ALL '+total+' INITIATIVES // TIMELINE REFLECTS '+devCap+'-DEV CAPACITY';
+  // wire decision controls inside detail
+  document.querySelectorAll('#tblBody .dbtn').forEach(b=>
+    b.onclick=e=>{e.stopPropagation();saveDecision(+b.parentElement.dataset.num,b.dataset.act);});
+  document.querySelectorAll('#tblBody .dnote').forEach(inp=>{
+    inp.onclick=e=>e.stopPropagation();
+    inp.onchange=()=>saveNote(+inp.dataset.num,inp.value.trim());
+  });
 }
 function cell(l,v){return '<div class="detail-cell"><div class="dl">'+l+'</div><div class="dv">'+esc(String(v||'—'))+'</div></div>';}
 function cellRaw(l,v){return '<div class="detail-cell"><div class="dl">'+l+'</div><div class="dv">'+v+'</div></div>';}
@@ -657,13 +866,13 @@ function openDetail(num){
     if(r)r.scrollIntoView({behavior:'smooth',block:'center'});}
 }
 function clearAll(){
-  filt={rank:'all',cat:'all',blk:'all'};
+  filt={rank:'all',cat:'all',rv:'all'};
   document.getElementById('search').value='';
   document.querySelectorAll('.fbtn').forEach(b=>b.classList.toggle('on',b.dataset.v==='all'));
   openNum=null;renderTable();
 }
 
-// ── WIRING ──
+// WIRING
 function switchTab(t){
   document.querySelectorAll('.nav-tab').forEach(b=>b.classList.toggle('active',b.dataset.tab===t));
   document.querySelectorAll('.panel').forEach(p=>p.classList.toggle('active',p.id==='tab-'+t));
@@ -675,6 +884,12 @@ document.querySelectorAll('.cap-btn').forEach(b=>b.onclick=()=>{
   devCap=+b.dataset.n;
   document.querySelectorAll('.cap-btn').forEach(x=>x.classList.toggle('on',x===b));
   renderRoadmap();renderTable();});
+const rvNameEl=document.getElementById('rvName');
+rvNameEl.value=reviewer;
+rvNameEl.addEventListener('input',()=>{
+  reviewer=rvNameEl.value.trim();
+  localStorage.setItem('roadmap_reviewer',reviewer);
+});
 document.getElementById('search').addEventListener('input',()=>{openNum=null;renderTable();});
 document.getElementById('clearBtn').onclick=clearAll;
 document.querySelectorAll('.fbtn').forEach(b=>b.onclick=()=>{
@@ -684,11 +899,25 @@ document.querySelectorAll('.fbtn').forEach(b=>b.onclick=()=>{
 document.querySelectorAll('#tbl thead th').forEach(th=>th.onclick=()=>{
   const k=th.dataset.s;if(sortKey===k)sortDir*=-1;else{sortKey=k;sortDir=1;}renderTable();});
 document.getElementById('tblBody').addEventListener('click',e=>{
-  const tr=e.target.closest('tr[data-num]');if(tr)openDetail(+tr.dataset.num);});
+  const tr=e.target.closest('tr[data-num]');
+  if(tr && !e.target.closest('.detail-row'))openDetail(+tr.dataset.num);});
 
 document.getElementById('genDate').textContent=new Date().toLocaleDateString('en-US',
   {year:'numeric',month:'short',day:'numeric'}).toUpperCase();
-renderRoadmap();renderBlockers();renderTickets();renderTable();
+
+// initial render, then load decisions and refresh
+renderRoadmap();renderProgress();renderBlockers();renderTickets();renderTable();
+loadDecisions().then(ok=>{
+  if(ok){renderRoadmap();renderProgress();renderTable();}
+});
+// live sync — poll every 12s unless a note field is focused
+setInterval(async()=>{
+  const a=document.activeElement;
+  if(a&&a.classList&&a.classList.contains('dnote'))return;
+  const ok=await loadDecisions();
+  if(ok){renderRoadmap();renderProgress();
+    if(document.getElementById('tab-all').classList.contains('active'))renderTable();}
+},12000);
 </script>
 </body>
 </html>
