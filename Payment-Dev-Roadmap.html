@@ -407,17 +407,10 @@ a.tkt-chip:hover{background:var(--cyan);color:#04141a}
   <div class="panel active" id="tab-roadmap">
     <div class="hero">
       <div class="eyebrow">2026 PAYMENT EXPANSION // MANAGEMENT REVIEW</div>
-      <h1>45 payment initiatives &mdash; <b>review &amp; decide.</b></h1>
-      <div class="hero-sub">Set <b>developer capacity</b> to see the time to deliver, then mark each initiative
+      <h1>49 payment initiatives &mdash; <b>review &amp; decide.</b></h1>
+      <div class="hero-sub">Each initiative shows its <b>deployment quarter</b> and effort size. Mark each one
         <b>Approve</b>, <b>Hold</b>, or <b>Reject</b>. Decisions save instantly and sync to everyone
         reviewing &mdash; the input sticks.</div>
-    </div>
-    <div class="cap-bar">
-      <span class="cap-label">DEV CAPACITY</span>
-      <button class="cap-btn" data-n="1">1 Developer</button>
-      <button class="cap-btn on" data-n="2">2 Developers</button>
-      <button class="cap-btn" data-n="3">3 Developers</button>
-      <span class="cap-readout" id="capReadout"></span>
     </div>
     <div class="review-bar">
       <div class="rv-id">
@@ -501,7 +494,7 @@ a.tkt-chip:hover{background:var(--cyan);color:#04141a}
           <th data-s="category">Category<span class="arr">&#9650;&#9660;</span></th>
           <th data-s="processor">Processor<span class="arr">&#9650;&#9660;</span></th>
           <th data-s="effort">Effort<span class="arr">&#9650;&#9660;</span></th>
-          <th data-s="effort">Timeline<span class="arr">&#9650;&#9660;</span></th>
+          <th data-s="dq">Deployment<span class="arr">&#9650;&#9660;</span></th>
           <th data-s="review">Review<span class="arr">&#9650;&#9660;</span></th>
         </tr></thead>
         <tbody id="tblBody"></tbody>
@@ -573,7 +566,7 @@ async function saveNote(num,note){
 // ════════════════ DATA ════════════════
 const ITEMS = [
 {num:1,project:"Europe Nuvei BV Full Integration",rank:1,category:"Credit Card",market:"Europe (32 markets)",processor:"Nuvei",method:"Credit Card (3DS2) + APMs",description:"Nuvei Europe BV: 3DS2 server-to-server + APM rollout + PSD2/SCA foundation.",tickets:"TKT-6329, TKT-6440",s1:4.3,s2:2.2,s3:1.5,bn:null,bnr:null},
-{num:2,project:"Europe Trust Payments 3DS2 Europe Integration",rank:1,category:"Credit Card",market:"Europe BV + Global Markets GmbH",processor:"Trust Payments",method:"Credit Card (3DS2 + MIT)",description:"Full 3DS2 integration: sandbox setup, auth flow (frictionless + challenge), MIT/recurring, testing, production.",tickets:"TKT-6491, TKT-6492, TKT-6493, TKT-6494, TKT-6495",s1:3.4,s2:1.7,s3:1.2,bn:null,bnr:null},
+{num:2,project:"Trust Payments 3DS2 - Euro & GBP Integration",rank:1,category:"Credit Card",market:"Europe BV (EUR) + Global Markets GmbH (GBP)",processor:"Trust Payments",method:"Credit Card (3DS2 + MIT)",description:"Trust Payments 3DS2 integration for the Euro (Europe BV) and GBP (Global Markets GmbH) markets: sandbox setup, auth flow (frictionless + challenge), MIT/recurring, testing, production.",tickets:"TKT-6491, TKT-6492, TKT-6493, TKT-6494, TKT-6495",s1:3.4,s2:1.7,s3:1.2,bn:null,bnr:null},
 {num:3,project:"Mena Checkout.com MENA + Global Integration",rank:1,category:"Credit Card",market:"MENA (SAU/UAE/OMR/TRY/KWD) + Global",processor:"Checkout.com",method:"Credit Card + Multi-currency",description:"Full Checkout.com program: SAU/SABB local processing, MENA regional gateway, UAE trade license, per-currency settlements, global market re-integration.",tickets:"TKT-5578, TKT-6534, TKT-6536, TKT-6538, TKT-6539, TKT-6540",s1:8.5,s2:4.3,s3:2.9,bn:"Mena Ops",bnr:"Need Signature from Rajeev"},
 {num:4,project:"USA Authorize.net ACH Integration",rank:1,category:"Credit Card",market:"USA",processor:"Authorize.net",method:"ACH (eCheck)",description:"ACH integration + portal team timeline + virtual terminal + WorldPay ACH pricing benchmark.",tickets:"TKT-6090, TKT-6091, TKT-6092",s1:1,s2:0.5,s3:0.4,bn:null,bnr:null},
 {num:5,project:"Philippines Paynamics Integration",rank:1,category:"Credit Card",market:"Philippines",processor:"Paynamics",method:"Credit Card (3DS) + QR + E-wallet + MIT",description:"Full iPay88 replacement: CC 3DS sandbox, QR Ph, Pay-with-QR (locally branded), E-wallets (GCash/Maya/GrabPay), MIT/autoship plan, subscriber re-enrollment, iPay88 decommission + parallel-run.",tickets:"TKT-6769, TKT-6770, TKT-6771, TKT-6772, TKT-6773, TKT-6774, TKT-6775",s1:7.2,s2:3.6,s3:2.4,bn:null,bnr:null},
@@ -616,9 +609,20 @@ const ITEMS = [
 {num:42,project:"USA Nuvei PayPal One-Time via Nuvei Direct USA (Hosted Payment Page)",rank:2,category:"Hosted Payment Page",market:"US markets",processor:"PayPal",method:"PayPal (Recurring + One-time)",description:"PayPal USA one-time checkout via Nuvei direct + US redirect flow. Depends on Nuvei US Direct (#9).",tickets:"86e1d25u1",s1:null,s2:null,s3:null,bn:null,bnr:null},
 {num:43,project:"Canada Nuvei PayPal Subscriptions via Nuvei Canada (Hosted Payment Page)",rank:2,category:"Hosted Payment Page",market:"CA markets",processor:"PayPal",method:"PayPal (Recurring + One-time)",description:"PayPal Canada Reference Transactions for subscriptions + CA redirect flow. Canada already direct on Nuvei.",tickets:"86e1d1w8d",s1:null,s2:null,s3:null,bn:null,bnr:null},
 {num:44,project:"Canada Nuvei PayPal One-Time via Nuvei Canada (Hosted Payment Page)",rank:2,category:"Hosted Payment Page",market:"CA markets",processor:"PayPal",method:"PayPal (Recurring + One-time)",description:"PayPal Canada one-time checkout via Nuvei Canada + CA redirect flow. Canada already direct on Nuvei.",tickets:"86e1d1vkh",s1:null,s2:null,s3:null,bn:null,bnr:null},
-{num:45,project:"Taiwan ECPay: Payment Gateway - Subscription Integration",rank:3,category:"Credit Card",market:"Taiwan",processor:"ECPay",method:"Credit Card",description:"Taiwan ECPay payment integration logins + endpoints + 3DS.",tickets:"ECPay evaluation in progress",s1:null,s2:null,s3:null,bn:null,bnr:null}
+{num:45,project:"Taiwan ECPay: Payment Gateway - Subscription Integration",rank:3,category:"Credit Card",market:"Taiwan",processor:"ECPay",method:"Credit Card",description:"Taiwan ECPay payment integration logins + endpoints + 3DS.",tickets:"ECPay evaluation in progress",s1:null,s2:null,s3:null,bn:null,bnr:null},
+{num:46,project:"Trust Payments 3DS2 - Poland (PLN)",rank:1,category:"Credit Card",market:"Poland",processor:"Trust Payments",method:"Credit Card (3DS2 + MIT)",description:"Trust Payments 3DS2 integration for Poland in local currency (PLN): sandbox, frictionless + challenge auth, MIT/recurring, testing, production.",tickets:"Trust local-currency expansion - ClickUp ticket TBD",s1:null,s2:null,s3:null,bn:null,bnr:null},
+{num:47,project:"Trust Payments 3DS2 - Hungary (HUF)",rank:1,category:"Credit Card",market:"Hungary",processor:"Trust Payments",method:"Credit Card (3DS2 + MIT)",description:"Trust Payments 3DS2 integration for Hungary in local currency (HUF): sandbox, frictionless + challenge auth, MIT/recurring, testing, production.",tickets:"Trust local-currency expansion - ClickUp ticket TBD",s1:null,s2:null,s3:null,bn:null,bnr:null},
+{num:48,project:"Trust Payments 3DS2 - Romania (RON)",rank:1,category:"Credit Card",market:"Romania",processor:"Trust Payments",method:"Credit Card (3DS2 + MIT)",description:"Trust Payments 3DS2 integration for Romania in local currency (RON): sandbox, frictionless + challenge auth, MIT/recurring, testing, production.",tickets:"Trust local-currency expansion - ClickUp ticket TBD",s1:null,s2:null,s3:null,bn:null,bnr:null},
+{num:49,project:"Trust Payments 3DS2 - Switzerland (CHF)",rank:1,category:"Credit Card",market:"Switzerland",processor:"Trust Payments",method:"Credit Card (3DS2 + MIT)",description:"Trust Payments 3DS2 integration for Switzerland in local currency (CHF): sandbox, frictionless + challenge auth, MIT/recurring, testing, production.",tickets:"Trust local-currency expansion - ClickUp ticket TBD",s1:null,s2:null,s3:null,bn:null,bnr:null}
 ];
-ITEMS.forEach(it=>{if(it.bn==='Finanace')it.bn='Finance';it.estimated=it.s1!==null;});
+ITEMS.forEach(it=>{
+  if(it.bn==='Finanace')it.bn='Finance';
+  it.estimated=it.s1!==null;
+  var _p=it.processor||'';
+  it.dq=_p.indexOf('Trust')>=0?'Q3 2026':
+        _p.indexOf('Nuvei')>=0?'Q4 2026':
+        _p.indexOf('Checkout')>=0?'Q4 2026 - Q1 2027':null;
+});
 
 // geographic mapping: region + countries per initiative
 const BROAD=['EU-wide','Multi-market','Global'];
@@ -640,7 +644,8 @@ const GEO={
 35:{r:'Europe',c:['EU-wide']},36:{r:'Europe',c:['Poland']},37:{r:'North America',c:['United States','Canada']},
 38:{r:'Global',c:['Multi-market']},39:{r:'Global',c:['Global']},40:{r:'North America',c:['United States']},
 41:{r:'North America',c:['United States']},42:{r:'North America',c:['United States']},
-43:{r:'North America',c:['Canada']},44:{r:'North America',c:['Canada']},45:{r:'Asia-Pacific',c:['Taiwan']}
+43:{r:'North America',c:['Canada']},44:{r:'North America',c:['Canada']},45:{r:'Asia-Pacific',c:['Taiwan']},
+46:{r:'Europe',c:['Poland']},47:{r:'Europe',c:['Hungary']},48:{r:'Europe',c:['Romania']},49:{r:'Europe',c:['Switzerland']}
 };
 
 // ════════════════ HELPERS ════════════════
@@ -712,43 +717,37 @@ document.getElementById('themeBtn').onclick=()=>{
 };
 
 // ════════════════ ROADMAP ════════════════
-let devCap=2;
 function renderRoadmap(){
-  const n=devCap;
-  const totalSprints=ITEMS.reduce((a,i)=>a+(devSprints(i,n)||0),0);
-  document.getElementById('capReadout').innerHTML=
-    'Full 45-initiative roadmap at this capacity: <b>'+dur(totalSprints)+'</b>'+
-    (unestimated.length?' &nbsp;('+unestimated.length+' pending estimate)':'');
   let h='';
   [1,2,3].forEach(rk=>{
-    const its=ITEMS.filter(i=>i.rank===rk).sort((a,b)=>(b.s1||0)-(a.s1||0));
+    const its=ITEMS.filter(i=>i.rank===rk).sort((a,b)=>{
+      if(rk===1){
+        var ta=a.processor==='Trust Payments'?0:1,tb=b.processor==='Trust Payments'?0:1;
+        if(ta!==tb)return ta-tb;
+      }
+      return (b.s1||0)-(a.s1||0);
+    });
     const m=RANKMETA[rk];
-    const tierSprints=its.reduce((a,i)=>a+(devSprints(i,n)||0),0);
     h+='<div class="road-col"><div class="road-head '+m.cls+'">'+
       '<div class="road-head-lbl">'+m.name+' // '+m.sub+'</div>'+
       '<div class="road-head-name">'+its.length+' initiatives</div>'+
-      '<div class="road-head-meta"><b>'+dur(tierSprints)+'</b> to clear &middot; '+
-      n+' dev'+(n>1?'s':'')+' &middot; '+its.filter(i=>i.bn).length+' blocked</div>'+
+      '<div class="road-head-meta">'+its.filter(i=>i.dq).length+' with deployment qtr &middot; '+
+      its.filter(i=>i.bn).length+' blocked</div>'+
       '</div><div class="road-body">';
     its.forEach(it=>{
-      const e=effort(it),sp=devSprints(it,n),d=decOf(it.num),st=d.status||'pending';
+      const e=effort(it),d=decOf(it.num),st=d.status||'pending';
       h+='<div class="mini st-'+st+'" data-num="'+it.num+'">'+
         '<div class="mini-head" data-go="'+it.num+'"><div class="mini-top">'+
         '<div class="mini-name">'+esc(it.project)+'</div>'+
         '<div class="esz '+e.cls+'">'+e.sz+'</div></div>'+
         '<div class="mini-meta"><span class="mini-chip">'+esc(shortCat(it.category))+'</span>'+
         '<span class="mini-chip">'+esc(it.processor||'')+'</span>'+
-        (it.bn?'<span class="mini-blk">&#9888; '+esc(it.bn)+'</span>':'')+'</div>';
-      if(it.estimated){
-        h+='<div class="mini-rt"><div class="mrt-block"><span class="mrt-ico">&#9201;</span>'+
-          '<span class="mrt-val">'+dur(sp)+'</span><span class="mrt-lbl">TO DELIVER</span></div>'+
-          '<div class="sep"></div><div class="mrt-block"><span class="mrt-ico">&#128100;</span>'+
-          '<span class="mrt-val">'+n+' dev'+(n>1?'s':'')+'</span><span class="mrt-lbl">RESOURCE</span></div></div>';
-      }else{
-        h+='<div class="mini-rt pending"><div class="mrt-block"><span class="mrt-ico">&#9201;</span>'+
-          '<span class="mrt-lbl">TIMELINE PENDING DEV ESTIMATE</span></div></div>';
-      }
-      h+='</div>'+
+        (it.bn?'<span class="mini-blk">&#9888; '+esc(it.bn)+'</span>':'')+'</div>'+
+        '<div class="mini-rt'+(it.dq?'':' pending')+'"><div class="mrt-block">'+
+        '<span class="mrt-ico">&#128197;</span>'+
+        (it.dq?'<span class="mrt-val">'+esc(it.dq)+'</span><span class="mrt-lbl">DEPLOYMENT</span>':
+               '<span class="mrt-lbl">DEPLOYMENT QUARTER TBD</span>')+
+        '</div></div></div>'+
         '<div class="mini-dec"><div class="st-badge '+st+'">'+STLABEL[st]+
         (d.decided_by?' <span class="by">&middot; '+esc(d.decided_by)+'</span>':'')+'</div>'+
         '<div class="dbtns" data-num="'+it.num+'">'+
@@ -888,7 +887,7 @@ function renderBlockers(){
         '<div class="blk-meta"><span class="t-tag">RANK '+it.rank+'</span>'+
         '<span class="t-tag">'+esc(it.market)+'</span>'+
         '<span class="t-tag">'+esc(it.processor||'')+'</span>'+
-        (it.estimated?'<span class="t-tag">'+dur(it.s2)+' AT 2 DEVS</span>':'')+'</div></div>';
+        (it.dq?'<span class="t-tag">DEPLOY '+esc(it.dq)+'</span>':'')+'</div></div>';
     });
     h+='</div>';
   });
@@ -909,7 +908,7 @@ function renderTickets(){
   let totalTk=0;
   ITEMS.forEach(it=>{const c=ticketCount(it.tickets);if(c)totalTk+=c;});
   document.getElementById('tkSummary').innerHTML=
-    'The 45 initiatives roll up to <b style="color:var(--cyan)">'+totalTk+'+ ClickUp tickets</b> '+
+    'The '+total+' initiatives roll up to <b style="color:var(--cyan)">'+totalTk+'+ ClickUp tickets</b> '+
     'across the PaymentWF workspace. Each initiative shows its scope plus the ticket IDs that track the work.';
   let h='';
   [1,2,3].forEach(rk=>{
@@ -958,7 +957,7 @@ function renderTable(){
   let h='';
   rows.forEach(it=>{
     const e=effort(it),d=decOf(it.num),st=d.status||'pending';
-    const tl=it.estimated?'<span class="t-time">'+dur(devSprints(it,devCap))+'</span>':'<span class="t-pend">-</span>';
+    const tl=it.dq?'<span class="t-time">'+esc(it.dq)+'</span>':'<span class="t-pend">TBD</span>';
     h+='<tr data-num="'+it.num+'"'+(it.num===openNum?' class="expanded"':'')+'>'+
       '<td class="t-num">'+String(it.num).padStart(2,'0')+'</td>'+
       '<td class="t-proj">'+esc(it.project)+'</td>'+
@@ -972,7 +971,7 @@ function renderTable(){
       h+='<tr class="detail-row"><td colspan="8"><div class="detail-inner">'+
         '<div class="detail-desc">'+esc(it.description)+'</div><div class="detail-grid">'+
         cell('Market',it.market)+cell('Payment Method',it.method)+cell('Effort Size',e.sz)+
-        cell('Timeline 1 / 2 / 3 devs',it.estimated?(dur(it.s1)+' / '+dur(it.s2)+' / '+dur(it.s3)):'Pending dev estimate')+
+        cell('Deployment Quarter',it.dq||'TBD')+
         (it.bn?cell('Blocked On',it.bn+' - '+it.bnr):'')+
         cellRaw('ClickUp Tickets',ticketChips(it.tickets))+'</div>'+
         '<div class="detail-dec"><div class="detail-dec-lbl">MANAGEMENT REVIEW</div>'+
@@ -994,7 +993,7 @@ function renderTable(){
   document.getElementById('clearBtn').classList.toggle('hidden',!any);
   document.getElementById('tblCount').innerHTML=any?
     'SHOWING <span class="count-filtered">'+rows.length+' OF '+total+'</span> // FILTERS ACTIVE':
-    'SHOWING ALL '+total+' INITIATIVES // TIMELINE REFLECTS '+devCap+'-DEV CAPACITY';
+    'SHOWING ALL '+total+' INITIATIVES';
   document.querySelectorAll('#tblBody .dbtn').forEach(b=>
     b.onclick=e=>{e.stopPropagation();saveDecision(+b.parentElement.dataset.num,b.dataset.act);});
   document.querySelectorAll('#tblBody .dnote').forEach(inp=>{
@@ -1031,10 +1030,7 @@ document.getElementById('navTabs').addEventListener('click',e=>{
 // support direct links + back/forward: ...#footprint, #blockers, #tickets, #all
 window.addEventListener('hashchange',()=>{
   const t=location.hash.slice(1);if(TABS.indexOf(t)>=0)switchTab(t,true);});
-document.querySelectorAll('.cap-btn').forEach(b=>b.onclick=()=>{
-  devCap=+b.dataset.n;
-  document.querySelectorAll('.cap-btn').forEach(x=>x.classList.toggle('on',x===b));
-  renderRoadmap();renderTable();});
+// dev-capacity selector removed - roadmap now uses per-initiative deployment quarters
 const rvNameEl=document.getElementById('rvName');
 rvNameEl.value=reviewer;
 rvNameEl.addEventListener('input',()=>{reviewer=rvNameEl.value.trim();
