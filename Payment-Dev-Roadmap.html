@@ -1,0 +1,663 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Payment Development Roadmap 2026</title>
+<style>
+:root{
+  --bg:#080b12; --bg2:#0d111c; --surface:#121826; --surface2:#1a2233;
+  --border:#222d42; --border2:#34415c;
+  --ink:#e5ebf5; --muted:#8a9bb8; --dim:#56688a;
+  --cyan:#22d3ee; --cyan-soft:rgba(34,211,238,.12);
+  --r1:#fb5a7e; --r1-soft:rgba(251,90,126,.13);
+  --r2:#fbbf24; --r2-soft:rgba(251,191,36,.13);
+  --r3:#60a5fa; --r3-soft:rgba(96,165,250,.13);
+  --green:#34d399; --purple:#a78bfa;
+  --mono:ui-monospace,'SF Mono','JetBrains Mono',Menlo,Consolas,monospace;
+  --sans:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,Helvetica,Arial,sans-serif;
+}
+*,*::before,*::after{margin:0;padding:0;box-sizing:border-box}
+html,body{background:var(--bg);color:var(--ink);font-family:var(--sans);
+  font-size:14px;line-height:1.55;-webkit-font-smoothing:antialiased}
+body{background-image:
+  radial-gradient(circle at 18% 0%,rgba(34,211,238,.06),transparent 45%),
+  radial-gradient(circle at 90% 8%,rgba(167,139,250,.05),transparent 40%),
+  linear-gradient(rgba(255,255,255,.014) 1px,transparent 1px),
+  linear-gradient(90deg,rgba(255,255,255,.014) 1px,transparent 1px);
+  background-size:100% 100%,100% 100%,46px 46px,46px 46px}
+
+/* ── NAV ── */
+.nav{position:sticky;top:0;z-index:100;background:rgba(8,11,18,.92);
+  backdrop-filter:blur(14px);border-bottom:1px solid var(--border);
+  display:flex;align-items:center;justify-content:space-between;padding:0 26px;height:58px}
+.nav-brand{display:flex;align-items:center;gap:11px}
+.nav-dot{width:9px;height:9px;border-radius:50%;background:var(--cyan);
+  box-shadow:0 0 12px var(--cyan),0 0 4px var(--cyan);animation:pulse 2.4s infinite}
+@keyframes pulse{0%,100%{opacity:1}50%{opacity:.4}}
+.nav-title{font-size:13px;font-weight:700;letter-spacing:.4px}
+.nav-title span{color:var(--dim);font-weight:500;font-family:var(--mono);font-size:11px}
+.nav-tabs{display:flex;gap:2px;height:100%}
+.nav-tab{background:none;border:none;color:var(--muted);font-size:12px;font-weight:600;
+  letter-spacing:.4px;padding:0 17px;cursor:pointer;height:100%;display:flex;
+  align-items:center;border-bottom:2px solid transparent;transition:all .15s;font-family:inherit}
+.nav-tab:hover{color:var(--ink);background:rgba(34,211,238,.05)}
+.nav-tab.active{color:var(--cyan);border-bottom-color:var(--cyan)}
+.nav-build{font-family:var(--mono);font-size:10px;color:var(--dim);
+  border:1px solid var(--border);border-radius:5px;padding:3px 8px}
+
+.wrap{max-width:1240px;margin:0 auto;padding:28px 26px 90px}
+.panel{display:none}
+.panel.active{display:block;animation:fade .3s ease}
+@keyframes fade{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:none}}
+
+.eyebrow{font-family:var(--mono);font-size:11px;letter-spacing:1.5px;color:var(--cyan);
+  font-weight:600;margin-bottom:9px;display:flex;align-items:center;gap:8px}
+.eyebrow::before{content:'';width:22px;height:1px;background:var(--cyan);opacity:.6}
+
+/* ── HERO ── */
+.hero{background:linear-gradient(135deg,#0e1626 0%,#10182a 60%,#141d33 100%);
+  border:1px solid var(--border);border-radius:16px;padding:30px 36px;margin-bottom:20px;
+  position:relative;overflow:hidden}
+.hero::before{content:'';position:absolute;inset:0;
+  background:radial-gradient(circle at 88% 12%,rgba(34,211,238,.14),transparent 55%)}
+.hero::after{content:'';position:absolute;left:0;top:0;bottom:0;width:3px;
+  background:linear-gradient(var(--cyan),var(--purple))}
+.hero>*{position:relative}
+.hero h1{font-size:26px;font-weight:800;letter-spacing:-.5px;line-height:1.2;margin-bottom:10px}
+.hero h1 b{color:var(--cyan)}
+.hero-sub{font-size:13.5px;color:var(--muted);max-width:720px;line-height:1.62}
+.hero-sub b{color:var(--ink)}
+
+/* ── CAPACITY SELECTOR ── */
+.cap-bar{display:flex;align-items:center;gap:9px;background:var(--surface);
+  border:1px solid var(--border);border-radius:12px;padding:13px 18px;margin-bottom:18px;
+  flex-wrap:wrap}
+.cap-label{font-family:var(--mono);font-size:10px;font-weight:700;letter-spacing:1.5px;
+  color:var(--cyan);margin-right:5px;display:flex;align-items:center;gap:7px}
+.cap-label::before{content:'';width:7px;height:7px;border-radius:50%;background:var(--cyan);
+  box-shadow:0 0 8px var(--cyan)}
+.cap-btn{background:var(--bg2);border:1px solid var(--border2);border-radius:8px;
+  padding:8px 17px;font-size:12px;font-weight:700;cursor:pointer;color:var(--muted);
+  font-family:var(--mono);transition:all .14s}
+.cap-btn:hover{border-color:var(--cyan);color:var(--cyan)}
+.cap-btn.on{background:var(--cyan);color:#04141a;border-color:var(--cyan);
+  box-shadow:0 0 16px rgba(34,211,238,.35)}
+.cap-readout{margin-left:auto;font-size:12.5px;color:var(--muted)}
+.cap-readout b{color:var(--cyan);font-family:var(--mono);font-weight:700}
+
+/* ── ROADMAP COLUMNS ── */
+.road-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:16px}
+@media(max-width:980px){.road-grid{grid-template-columns:1fr}}
+.road-col{background:var(--surface);border:1px solid var(--border);border-radius:14px;overflow:hidden}
+.road-head{padding:15px 18px;position:relative;overflow:hidden}
+.road-head::before{content:'';position:absolute;inset:0;opacity:.16}
+.road-head.r1::before{background:var(--r1)} .road-head.r2::before{background:var(--r2)}
+.road-head.r3::before{background:var(--r3)}
+.road-head>*{position:relative}
+.road-head-lbl{font-family:var(--mono);font-size:10px;letter-spacing:1.5px;font-weight:700}
+.road-head.r1 .road-head-lbl{color:var(--r1)}
+.road-head.r2 .road-head-lbl{color:var(--r2)}
+.road-head.r3 .road-head-lbl{color:var(--r3)}
+.road-head-name{font-size:18px;font-weight:800;margin-top:3px}
+.road-head-meta{font-family:var(--mono);font-size:10.5px;color:var(--muted);margin-top:3px}
+.road-head-meta b{color:var(--ink)}
+.road-body{padding:11px}
+.mini{background:var(--bg2);border:1px solid var(--border);border-radius:10px;
+  padding:12px 13px;margin-bottom:9px;cursor:pointer;transition:all .14s}
+.mini:hover{border-color:var(--cyan);transform:translateX(3px);box-shadow:-3px 0 0 var(--cyan)}
+.mini:last-child{margin-bottom:0}
+.mini-top{display:flex;justify-content:space-between;align-items:flex-start;gap:9px}
+.mini-name{font-size:12.5px;font-weight:700;line-height:1.35}
+.mini-meta{font-size:10px;color:var(--muted);margin-top:7px;display:flex;gap:6px;
+  flex-wrap:wrap;align-items:center;font-family:var(--mono)}
+.mini-chip{background:var(--surface2);border:1px solid var(--border2);border-radius:5px;
+  padding:1px 6px;font-size:9px;font-weight:600;color:var(--muted)}
+.mini-blk{color:var(--r1);font-weight:700}
+/* resource + timing strip on each card */
+.mini-rt{display:flex;align-items:center;gap:8px;margin-top:9px;padding-top:9px;
+  border-top:1px solid var(--border);font-family:var(--mono);font-size:10.5px}
+.mrt-block{display:flex;align-items:center;gap:5px}
+.mrt-ico{color:var(--cyan);font-size:11px}
+.mrt-val{color:var(--ink);font-weight:700}
+.mrt-lbl{color:var(--dim);font-size:9px;letter-spacing:.5px}
+.mini-rt .sep{width:1px;height:14px;background:var(--border2)}
+.mini-rt.pending{color:var(--dim)}
+
+/* effort size badge */
+.esz{font-family:var(--mono);font-size:9.5px;font-weight:700;padding:2px 7px;
+  border-radius:5px;white-space:nowrap;flex-shrink:0;letter-spacing:.5px}
+.esz.xs,.esz.s{background:rgba(52,211,153,.16);color:var(--green)}
+.esz.m{background:var(--cyan-soft);color:var(--cyan)}
+.esz.l{background:var(--r2-soft);color:var(--r2)}
+.esz.xl{background:var(--r1-soft);color:var(--r1)}
+.esz.tbd{background:var(--surface2);color:var(--dim)}
+
+/* ── BLOCKERS ── */
+.blk-intro{background:var(--r1-soft);border:1px solid rgba(251,90,126,.4);
+  border-radius:12px;padding:17px 21px;margin-bottom:22px;font-size:13.5px;color:#ffc2cf}
+.blk-intro b{color:#fff;font-weight:800}
+.owner-group{margin-bottom:22px}
+.owner-head{display:flex;align-items:center;gap:10px;margin-bottom:12px}
+.owner-name{font-size:15px;font-weight:800}
+.owner-count{font-family:var(--mono);font-size:10px;font-weight:700;background:var(--r1);
+  color:#0a0a0a;padding:3px 9px;border-radius:20px}
+.blk-card{background:var(--surface);border:1px solid var(--border);
+  border-left:3px solid var(--r1);border-radius:11px;padding:16px 18px;margin-bottom:10px;
+  cursor:pointer;transition:all .14s}
+.blk-card:hover{border-color:var(--border2);border-left-color:var(--r1);transform:translateX(3px)}
+.blk-card-top{display:flex;justify-content:space-between;align-items:flex-start;gap:12px}
+.blk-proj{font-size:14px;font-weight:700}
+.blk-ask{font-size:12.5px;color:var(--r1);font-weight:700;margin-top:7px;
+  display:flex;align-items:center;gap:7px}
+.blk-meta{font-family:var(--mono);font-size:10px;color:var(--muted);margin-top:9px;
+  display:flex;gap:7px;flex-wrap:wrap}
+
+/* ── TICKET MAP ── */
+.tk-intro{font-size:13px;color:var(--muted);margin-bottom:20px;max-width:760px}
+.tk-init{background:var(--surface);border:1px solid var(--border);border-radius:13px;
+  margin-bottom:13px;overflow:hidden}
+.tk-init-hd{padding:15px 18px;display:flex;align-items:center;gap:13px;cursor:pointer;
+  transition:background .13s}
+.tk-init-hd:hover{background:var(--surface2)}
+.tk-rank{font-family:var(--mono);font-weight:700;font-size:11px;width:26px;height:26px;
+  display:flex;align-items:center;justify-content:center;border-radius:7px;flex-shrink:0;color:#0a0a0a}
+.tk-rank.r1{background:var(--r1)} .tk-rank.r2{background:var(--r2)} .tk-rank.r3{background:var(--r3)}
+.tk-init-main{flex:1;min-width:0}
+.tk-init-name{font-size:13.5px;font-weight:700}
+.tk-init-sub{font-family:var(--mono);font-size:10px;color:var(--dim);margin-top:2px}
+.tk-init-count{font-family:var(--mono);font-size:10px;color:var(--cyan);
+  border:1px solid var(--cyan);border-radius:20px;padding:3px 9px;flex-shrink:0}
+.tk-toggle{color:var(--dim);font-size:13px;transition:transform .2s;flex-shrink:0}
+.tk-init.open .tk-toggle{transform:rotate(90deg)}
+.tk-body{display:none;padding:0 18px 16px 57px}
+.tk-init.open .tk-body{display:block}
+.tk-scope{font-size:12.5px;color:var(--muted);line-height:1.6;
+  padding:13px 0;border-top:1px solid var(--border)}
+.tk-scope b{color:var(--ink)}
+.tk-list{display:flex;flex-wrap:wrap;gap:7px}
+.tk-pill{font-family:var(--mono);font-size:10.5px;font-weight:600;
+  background:var(--bg2);border:1px solid var(--border2);border-radius:6px;
+  padding:5px 10px;color:var(--cyan)}
+.tk-pill.note{color:var(--muted);border-style:dashed}
+
+/* ── TABLE ── */
+.controls{display:flex;gap:10px;align-items:center;flex-wrap:wrap;margin-bottom:14px}
+.search{flex:1;min-width:220px;background:var(--surface);border:1px solid var(--border2);
+  border-radius:9px;padding:10px 14px;font-size:13px;font-family:inherit;color:var(--ink)}
+.search::placeholder{color:var(--dim)}
+.search:focus{outline:none;border-color:var(--cyan);box-shadow:0 0 0 3px var(--cyan-soft)}
+.clear-btn{background:var(--r1-soft);border:1px solid rgba(251,90,126,.45);color:var(--r1);
+  border-radius:9px;padding:9px 15px;font-size:11px;font-weight:700;cursor:pointer;
+  font-family:inherit;transition:all .13s;white-space:nowrap}
+.clear-btn:hover{background:var(--r1);color:#0a0a0a}
+.clear-btn.hidden{display:none}
+.filter-bar{display:flex;gap:22px;flex-wrap:wrap;margin-bottom:16px;padding:13px 16px;
+  background:var(--surface);border:1px solid var(--border);border-radius:11px}
+.fgroup{display:flex;align-items:center;gap:6px}
+.flabel{font-family:var(--mono);font-size:9.5px;font-weight:700;letter-spacing:1px;
+  text-transform:uppercase;color:var(--dim);margin-right:3px}
+.fbtn{background:var(--bg2);border:1px solid var(--border2);border-radius:7px;
+  padding:7px 12px;font-size:11px;font-weight:700;cursor:pointer;color:var(--muted);
+  font-family:inherit;transition:all .13s}
+.fbtn:hover{border-color:var(--cyan);color:var(--cyan)}
+.fbtn.on{background:var(--surface2);color:var(--ink);border-color:var(--border2)}
+.fbtn.on[data-v]:not([data-v="all"]){background:var(--cyan);color:#04141a;
+  border-color:var(--cyan);box-shadow:0 0 14px rgba(34,211,238,.3)}
+.tbl-wrap{background:var(--surface);border:1px solid var(--border);border-radius:13px;overflow:hidden}
+table{width:100%;border-collapse:collapse;font-size:12.5px}
+thead th{background:var(--bg2);color:var(--muted);font-family:var(--mono);font-size:9.5px;
+  letter-spacing:.8px;text-transform:uppercase;font-weight:700;text-align:left;
+  padding:12px 13px;cursor:pointer;user-select:none;white-space:nowrap;
+  border-bottom:1px solid var(--border)}
+thead th:hover{color:var(--cyan)}
+thead th .arr{opacity:.4;font-size:8px;margin-left:3px}
+tbody td{padding:11px 13px;border-bottom:1px solid var(--border)}
+tbody tr{cursor:pointer;transition:background .12s}
+tbody tr:hover{background:var(--surface2)}
+tbody tr.expanded{background:var(--cyan-soft)}
+.t-num{color:var(--dim);font-weight:700;font-family:var(--mono)}
+.t-proj{font-weight:700;max-width:300px}
+.t-rank{display:inline-block;width:22px;height:22px;line-height:22px;text-align:center;
+  border-radius:6px;font-weight:700;font-size:11px;color:#0a0a0a;font-family:var(--mono)}
+.t-rank.r1{background:var(--r1)} .t-rank.r2{background:var(--r2)} .t-rank.r3{background:var(--r3)}
+.t-tag{display:inline-block;background:var(--bg2);border:1px solid var(--border2);
+  border-radius:5px;padding:2px 7px;font-size:10px;font-weight:600;color:var(--muted);
+  font-family:var(--mono)}
+.t-time{font-family:var(--mono);font-weight:700;color:var(--cyan)}
+.t-blocked{color:var(--r1);font-weight:700;font-size:11px;font-family:var(--mono)}
+.t-ready{color:var(--green);font-weight:700;font-family:var(--mono)}
+.t-pend{color:var(--dim);font-weight:700;font-family:var(--mono)}
+.detail-row td{background:var(--bg2);padding:0}
+.detail-inner{padding:17px 20px;border-left:3px solid var(--cyan)}
+.detail-desc{font-size:13px;line-height:1.62;margin-bottom:13px}
+.detail-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:13px}
+.detail-cell .dl{font-family:var(--mono);color:var(--dim);font-weight:700;
+  text-transform:uppercase;font-size:9px;letter-spacing:.6px;margin-bottom:3px}
+.detail-cell .dv{font-weight:600;font-size:11.5px}
+.tkt-chip{display:inline-block;background:var(--cyan-soft);color:var(--cyan);
+  border-radius:5px;padding:2px 7px;font-size:10px;font-weight:700;margin:2px 3px 2px 0;
+  font-family:var(--mono)}
+
+.foot{text-align:center;font-family:var(--mono);font-size:10px;color:var(--dim);margin-top:30px}
+.count-filtered{color:var(--r1);font-weight:700}
+.empty{text-align:center;padding:40px;color:var(--dim);font-size:13px}
+</style>
+</head>
+<body>
+
+<div class="nav">
+  <div class="nav-brand">
+    <div class="nav-dot"></div>
+    <div class="nav-title">PAYMENT DEVELOPMENT ROADMAP <span>&nbsp;// unicity payment ops</span></div>
+  </div>
+  <div class="nav-tabs" id="navTabs">
+    <button class="nav-tab active" data-tab="roadmap">Roadmap</button>
+    <button class="nav-tab" data-tab="blockers">Action Needed</button>
+    <button class="nav-tab" data-tab="tickets">Ticket Map</button>
+    <button class="nav-tab" data-tab="all">All Initiatives</button>
+  </div>
+  <div class="nav-build">v2026.05</div>
+</div>
+
+<div class="wrap">
+
+  <!-- ═══════ ROADMAP (landing) ═══════ -->
+  <div class="panel active" id="tab-roadmap">
+    <div class="hero">
+      <div class="eyebrow">2026 PAYMENT EXPANSION // EXECUTION VIEW</div>
+      <h1>45 payment initiatives &mdash; <b>Now, Next &amp; Later.</b></h1>
+      <div class="hero-sub">Every initiative opens a market, a payment method, or a revenue-recovery lever.
+        Set the <b>developer capacity</b> below and every card updates with the time to deliver.
+        Effort sizing &mdash; <b>XS / S / M / L / XL</b> &mdash; gives relative scale at a glance.</div>
+    </div>
+
+    <div class="cap-bar">
+      <span class="cap-label">DEV CAPACITY</span>
+      <button class="cap-btn" data-n="1">1 Developer</button>
+      <button class="cap-btn on" data-n="2">2 Developers</button>
+      <button class="cap-btn" data-n="3">3 Developers</button>
+      <span class="cap-readout" id="capReadout"></span>
+    </div>
+
+    <div class="road-grid" id="roadGrid"></div>
+  </div>
+
+  <!-- ═══════ BLOCKERS ═══════ -->
+  <div class="panel" id="tab-blockers">
+    <div class="blk-intro" id="blkIntro"></div>
+    <div id="blkGroups"></div>
+  </div>
+
+  <!-- ═══════ TICKET MAP ═══════ -->
+  <div class="panel" id="tab-tickets">
+    <div class="hero" style="padding:24px 32px;margin-bottom:18px">
+      <div class="eyebrow">TRACEABILITY // CLICKUP</div>
+      <h1 style="font-size:22px">Ticket Map</h1>
+      <div class="hero-sub" style="font-size:13px">Every initiative and the ClickUp tickets it rolls up.
+        Click any initiative to expand its scope and child tickets.</div>
+    </div>
+    <div class="tk-intro" id="tkSummary"></div>
+    <div id="tkList"></div>
+  </div>
+
+  <!-- ═══════ ALL ═══════ -->
+  <div class="panel" id="tab-all">
+    <div class="controls">
+      <input type="text" class="search" id="search" placeholder="Search initiatives, markets, processors, methods...">
+      <button class="clear-btn hidden" id="clearBtn">&#10005;&nbsp; Clear All Filters</button>
+    </div>
+    <div class="filter-bar">
+      <div class="fgroup"><span class="flabel">Priority</span>
+        <button class="fbtn on" data-f="rank" data-v="all">All</button>
+        <button class="fbtn" data-f="rank" data-v="1">Rank 1</button>
+        <button class="fbtn" data-f="rank" data-v="2">Rank 2</button>
+        <button class="fbtn" data-f="rank" data-v="3">Rank 3</button>
+      </div>
+      <div class="fgroup"><span class="flabel">Category</span>
+        <button class="fbtn on" data-f="cat" data-v="all">All</button>
+        <button class="fbtn" data-f="cat" data-v="Credit Card">Credit Card</button>
+        <button class="fbtn" data-f="cat" data-v="Hosted Payment Page">Hosted Payment Page</button>
+        <button class="fbtn" data-f="cat" data-v="Tool - Strategic Platform">Strategic Tools</button>
+      </div>
+      <div class="fgroup"><span class="flabel">Status</span>
+        <button class="fbtn on" data-f="blk" data-v="all">All</button>
+        <button class="fbtn" data-f="blk" data-v="blocked">Blocked Only</button>
+      </div>
+    </div>
+    <div class="tbl-wrap">
+      <table id="tbl">
+        <thead><tr>
+          <th data-s="num">#<span class="arr">&#9650;&#9660;</span></th>
+          <th data-s="project">Initiative<span class="arr">&#9650;&#9660;</span></th>
+          <th data-s="rank">Rank<span class="arr">&#9650;&#9660;</span></th>
+          <th data-s="category">Category<span class="arr">&#9650;&#9660;</span></th>
+          <th data-s="processor">Processor<span class="arr">&#9650;&#9660;</span></th>
+          <th data-s="effort">Effort<span class="arr">&#9650;&#9660;</span></th>
+          <th data-s="effort">Timeline<span class="arr">&#9650;&#9660;</span></th>
+          <th data-s="status">Status<span class="arr">&#9650;&#9660;</span></th>
+        </tr></thead>
+        <tbody id="tblBody"></tbody>
+      </table>
+    </div>
+    <div class="foot" id="tblCount"></div>
+  </div>
+
+  <div class="foot">
+    SOURCE: Payment_Dev_Estimation_2026-05-12 // DEV WORK ITEMS &nbsp;&middot;&nbsp;
+    SPRINT = 2 WEEKS &nbsp;&middot;&nbsp; TIMELINE = SPRINT ESTIMATE AT SELECTED DEV CAPACITY &nbsp;&middot;&nbsp;
+    GENERATED <span id="genDate"></span>
+  </div>
+</div>
+
+<script>
+// ════════════════════════════════════════════════════════════
+// DATA  —  Dev Work Items (45 initiatives)
+// s1/s2/s3 = sprint estimate at 1 / 2 / 3 developers
+// ════════════════════════════════════════════════════════════
+const ITEMS = [
+{num:1,project:"Europe Nuvei BV Full Integration",rank:1,category:"Credit Card",market:"Europe (32 markets)",processor:"Nuvei",method:"Credit Card (3DS2) + APMs",description:"Nuvei Europe BV: 3DS2 server-to-server + APM rollout + PSD2/SCA foundation.",tickets:"TKT-6329, TKT-6440",s1:4.3,s2:2.2,s3:1.5,bn:null,bnr:null},
+{num:2,project:"Europe Trust Payments 3DS2 Europe Integration",rank:1,category:"Credit Card",market:"Europe BV + Global Markets GmbH",processor:"Trust Payments",method:"Credit Card (3DS2 + MIT)",description:"Full 3DS2 integration: sandbox setup, auth flow (frictionless + challenge), MIT/recurring, testing, production.",tickets:"TKT-6491, TKT-6492, TKT-6493, TKT-6494, TKT-6495",s1:3.4,s2:1.7,s3:1.2,bn:null,bnr:null},
+{num:3,project:"Mena Checkout.com MENA + Global Integration",rank:1,category:"Credit Card",market:"MENA (SAU/UAE/OMR/TRY/KWD) + Global",processor:"Checkout.com",method:"Credit Card + Multi-currency",description:"Full Checkout.com program: SAU/SABB local processing, MENA regional gateway, UAE trade license, per-currency settlements, global market re-integration.",tickets:"TKT-5578, TKT-6534, TKT-6536, TKT-6538, TKT-6539, TKT-6540",s1:8.5,s2:4.3,s3:2.9,bn:"Mena Ops",bnr:"Need Signature from Rajeev"},
+{num:4,project:"USA Authorize.net ACH Integration",rank:1,category:"Credit Card",market:"USA",processor:"Authorize.net",method:"ACH (eCheck)",description:"ACH integration + portal team timeline + virtual terminal + WorldPay ACH pricing benchmark.",tickets:"TKT-6090, TKT-6091, TKT-6092",s1:1,s2:0.5,s3:0.4,bn:null,bnr:null},
+{num:5,project:"Philippines Paynamics Integration",rank:1,category:"Credit Card",market:"Philippines",processor:"Paynamics",method:"Credit Card (3DS) + QR + E-wallet + MIT",description:"Full iPay88 replacement: CC 3DS sandbox, QR Ph, Pay-with-QR (locally branded), E-wallets (GCash/Maya/GrabPay), MIT/autoship plan, subscriber re-enrollment, iPay88 decommission + parallel-run.",tickets:"TKT-6769, TKT-6770, TKT-6771, TKT-6772, TKT-6773, TKT-6774, TKT-6775",s1:7.2,s2:3.6,s3:2.4,bn:null,bnr:null},
+{num:6,project:"Global Paysafe Global Rollout (12 markets)",rank:1,category:"Credit Card",market:"Cambodia, Turkey, Jordan, Laos, Brunei, Oman, Philippines, India, Morocco, Mexico, Dominican Republic, Colombia",processor:"Paysafe",method:"Credit Card (Autoship + Backup)",description:"Paysafe 12-market integration: 5 autoship-priority markets (Cambodia, Turkey, Jordan, Laos, Brunei) + 7 backup-processing markets.",tickets:"TKT-6728 through TKT-6739 (12 tickets)",s1:15.5,s2:7.8,s3:5.2,bn:null,bnr:null},
+{num:7,project:"USA Flex HSA/FSA Integration",rank:1,category:"Credit Card",market:"USA",processor:"Flex (HSA/FSA)",method:"Credit Card (HSA/FSA)",description:"Iframe integration (1x + subscriptions) + TrueMed platform replacement.",tickets:"TKT-5641, TKT-6376",s1:2.7,s2:1.4,s3:0.9,bn:"Finance",bnr:"Complete Stripe Agreement"},
+{num:8,project:"Global HyperSwitch Implementation (full epic)",rank:1,category:"Tool - Strategic Platform",market:"Multi-market",processor:"HyperSwitch / Juspay",method:"Orchestration",description:"Full HyperSwitch program: sandbox setup, PG-agnostic recurring (NTID cross-processor MIT), intelligent routing, vault migration (40K cards), architecture + deployment decisions, order system integration, production connectors, autoship batch engine adapt, ML dynamic routing, monitoring + alerting.",tickets:"TKT-6261 through TKT-6271 (11 tickets)",s1:14.8,s2:7.4,s3:5,bn:"Howard",bnr:"Negotiate Rates"},
+{num:9,project:"USA Nuvei US Direct Integration Migration (NMI -> Nuvei US Direct)",rank:1,category:"Credit Card",market:"USA",processor:"Nuvei",method:"Credit Card (Autoship + Backup)",description:"Foundation work. AfterPay and PayPal Subscriptions both depend on the direct Nuvei connection being live first. The NMI-mediated path is the current blocker for both strategic rails.",tickets:"Epic 86e1d1knh",s1:null,s2:null,s3:null,bn:null,bnr:null},
+{num:10,project:"South Africa Flutterwave Integration",rank:2,category:"Credit Card",market:"South Africa",processor:"Flutterwave",method:"Credit Card (Domestic MID)",description:"South Africa Flutterwave Domestic MID configuration (ZAR MOTO) validation and volume plan.",tickets:"TKT-5418",s1:1,s2:0.5,s3:0.4,bn:null,bnr:null},
+{num:11,project:"France Nuvei Cartes Bancaires Integration",rank:2,category:"Credit Card",market:"France",processor:"Nuvei",method:"Credit Card (Local Scheme)",description:"France domestic card scheme routing (Cartes Bancaires) + verify routing active on Nuvei acquiring.",tickets:"TKT-6345, TKT-6447",s1:1.4,s2:0.7,s3:0.5,bn:null,bnr:null},
+{num:12,project:"Europe Nuvei Klarna Multi-Market BNPL",rank:2,category:"Hosted Payment Page",market:"EU markets",processor:"Klarna",method:"BNPL (Klarna)",description:"Klarna multi-market BNPL integration (Pay Later, Pay in 3, Pay Now); activate across EU + redirect flow.",tickets:"TKT-6367, TKT-6446",s1:1.7,s2:0.9,s3:0.6,bn:null,bnr:null},
+{num:13,project:"Netherlands Nuvei iDEAL",rank:2,category:"Hosted Payment Page",market:"Netherlands",processor:"Nuvei",method:"Bank Redirect (iDEAL) + SEPA",description:"iDEAL Netherlands bank redirect + SEPA recurring bridge.",tickets:"TKT-6444",s1:1.7,s2:0.9,s3:0.6,bn:null,bnr:null},
+{num:14,project:"Europe Nuvei SEPA Direct Debit Germany + EU",rank:2,category:"Hosted Payment Page",market:"Germany + EU-wide",processor:"Nuvei",method:"Bank Recurring (SEPA DD)",description:"SEPA Direct Debit Germany + EU-wide mandate-based recurring.",tickets:"TKT-6445",s1:1.7,s2:0.9,s3:0.6,bn:null,bnr:null},
+{num:15,project:"Poland Nuvei Przelewy24",rank:2,category:"Hosted Payment Page",market:"Poland",processor:"Nuvei",method:"Bank Redirect (P24)",description:"Przelewy24 (P24) redirect flow for Poland bank transfers.",tickets:"TKT-6342",s1:1,s2:0.5,s3:0.4,bn:null,bnr:null},
+{num:16,project:"Spain Nuvei Bizum",rank:2,category:"Hosted Payment Page",market:"Spain",processor:"Nuvei",method:"Bank Redirect (Bizum)",description:"Bizum redirect with 30-minute validation window.",tickets:"TKT-6346",s1:1,s2:0.5,s3:0.4,bn:null,bnr:null},
+{num:17,project:"Belgium Nuvei Bancontact",rank:2,category:"Hosted Payment Page",market:"Belgium",processor:"Nuvei",method:"Bank Redirect (Bancontact)",description:"Activate Bancontact + QR/URL intent redirect flow.",tickets:"TKT-6340",s1:1,s2:0.5,s3:0.4,bn:null,bnr:null},
+{num:18,project:"Denmark & Finland Nuvei MobilePay",rank:2,category:"Hosted Payment Page",market:"Denmark + Finland",processor:"Nuvei",method:"Bank Redirect (MobilePay)",description:"MobilePay redirect flow.",tickets:"TKT-6362",s1:1,s2:0.5,s3:0.4,bn:null,bnr:null},
+{num:19,project:"Norway Nuvei Vipps",rank:2,category:"Hosted Payment Page",market:"Norway",processor:"Nuvei",method:"Bank Redirect (Vipps)",description:"Confirm Vipps availability + implement.",tickets:"TKT-6364",s1:1,s2:0.5,s3:0.4,bn:null,bnr:null},
+{num:20,project:"Portugal Nuvei Multibanco",rank:2,category:"Hosted Payment Page",market:"Portugal",processor:"Nuvei",method:"Bank Redirect (Multibanco/MB Way)",description:"Activate Multibanco + MB Way.",tickets:"TKT-6343",s1:1,s2:0.5,s3:0.4,bn:null,bnr:null},
+{num:21,project:"Sweden Nuvei Swish",rank:2,category:"Hosted Payment Page",market:"Sweden",processor:"Nuvei",method:"Bank Redirect (Swish)",description:"Swish redirect with Swedish national ID requirement.",tickets:"TKT-6347",s1:1,s2:0.5,s3:0.4,bn:null,bnr:null},
+{num:22,project:"Switzerland Nuvei TWINT",rank:2,category:"Hosted Payment Page",market:"Switzerland",processor:"Swiss Payments",method:"Bank Redirect (TWINT)",description:"Activate TWINT via Swiss Payments + confirm API identifiers.",tickets:"TKT-6348",s1:0.7,s2:0.4,s3:0.3,bn:null,bnr:null},
+{num:23,project:"Austria Nuvei EPS",rank:2,category:"Hosted Payment Page",market:"Austria",processor:"Nuvei",method:"Bank Redirect (EPS)",description:"EPS redirect flow.",tickets:"TKT-6365",s1:0.7,s2:0.4,s3:0.3,bn:null,bnr:null},
+{num:24,project:"Italy Nuvei BANCOMAT Pay",rank:2,category:"Hosted Payment Page",market:"Italy",processor:"Nuvei",method:"Bank Redirect (BANCOMAT)",description:"BANCOMAT Pay mobile confirmation flow.",tickets:"TKT-6363",s1:0.7,s2:0.4,s3:0.3,bn:null,bnr:null},
+{num:25,project:"Romania Netopia Payment Gateway",rank:2,category:"Hosted Payment Page",market:"Romania",processor:"Netopia",method:"Bank Redirect (mobilPay)",description:"Netopia mobilPay payment gateway integration.",tickets:"TKT-6713",s1:1,s2:0.5,s3:0.4,bn:"Finance",bnr:"Registration Required Before Starting"},
+{num:26,project:"Europe Nuvei PayPal Integration",rank:2,category:"Hosted Payment Page",market:"EU markets",processor:"PayPal",method:"PayPal (Recurring + One-time)",description:"PayPal Europe Reference Transactions for subscriptions + EU redirect flow.",tickets:"TKT-6368, TKT-6443",s1:2.3,s2:1.2,s3:0.8,bn:null,bnr:null},
+{num:27,project:"Jordan MyFatoorah Subscription MENA Integration",rank:3,category:"Credit Card",market:"MENA",processor:"MyFatoorah",method:"Credit Card + Recurring",description:"MENA MyFatoorah payment integration: 1x and recurring orders.",tickets:"TKT-4274",s1:1.7,s2:0.9,s3:0.6,bn:null,bnr:null},
+{num:28,project:"Morocco CMI Integration",rank:3,category:"Credit Card",market:"Morocco",processor:"CMI-ECOM",method:"Credit Card",description:"Morocco CMI-ECOM payment integration logins + endpoints + 3DS.",tickets:"TKT-4907",s1:1,s2:0.5,s3:0.4,bn:null,bnr:null},
+{num:29,project:"Global Original Transaction Identifier (MIT)",rank:3,category:"Credit Card",market:"Multi-market (Autoship)",processor:"NMI / Worldpay / Nuvei",method:"Recurring (MIT)",description:"Original Transaction Identifier plumbing for MIT scheme IDs across processors (cross-processor recurring foundation).",tickets:"TKT-4578",s1:2.7,s2:1.4,s3:0.9,bn:null,bnr:null},
+{num:30,project:"UK Clearpay BNPL Integration",rank:3,category:"Hosted Payment Page",market:"UK",processor:"Nuvei",method:"BNPL (Clearpay)",description:"Full Clearpay UK program: research, merchant underwriting, Nuvei APM specs, credentials, APM config, testing, go-live.",tickets:"TKT-6556 through TKT-6562 (7 tickets)",s1:2.7,s2:1.4,s3:0.9,bn:"Finance",bnr:"Create Account with ClearPay"},
+{num:31,project:"Global Apple Pay Implementation",rank:3,category:"Hosted Payment Page",market:"32 EU markets + Multi-market Web",processor:"Nuvei / Apple",method:"Wallet (Apple Pay)",description:"Apple Pay program: 32 EU markets via Nuvei, merchant ID + domain verification + Web SDK, cross-browser web integration.",tickets:"TKT-6370, TKT-6441, TKT-6740 through TKT-6746",s1:5.3,s2:2.7,s3:1.8,bn:null,bnr:null},
+{num:32,project:"Global Google Pay Implementation",rank:3,category:"Hosted Payment Page",market:"32 EU markets + Multi-market",processor:"Nuvei / Google",method:"Wallet (Google Pay)",description:"Google Pay program: 32 EU markets via Nuvei, merchant ID, payment flow.",tickets:"TKT-6366, TKT-6442",s1:2.3,s2:1.2,s3:0.8,bn:null,bnr:null},
+{num:33,project:"Puerto Rico ATH Movil",rank:3,category:"Hosted Payment Page",market:"Puerto Rico",processor:"ATH Business",method:"Wallet (Mobile Pay)",description:"ATH Movil Payment Button integration.",tickets:"TKT-6502",s1:1,s2:0.5,s3:0.4,bn:"Finance",bnr:"Unable to Get Account Situated"},
+{num:34,project:"Korea Samsung Pay Integration",rank:3,category:"Hosted Payment Page",market:"Korea",processor:"Nuvei",method:"Wallet (Samsung Pay)",description:"Korea Nuvei APM - Samsung Pay underwriting + integration.",tickets:"TKT-1460",s1:1.7,s2:0.9,s3:0.6,bn:"Howard",bnr:"Set Up Samsung Account"},
+{num:35,project:"Europe Open Banking 14 EU Markets",rank:3,category:"Hosted Payment Page",market:"14 EU markets",processor:"Nuvei",method:"Bank Redirect (Open Banking)",description:"Open Banking / SEPA DD with bank-selection UI across 14 EU countries.",tickets:"TKT-6344",s1:2.7,s2:1.4,s3:0.9,bn:null,bnr:null},
+{num:36,project:"Poland BLIK Full Integration",rank:3,category:"Hosted Payment Page",market:"Poland",processor:"Nuvei",method:"Bank Redirect (BLIK)",description:"BLIK Poland program: epic + 6 children (scope, MID, UX, testing, compliance, go-live) + BLIK EURO MID approval + 6-digit S2S flow.",tickets:"TKT-6341, TKT-6563 through TKT-6570",s1:3.7,s2:1.9,s3:1.3,bn:null,bnr:null},
+{num:37,project:"USA FlexFactor Pilot + A/B Test Setup",rank:3,category:"Tool - Strategic Platform",market:"USA + Canada",processor:"FlexFactor",method:"Decline Recovery",description:"Pilot integration for bounded A/B test + A/B wiring (50/50 random split, attribution, daily reporting).",tickets:"TKT-6674, (A/B setup TBD)",s1:3.7,s2:1.9,s3:1.3,bn:null,bnr:null},
+{num:38,project:"USA & Canada Vertex API Integration",rank:3,category:"Tool - Strategic Platform",market:"Multi-market",processor:"Vertex",method:"Tax Engine",description:"Vertex API integration for tax calculation (post-discovery + documentation review).",tickets:"TKT-6694",s1:2.7,s2:1.4,s3:0.9,bn:null,bnr:null},
+{num:39,project:"Global VAT Rates Analysis",rank:3,category:"Strategic Program",market:"Global (non-US/CA)",processor:"Internal",method:"Tax Logic",description:"VAT Rates Analysis for in-house tax engine build decision.",tickets:"TKT-6587",s1:0.7,s2:0.4,s3:0.3,bn:null,bnr:null},
+{num:40,project:"USA Nuvei Afterpay USA BNPL Integration",rank:1,category:"Hosted Payment Page",market:"USA",processor:"Nuvei",method:"BNPL (Afterpay)",description:"Full Afterpay USA program: research, merchant underwriting, Nuvei APM wiring, credentials, integration testing, production go-live.",tickets:"TKT-6548 through TKT-6554 (7 tickets)",s1:2.9,s2:1.5,s3:1,bn:null,bnr:null},
+{num:41,project:"USA Nuvei PayPal Subscriptions (Hosted Payment Page)",rank:2,category:"Hosted Payment Page",market:"US markets",processor:"PayPal",method:"PayPal (Recurring + One-time)",description:"PayPal USA Reference Transactions for subscriptions + US redirect flow. Depends on Nuvei US Direct (#9).",tickets:"86e1d1n3z",s1:null,s2:null,s3:null,bn:null,bnr:null},
+{num:42,project:"USA Nuvei PayPal One-Time via Nuvei Direct USA (Hosted Payment Page)",rank:2,category:"Hosted Payment Page",market:"US markets",processor:"PayPal",method:"PayPal (Recurring + One-time)",description:"PayPal USA one-time checkout via Nuvei direct + US redirect flow. Depends on Nuvei US Direct (#9).",tickets:"86e1d25u1",s1:null,s2:null,s3:null,bn:null,bnr:null},
+{num:43,project:"Canada Nuvei PayPal Subscriptions via Nuvei Canada (Hosted Payment Page)",rank:2,category:"Hosted Payment Page",market:"CA markets",processor:"PayPal",method:"PayPal (Recurring + One-time)",description:"PayPal Canada Reference Transactions for subscriptions + CA redirect flow. Canada already direct on Nuvei.",tickets:"86e1d1w8d",s1:null,s2:null,s3:null,bn:null,bnr:null},
+{num:44,project:"Canada Nuvei PayPal One-Time via Nuvei Canada (Hosted Payment Page)",rank:2,category:"Hosted Payment Page",market:"CA markets",processor:"PayPal",method:"PayPal (Recurring + One-time)",description:"PayPal Canada one-time checkout via Nuvei Canada + CA redirect flow. Canada already direct on Nuvei.",tickets:"86e1d1vkh",s1:null,s2:null,s3:null,bn:null,bnr:null},
+{num:45,project:"Taiwan ECPay: Payment Gateway - Subscription Integration",rank:3,category:"Credit Card",market:"Taiwan",processor:"ECPay",method:"Credit Card",description:"Taiwan ECPay payment integration logins + endpoints + 3DS.",tickets:"ECPay evaluation in progress",s1:null,s2:null,s3:null,bn:null,bnr:null}
+];
+ITEMS.forEach(it=>{ if(it.bn==='Finanace') it.bn='Finance'; it.estimated = it.s1!==null; });
+
+// ════════════════════════════════════════════════════════════
+// HELPERS
+// ════════════════════════════════════════════════════════════
+const total=ITEMS.length;
+const blocked=ITEMS.filter(i=>i.bn);
+const unestimated=ITEMS.filter(i=>!i.estimated);
+function esc(s){const d=document.createElement('div');d.textContent=s==null?'':s;return d.innerHTML;}
+function shortCat(c){return c==='Tool - Strategic Platform'?'Strategic Tool':
+  c==='Hosted Payment Page'?'HPP':c==='Strategic Program'?'Strategic':c;}
+const RANKMETA={1:{cls:'r1',name:'NOW',sub:'RANK 1'},2:{cls:'r2',name:'NEXT',sub:'RANK 2'},
+  3:{cls:'r3',name:'LATER',sub:'RANK 3'}};
+// effort sizing from 1-dev sprint estimate
+function effort(it){
+  if(!it.estimated) return {sz:'TBD',cls:'tbd'};
+  const s=it.s1;
+  if(s<1) return {sz:'XS',cls:'xs'};
+  if(s<2) return {sz:'S',cls:'s'};
+  if(s<4) return {sz:'M',cls:'m'};
+  if(s<8) return {sz:'L',cls:'l'};
+  return {sz:'XL',cls:'xl'};
+}
+function devSprints(it,n){return n===1?it.s1:n===2?it.s2:it.s3;}
+// duration formatter: small -> weeks, mid -> months, large -> years
+function dur(sprints){
+  if(sprints==null||sprints<=0) return 'TBD';
+  const wk=sprints*2;
+  if(wk<11.5) return '~'+Math.round(wk)+' wks';
+  const mo=wk/4.345;
+  if(mo<18) return '~'+(mo<10?mo.toFixed(1):Math.round(mo))+' mo';
+  return '~'+(mo/12).toFixed(1)+' yrs';
+}
+
+// ════════════════════════════════════════════════════════════
+// ROADMAP  (with dev-capacity selector + per-card resource/timing)
+// ════════════════════════════════════════════════════════════
+let devCap=2;
+function renderRoadmap(){
+  const n=devCap;
+  const totalSprints=ITEMS.reduce((a,i)=>a+(devSprints(i,n)||0),0);
+  document.getElementById('capReadout').innerHTML=
+    'Full 45-initiative roadmap at this capacity: <b>'+dur(totalSprints)+'</b>'+
+    (unestimated.length?' &nbsp;('+unestimated.length+' pending estimate)':'');
+  let h='';
+  [1,2,3].forEach(rk=>{
+    const its=ITEMS.filter(i=>i.rank===rk).sort((a,b)=>(b.s1||0)-(a.s1||0));
+    const m=RANKMETA[rk];
+    const tierSprints=its.reduce((a,i)=>a+(devSprints(i,n)||0),0);
+    h+='<div class="road-col"><div class="road-head '+m.cls+'">'+
+      '<div class="road-head-lbl">'+m.name+' // '+m.sub+'</div>'+
+      '<div class="road-head-name">'+its.length+' initiatives</div>'+
+      '<div class="road-head-meta"><b>'+dur(tierSprints)+'</b> to clear &middot; '+
+      n+' dev'+(n>1?'s':'')+' &middot; '+its.filter(i=>i.bn).length+' blocked</div>'+
+      '</div><div class="road-body">';
+    its.forEach(it=>{
+      const e=effort(it), sp=devSprints(it,n);
+      h+='<div class="mini" data-num="'+it.num+'"><div class="mini-top">'+
+        '<div class="mini-name">'+esc(it.project)+'</div>'+
+        '<div class="esz '+e.cls+'">'+e.sz+'</div></div>'+
+        '<div class="mini-meta"><span class="mini-chip">'+esc(shortCat(it.category))+'</span>'+
+        '<span class="mini-chip">'+esc(it.processor||'')+'</span>'+
+        (it.bn?'<span class="mini-blk">&#9888; '+esc(it.bn)+'</span>':'')+'</div>';
+      // resource + timing strip
+      if(it.estimated){
+        h+='<div class="mini-rt">'+
+          '<div class="mrt-block"><span class="mrt-ico">&#9201;</span>'+
+          '<span class="mrt-val">'+dur(sp)+'</span><span class="mrt-lbl">TO DELIVER</span></div>'+
+          '<div class="sep"></div>'+
+          '<div class="mrt-block"><span class="mrt-ico">&#128100;</span>'+
+          '<span class="mrt-val">'+n+' dev'+(n>1?'s':'')+'</span><span class="mrt-lbl">RESOURCE</span></div>'+
+          '</div>';
+      }else{
+        h+='<div class="mini-rt pending">'+
+          '<div class="mrt-block"><span class="mrt-ico">&#9201;</span>'+
+          '<span class="mrt-lbl">TIMELINE PENDING DEV ESTIMATE</span></div></div>';
+      }
+      h+='</div>';
+    });
+    h+='</div></div>';
+  });
+  document.getElementById('roadGrid').innerHTML=h;
+  document.querySelectorAll('#roadGrid .mini').forEach(el=>
+    el.onclick=()=>{switchTab('all');setTimeout(()=>openDetail(+el.dataset.num),130);});
+}
+
+// ── BLOCKERS ──
+function renderBlockers(){
+  document.getElementById('blkIntro').innerHTML=
+    '<b>'+blocked.length+' initiatives are scoped and ready &mdash; but cannot start.</b> '+
+    'Each is parked behind a business action: a signature, an account, a contract. '+
+    'This is the fastest no-code win on the roadmap &mdash; clearing these unblocks engineering immediately.';
+  const owners={};
+  blocked.forEach(i=>(owners[i.bn]=owners[i.bn]||[]).push(i));
+  const order=Object.keys(owners).sort((a,b)=>owners[b].length-owners[a].length);
+  let h='';
+  order.forEach(o=>{
+    h+='<div class="owner-group"><div class="owner-head"><div class="owner-name">'+esc(o)+'</div>'+
+      '<div class="owner-count">'+owners[o].length+' TO UNBLOCK</div></div>';
+    owners[o].forEach(it=>{
+      const e=effort(it);
+      h+='<div class="blk-card" data-num="'+it.num+'"><div class="blk-card-top">'+
+        '<div><div class="blk-proj">'+esc(it.project)+'</div>'+
+        '<div class="blk-ask">&#128275; '+esc(it.bnr)+'</div></div>'+
+        '<div class="esz '+e.cls+'">'+e.sz+'</div></div>'+
+        '<div class="blk-meta"><span class="t-tag">RANK '+it.rank+'</span>'+
+        '<span class="t-tag">'+esc(it.market)+'</span>'+
+        '<span class="t-tag">'+esc(it.processor||'')+'</span>'+
+        (it.estimated?'<span class="t-tag">'+dur(it.s2)+' AT 2 DEVS</span>':'')+
+        '</div></div>';
+    });
+    h+='</div>';
+  });
+  document.getElementById('blkGroups').innerHTML=h;
+  document.querySelectorAll('.blk-card').forEach(el=>
+    el.onclick=()=>{switchTab('all');setTimeout(()=>openDetail(+el.dataset.num),130);});
+}
+
+// ── TICKET MAP ──
+function ticketCount(t){
+  if(!t)return 0;
+  const m=t.match(/\((\d+)\s+tickets?\)/i);
+  if(m)return +m[1];
+  if(/through/i.test(t))return null;
+  return t.split(',').filter(x=>/TKT|86e/i.test(x)).length;
+}
+function renderTickets(){
+  let totalTk=0;
+  ITEMS.forEach(it=>{const c=ticketCount(it.tickets);if(c)totalTk+=c;});
+  document.getElementById('tkSummary').innerHTML=
+    'The 45 initiatives roll up to <b style="color:var(--cyan)">'+totalTk+'+ ClickUp tickets</b> '+
+    'across the PaymentWF workspace. Each initiative below shows its scope in one line, '+
+    'plus the ticket IDs that track the work.';
+  let h='';
+  [1,2,3].forEach(rk=>{
+    ITEMS.filter(i=>i.rank===rk).forEach(it=>{
+      const tks=(it.tickets||'').split(',').map(s=>s.trim()).filter(Boolean);
+      const cnt=ticketCount(it.tickets);
+      h+='<div class="tk-init" data-num="'+it.num+'"><div class="tk-init-hd">'+
+        '<div class="tk-rank r'+it.rank+'">'+it.rank+'</div>'+
+        '<div class="tk-init-main"><div class="tk-init-name">'+esc(it.project)+'</div>'+
+        '<div class="tk-init-sub">'+esc(it.processor||'')+' // '+esc(it.method||'')+'</div></div>'+
+        '<div class="tk-init-count">'+(cnt===null?'EPIC SET':(cnt||'—')+' TKT')+'</div>'+
+        '<div class="tk-toggle">&#9656;</div></div>'+
+        '<div class="tk-body"><div class="tk-scope"><b>Scope:</b> '+esc(it.description)+'</div>'+
+        '<div class="tk-list">'+
+        (tks.length?tks.map(t=>'<span class="tk-pill'+(/TKT|86e/i.test(t)?'':' note')+'">'+esc(t)+'</span>').join(''):
+        '<span class="tk-pill note">no tickets logged yet</span>')+
+        '</div></div></div>';
+    });
+  });
+  document.getElementById('tkList').innerHTML=h;
+  document.querySelectorAll('.tk-init-hd').forEach(hd=>
+    hd.onclick=()=>hd.parentElement.classList.toggle('open'));
+}
+
+// ── TABLE ──
+let filt={rank:'all',cat:'all',blk:'all'},sortKey='num',sortDir=1,openNum=null;
+function passFilter(it){
+  if(filt.rank!=='all'&&it.rank!=+filt.rank)return false;
+  if(filt.cat!=='all'&&it.category!==filt.cat)return false;
+  if(filt.blk==='blocked'&&!it.bn)return false;
+  const q=document.getElementById('search').value.toLowerCase().trim();
+  if(q){const hay=(it.project+' '+it.market+' '+it.processor+' '+it.method+' '+
+    it.category+' '+it.description).toLowerCase();if(hay.indexOf(q)<0)return false;}
+  return true;
+}
+function renderTable(){
+  let rows=ITEMS.filter(passFilter);
+  rows.sort((a,b)=>{
+    let av,bv;
+    if(sortKey==='effort'){av=a.s1||-1;bv=b.s1||-1;}
+    else if(sortKey==='status'){av=a.bn?2:(a.estimated?1:0);bv=b.bn?2:(b.estimated?1:0);}
+    else{av=a[sortKey];bv=b[sortKey];}
+    if(typeof av==='string'){av=av.toLowerCase();bv=(bv||'').toLowerCase();}
+    return av<bv?-sortDir:av>bv?sortDir:0;
+  });
+  let h='';
+  rows.forEach(it=>{
+    const e=effort(it);
+    const st=it.bn?'<span class="t-blocked">&#9888; BLOCKED</span>':
+      (it.estimated?'<span class="t-ready">READY</span>':'<span class="t-pend">PENDING EST.</span>');
+    const tl=it.estimated?'<span class="t-time">'+dur(devSprints(it,devCap))+'</span>':
+      '<span class="t-pend">—</span>';
+    h+='<tr data-num="'+it.num+'"'+(it.num===openNum?' class="expanded"':'')+'>'+
+      '<td class="t-num">'+String(it.num).padStart(2,'0')+'</td>'+
+      '<td class="t-proj">'+esc(it.project)+'</td>'+
+      '<td><span class="t-rank r'+it.rank+'">'+it.rank+'</span></td>'+
+      '<td><span class="t-tag">'+esc(shortCat(it.category))+'</span></td>'+
+      '<td>'+esc(it.processor||'')+'</td>'+
+      '<td><span class="esz '+e.cls+'">'+e.sz+'</span></td>'+
+      '<td>'+tl+'</td>'+
+      '<td>'+st+'</td></tr>';
+    if(it.num===openNum){
+      h+='<tr class="detail-row"><td colspan="8"><div class="detail-inner">'+
+        '<div class="detail-desc">'+esc(it.description)+'</div><div class="detail-grid">'+
+        cell('Market',it.market)+cell('Payment Method',it.method)+
+        cell('Effort Size',e.sz)+
+        cell('Timeline 1 / 2 / 3 devs',it.estimated?
+          (dur(it.s1)+' / '+dur(it.s2)+' / '+dur(it.s3)):'Pending dev estimate')+
+        (it.bn?cell('Blocked On',it.bn+' — '+it.bnr):'')+
+        cellRaw('ClickUp Tickets',ticketChips(it.tickets))+
+        '</div></div></td></tr>';
+    }
+  });
+  document.getElementById('tblBody').innerHTML=h||
+    '<tr><td colspan="8" class="empty">No initiatives match. Use Clear All Filters to reset.</td></tr>';
+  const any=filt.rank!=='all'||filt.cat!=='all'||filt.blk!=='all'||
+    document.getElementById('search').value.trim()!=='';
+  document.getElementById('clearBtn').classList.toggle('hidden',!any);
+  document.getElementById('tblCount').innerHTML=any?
+    'SHOWING <span class="count-filtered">'+rows.length+' OF '+total+'</span> // FILTERS ACTIVE':
+    'SHOWING ALL '+total+' INITIATIVES // TIMELINE COLUMN REFLECTS '+devCap+'-DEV CAPACITY';
+}
+function cell(l,v){return '<div class="detail-cell"><div class="dl">'+l+'</div><div class="dv">'+esc(String(v||'—'))+'</div></div>';}
+function cellRaw(l,v){return '<div class="detail-cell"><div class="dl">'+l+'</div><div class="dv">'+v+'</div></div>';}
+function ticketChips(t){if(!t)return '<span style="color:var(--dim)">none yet</span>';
+  return String(t).split(',').map(x=>'<span class="tkt-chip">'+esc(x.trim())+'</span>').join('');}
+function openDetail(num){
+  openNum=(openNum===num?null:num);renderTable();
+  if(openNum){const r=document.querySelector('tr[data-num="'+num+'"]');
+    if(r)r.scrollIntoView({behavior:'smooth',block:'center'});}
+}
+function clearAll(){
+  filt={rank:'all',cat:'all',blk:'all'};
+  document.getElementById('search').value='';
+  document.querySelectorAll('.fbtn').forEach(b=>b.classList.toggle('on',b.dataset.v==='all'));
+  openNum=null;renderTable();
+}
+
+// ── WIRING ──
+function switchTab(t){
+  document.querySelectorAll('.nav-tab').forEach(b=>b.classList.toggle('active',b.dataset.tab===t));
+  document.querySelectorAll('.panel').forEach(p=>p.classList.toggle('active',p.id==='tab-'+t));
+  window.scrollTo({top:0,behavior:'smooth'});
+}
+document.getElementById('navTabs').addEventListener('click',e=>{
+  const b=e.target.closest('.nav-tab');if(b)switchTab(b.dataset.tab);});
+document.querySelectorAll('.cap-btn').forEach(b=>b.onclick=()=>{
+  devCap=+b.dataset.n;
+  document.querySelectorAll('.cap-btn').forEach(x=>x.classList.toggle('on',x===b));
+  renderRoadmap();renderTable();});
+document.getElementById('search').addEventListener('input',()=>{openNum=null;renderTable();});
+document.getElementById('clearBtn').onclick=clearAll;
+document.querySelectorAll('.fbtn').forEach(b=>b.onclick=()=>{
+  const f=b.dataset.f;
+  document.querySelectorAll('.fbtn[data-f="'+f+'"]').forEach(x=>x.classList.remove('on'));
+  b.classList.add('on');filt[f]=b.dataset.v;openNum=null;renderTable();});
+document.querySelectorAll('#tbl thead th').forEach(th=>th.onclick=()=>{
+  const k=th.dataset.s;if(sortKey===k)sortDir*=-1;else{sortKey=k;sortDir=1;}renderTable();});
+document.getElementById('tblBody').addEventListener('click',e=>{
+  const tr=e.target.closest('tr[data-num]');if(tr)openDetail(+tr.dataset.num);});
+
+document.getElementById('genDate').textContent=new Date().toLocaleDateString('en-US',
+  {year:'numeric',month:'short',day:'numeric'}).toUpperCase();
+renderRoadmap();renderBlockers();renderTickets();renderTable();
+</script>
+</body>
+</html>
