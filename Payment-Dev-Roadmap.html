@@ -180,6 +180,12 @@ body{background-image:
   background:var(--bg2);border:1px solid var(--border2);border-radius:6px;
   padding:5px 10px;color:var(--cyan)}
 .tk-pill.note{color:var(--muted);border-style:dashed}
+a.tk-pill{text-decoration:none;cursor:pointer;transition:all .13s}
+a.tk-pill:hover{background:var(--cyan-soft);border-color:var(--cyan);
+  box-shadow:0 0 12px rgba(34,211,238,.3)}
+a.tk-pill::after{content:' \2197';font-size:8px;opacity:.6}
+.tlink{color:var(--cyan);font-weight:700;text-decoration:underline;text-underline-offset:2px}
+.tlink:hover{color:#8af0fb}
 
 /* ── TABLE ── */
 .controls{display:flex;gap:10px;align-items:center;flex-wrap:wrap;margin-bottom:14px}
@@ -238,6 +244,8 @@ tbody tr.expanded{background:var(--cyan-soft)}
 .tkt-chip{display:inline-block;background:var(--cyan-soft);color:var(--cyan);
   border-radius:5px;padding:2px 7px;font-size:10px;font-weight:700;margin:2px 3px 2px 0;
   font-family:var(--mono)}
+a.tkt-chip{text-decoration:none;cursor:pointer;transition:all .13s}
+a.tkt-chip:hover{background:var(--cyan);color:#04141a}
 
 .foot{text-align:center;font-family:var(--mono);font-size:10px;color:var(--dim);margin-top:30px}
 .count-filtered{color:var(--r1);font-weight:700}
@@ -411,6 +419,29 @@ const total=ITEMS.length;
 const blocked=ITEMS.filter(i=>i.bn);
 const unestimated=ITEMS.filter(i=>!i.estimated);
 function esc(s){const d=document.createElement('div');d.textContent=s==null?'':s;return d.innerHTML;}
+
+// ── ClickUp ticket linking ──
+// Custom IDs (TKT-####) -> /t/<team>/TKT-#### ; raw task IDs (86e...) -> /t/<id>
+const CU_TEAM='55477';
+function linkifyTickets(s){
+  s=String(s).replace(/TKT-\d+/g,m=>
+    '<a class="tlink" target="_blank" rel="noopener" href="https://app.clickup.com/t/'+CU_TEAM+'/'+m+'">'+m+'</a>');
+  s=s.replace(/(^|[^\/0-9a-z])(86e[a-z0-9]{6,})\b/gi,(f,pre,id)=>
+    pre+'<a class="tlink" target="_blank" rel="noopener" href="https://app.clickup.com/t/'+id+'">'+id+'</a>');
+  return s;
+}
+function ticketTokenHTML(tok,baseCls){
+  const t=String(tok).trim();
+  if(/^TKT-\d+$/.test(t))
+    return '<a class="'+baseCls+'" target="_blank" rel="noopener" href="https://app.clickup.com/t/'+
+      CU_TEAM+'/'+t+'">'+t+'</a>';
+  const m=t.match(/^(?:Epic\s+)?(86e[a-z0-9]{6,})$/i);
+  if(m)
+    return '<a class="'+baseCls+'" target="_blank" rel="noopener" href="https://app.clickup.com/t/'+
+      m[1]+'">'+esc(t)+'</a>';
+  const cls=/TKT|86e/i.test(t)?baseCls:baseCls+' note';
+  return '<span class="'+cls+'">'+linkifyTickets(esc(t))+'</span>';
+}
 function shortCat(c){return c==='Tool - Strategic Platform'?'Strategic Tool':
   c==='Hosted Payment Page'?'HPP':c==='Strategic Program'?'Strategic':c;}
 const RANKMETA={1:{cls:'r1',name:'NOW',sub:'RANK 1'},2:{cls:'r2',name:'NEXT',sub:'RANK 2'},
@@ -548,7 +579,7 @@ function renderTickets(){
         '<div class="tk-toggle">&#9656;</div></div>'+
         '<div class="tk-body"><div class="tk-scope"><b>Scope:</b> '+esc(it.description)+'</div>'+
         '<div class="tk-list">'+
-        (tks.length?tks.map(t=>'<span class="tk-pill'+(/TKT|86e/i.test(t)?'':' note')+'">'+esc(t)+'</span>').join(''):
+        (tks.length?tks.map(t=>ticketTokenHTML(t,'tk-pill')).join(''):
         '<span class="tk-pill note">no tickets logged yet</span>')+
         '</div></div></div>';
     });
@@ -619,7 +650,7 @@ function renderTable(){
 function cell(l,v){return '<div class="detail-cell"><div class="dl">'+l+'</div><div class="dv">'+esc(String(v||'—'))+'</div></div>';}
 function cellRaw(l,v){return '<div class="detail-cell"><div class="dl">'+l+'</div><div class="dv">'+v+'</div></div>';}
 function ticketChips(t){if(!t)return '<span style="color:var(--dim)">none yet</span>';
-  return String(t).split(',').map(x=>'<span class="tkt-chip">'+esc(x.trim())+'</span>').join('');}
+  return String(t).split(',').map(x=>ticketTokenHTML(x,'tkt-chip')).join('');}
 function openDetail(num){
   openNum=(openNum===num?null:num);renderTable();
   if(openNum){const r=document.querySelector('tr[data-num="'+num+'"]');
