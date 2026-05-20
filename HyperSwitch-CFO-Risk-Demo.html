@@ -1,4 +1,5 @@
 <!DOCTYPE html>
+<!-- HyperSwitch for Unicity. Dark theme is the default. -->
 <html lang="en">
 <head>
 <meta charset="UTF-8">
@@ -6,6 +7,7 @@
 <title>HyperSwitch for Unicity - CFO + Risk Briefing</title>
 <style>
   :root {
+    /* Brand colors */
     --navy: #1F4E79;
     --navy-dark: #16395A;
     --navy-light: #2B6CB0;
@@ -16,16 +18,76 @@
     --red: #C53030;
     --red-light: #FC8181;
     --yellow: #D69E2E;
-    --paper: #F5F7FA;
     --white: #FFFFFF;
+    /* Light theme (default) */
+    --paper: #F5F7FA;
+    --card-bg: #FFFFFF;
     --rule: #CBD5E0;
     --dim: #4A5568;
     --ice: #EDF2F7;
     --text: #1A202C;
     --text-light: #4A5568;
+    --topnav-bg: #16395A;
+    --shadow: 0 2px 5px rgba(0,0,0,0.06);
+    --shadow-hover: 0 6px 16px rgba(0,0,0,0.14);
     --head: 'Segoe UI', system-ui, -apple-system, sans-serif;
     --body: 'Segoe UI', system-ui, -apple-system, sans-serif;
   }
+  body.dark {
+    /* Brand colors brightened for legibility on dark surfaces */
+    --navy: #63B3ED;
+    --navy-dark: #1A365D;
+    --navy-light: #90CDF4;
+    --green: #48BB78;
+    --green-light: #68D391;
+    --orange: #ED8936;
+    --orange-light: #F6AD55;
+    --red: #FC8181;
+    --yellow: #F6E05E;
+    /* Surfaces */
+    --paper: #0F1419;
+    --card-bg: #1A2332;
+    --rule: #2D3F54;
+    --dim: #8899AA;
+    --ice: #243047;
+    --text: #E2E8F0;
+    --text-light: #A0AEC0;
+    --topnav-bg: #0B1015;
+    --shadow: 0 2px 6px rgba(0,0,0,0.4);
+    --shadow-hover: 0 6px 18px rgba(0,0,0,0.5);
+  }
+  /* Tweaks for dark mode: small color/background overrides not handled by the variable swap above */
+  body.dark .bottomnav { background: var(--card-bg); border-top-color: var(--rule); }
+  body.dark .navbtn { background: var(--orange); color: var(--white); }
+  body.dark .navbtn:hover:not(:disabled) { background: var(--orange-light); }
+  body.dark .navbtn:disabled { background: var(--rule); opacity: 0.5; }
+  body.dark .topnav { background: var(--topnav-bg); }
+  body.dark .tabbar { background: var(--card-bg); border-bottom-color: var(--rule); }
+  body.dark .tab { color: var(--text-light); }
+  body.dark .tab:hover { color: var(--navy); }
+  body.dark .tab.active { color: var(--white); border-bottom-color: var(--orange); }
+  body.dark .tab.active .tab-num { color: var(--orange); }
+  body.dark .tab-num { color: var(--dim); }
+  body.dark .winbox .wintitle { color: var(--text); }
+  body.dark .slide-title { color: var(--white); }
+  body.dark .paramcard { background: var(--ice); }
+  body.dark .paramcard .paramcat { color: var(--navy); }
+  /* Title + recommendation slides: dark slate gradient instead of bright-blue brand navy */
+  body.dark .titleslide,
+  body.dark .recoslide {
+    background: linear-gradient(135deg, #1A2332 0%, #2D3F54 100%);
+    border: 1px solid var(--rule);
+  }
+  body.dark .titleslide h1,
+  body.dark .recoslide h2 { color: var(--white); }
+  body.dark .titleslide .subtitle,
+  body.dark .recoslide .recosub { color: var(--text-light); }
+  body.dark .titleslide .meta,
+  body.dark .titleslide .meta strong { color: var(--text-light); }
+  body.dark .titleslide .meta strong { color: var(--orange); }
+  /* Recommendation card body text - was dark var(--ice) on dark cards, now legible */
+  body.dark .recobox .sub { color: var(--text-light); }
+  body.dark .recobox { background: rgba(255,255,255,0.06); border-color: var(--rule); }
 
   * { margin: 0; padding: 0; box-sizing: border-box; }
 
@@ -34,7 +96,7 @@
   /* Top nav bar */
   .topnav {
     position: fixed; top: 0; left: 0; right: 0; height: 50px;
-    background: var(--navy-dark); color: var(--white);
+    background: var(--topnav-bg); color: var(--white);
     display: flex; align-items: center; padding: 0 24px; z-index: 100;
     box-shadow: 0 2px 6px rgba(0,0,0,0.15);
   }
@@ -47,10 +109,42 @@
   }
   .topnav-link:hover { background: rgba(255,255,255,0.1); }
   .topnav-link.active { background: var(--orange); color: white; border-color: var(--orange); }
+  .topnav-toggle {
+    background: transparent; color: var(--white); border: 1px solid rgba(255,255,255,0.25);
+    width: 36px; height: 32px; border-radius: 6px; cursor: pointer;
+    font-size: 16px; display: flex; align-items: center; justify-content: center;
+    transition: all 0.15s; margin-right: 8px;
+  }
+  .topnav-toggle:hover { background: rgba(255,255,255,0.1); border-color: rgba(255,255,255,0.45); }
+
+  /* Section tab bar (jump-to nav) */
+  .tabbar {
+    position: fixed; top: 50px; left: 0; right: 0; height: 46px;
+    background: var(--card-bg); border-bottom: 1px solid var(--rule);
+    display: flex; align-items: stretch; padding: 0 16px;
+    z-index: 98; box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+    gap: 2px; overflow-x: auto;
+  }
+  .tabbar::-webkit-scrollbar { height: 0; }
+  .tab {
+    background: none; border: none; padding: 0 14px;
+    font-size: 11.5px; font-weight: 500; color: var(--dim);
+    cursor: pointer; transition: all 0.15s; font-family: var(--head);
+    border-bottom: 2px solid transparent; white-space: nowrap;
+    letter-spacing: 0.1px; display: flex; align-items: center; gap: 6px;
+    position: relative;
+  }
+  .tab:hover { color: var(--navy); }
+  .tab.active { color: var(--navy); border-bottom-color: var(--orange); font-weight: 600; }
+  .tab-num {
+    font-size: 10px; color: var(--dim); font-weight: 500;
+    letter-spacing: 0.3px;
+  }
+  .tab.active .tab-num { color: var(--orange); font-weight: 600; }
 
   /* Progress dots */
   .progress {
-    position: fixed; top: 50px; left: 0; right: 0; height: 4px;
+    position: fixed; top: 96px; left: 0; right: 0; height: 4px;
     background: var(--ice); z-index: 95;
   }
   .progress-bar {
@@ -59,31 +153,46 @@
   }
 
   /* Slide container */
-  .deck { padding-top: 54px; padding-bottom: 70px; min-height: 100vh; }
+  .deck { padding-top: 100px; padding-bottom: 60px; min-height: 100vh; }
   .slide {
-    display: none; padding: 48px 56px 40px;
-    max-width: 1800px; width: 96%; margin: 0 auto;
+    display: none; padding: 28px 52px 24px;
+    max-width: 1700px; width: 96%; margin: 0 auto;
     animation: fadeIn 0.3s ease;
+    /* Force each slide to fill the viewport between top and bottom nav so all slides feel the same height */
+    min-height: calc(100vh - 170px);
   }
-  .slide.active { display: block; }
+  .slide.active {
+    display: flex;
+    flex-direction: column;
+  }
+  /* Push the last element of every slide to the bottom so closing callouts stick to the bottom edge */
+  .slide.active > *:last-child {
+    margin-top: auto;
+  }
+  /* Exception: title slide is its own self-contained block, don't let auto-margin push it */
+  .slide.active .titleslide,
+  .slide.active .recoslide {
+    margin-top: 0;
+    flex: 1;
+  }
   @keyframes fadeIn {
     from { opacity: 0; transform: translateY(8px); }
     to { opacity: 1; transform: translateY(0); }
   }
 
   .slide-title {
-    font-family: var(--head); font-size: 40px; font-weight: 700;
-    color: var(--navy); margin-bottom: 8px; line-height: 1.15;
+    font-family: var(--head); font-size: 34px; font-weight: 700;
+    color: var(--navy); margin-bottom: 6px; line-height: 1.15;
   }
   .slide-rule {
-    height: 5px; width: 100px; background: var(--orange);
-    margin-bottom: 28px;
+    height: 4px; width: 80px; background: var(--orange);
+    margin-bottom: 20px;
   }
 
   /* Bottom nav */
   .bottomnav {
     position: fixed; bottom: 0; left: 0; right: 0; height: 56px;
-    background: var(--white); border-top: 1px solid var(--rule);
+    background: var(--card-bg); border-top: 1px solid var(--rule);
     display: flex; align-items: center; justify-content: center;
     gap: 16px; z-index: 100;
   }
@@ -99,7 +208,7 @@
 
   /* Card primitives */
   .card {
-    background: var(--white); border-radius: 10px;
+    background: var(--card-bg); border-radius: 10px;
     border: 1px solid var(--rule); padding: 20px;
     box-shadow: 0 1px 3px rgba(0,0,0,0.05);
   }
@@ -111,40 +220,40 @@
   /* TITLE SLIDE */
   .titleslide {
     background: linear-gradient(135deg, var(--navy-dark) 0%, var(--navy) 100%);
-    color: var(--white); padding: 100px 80px; border-radius: 16px;
-    min-height: 620px; display: flex; flex-direction: column; justify-content: center;
+    color: var(--white); padding: 60px 60px; border-radius: 14px;
+    min-height: 460px; display: flex; flex-direction: column; justify-content: center;
   }
-  .titleslide h1 { font-size: 72px; font-weight: 700; margin-bottom: 20px; line-height: 1.05; }
-  .titleslide .subtitle { font-size: 28px; font-weight: 500; color: var(--ice); margin-bottom: 60px; }
-  .titleslide .meta { font-size: 17px; color: var(--ice); opacity: 0.9; line-height: 1.8; }
+  .titleslide h1 { font-size: 60px; font-weight: 700; margin-bottom: 18px; line-height: 1.05; }
+  .titleslide .subtitle { font-size: 24px; font-weight: 500; color: var(--ice); margin-bottom: 44px; }
+  .titleslide .meta { font-size: 16px; color: var(--ice); opacity: 0.9; line-height: 1.75; }
   .titleslide .meta strong { color: var(--orange-light); }
 
   /* SLIDE 2 - PROBLEM */
-  .problemgrid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 22px; margin-bottom: 22px; }
+  .problemgrid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 18px; margin-bottom: 16px; }
   .problembox {
-    background: var(--white); padding: 30px 36px; border-radius: 12px;
-    border-left: 6px solid var(--red); box-shadow: 0 2px 5px rgba(0,0,0,0.06);
+    background: var(--card-bg); padding: 22px 28px; border-radius: 10px;
+    border-left: 5px solid var(--red); box-shadow: 0 2px 5px rgba(0,0,0,0.06);
   }
   .problembox .stat {
-    font-size: 52px; font-weight: 700; color: var(--red); margin-bottom: 8px;
+    font-size: 44px; font-weight: 700; color: var(--red); margin-bottom: 6px;
     font-family: var(--head); line-height: 1;
   }
-  .problembox .label { font-size: 18px; font-weight: 600; color: var(--text); margin-bottom: 10px; line-height: 1.3; }
-  .problembox .detail { font-size: 15px; color: var(--text-light); line-height: 1.55; }
+  .problembox .label { font-size: 16px; font-weight: 600; color: var(--text); margin-bottom: 8px; line-height: 1.3; }
+  .problembox .detail { font-size: 14px; color: var(--text-light); line-height: 1.55; }
 
   /* SLIDE 3 - WHAT IT IS (3-layer arch) */
-  .archstack { display: flex; flex-direction: column; gap: 18px; margin-top: 10px; }
+  .archstack { display: flex; flex-direction: column; gap: 14px; margin-top: 6px; }
   .archlayer {
-    background: var(--white); padding: 32px 36px; border-radius: 12px;
-    border-left: 8px solid var(--navy); cursor: pointer;
+    background: var(--card-bg); padding: 22px 28px; border-radius: 10px;
+    border-left: 6px solid var(--navy); cursor: pointer;
     transition: all 0.2s; box-shadow: 0 2px 5px rgba(0,0,0,0.06);
     position: relative;
   }
-  .archlayer:hover { transform: translateX(8px); box-shadow: 0 6px 14px rgba(0,0,0,0.12); }
+  .archlayer:hover { transform: translateX(6px); box-shadow: 0 6px 12px rgba(0,0,0,0.12); }
   .archlayer .layertitle {
-    font-size: 24px; font-weight: 700; color: var(--navy); margin-bottom: 10px;
+    font-size: 20px; font-weight: 700; color: var(--navy); margin-bottom: 6px;
   }
-  .archlayer .layerdesc { font-size: 16px; color: var(--text-light); line-height: 1.55; }
+  .archlayer .layerdesc { font-size: 14.5px; color: var(--text-light); line-height: 1.55; }
   .archlayer.l2 { border-left-color: var(--orange); }
   .archlayer.l2 .layertitle { color: var(--orange); }
   .archlayer.l3 { border-left-color: var(--green); }
@@ -154,38 +263,64 @@
     color: var(--dim); opacity: 0.7; font-style: italic;
   }
 
-  /* SLIDE 4 - FOUR WINS */
-  .winsgrid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 20px; }
+  /* SLIDE 4 - FOUR WINS (INTERACTIVE) */
+  .winsgrid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 14px; }
   .winbox {
-    background: var(--white); padding: 34px 28px; border-radius: 12px;
-    border-top: 6px solid var(--navy); box-shadow: 0 2px 5px rgba(0,0,0,0.06);
-    text-align: center;
+    background: var(--card-bg); padding: 18px 18px; border-radius: 10px;
+    border-top: 5px solid var(--navy); box-shadow: 0 2px 5px rgba(0,0,0,0.06);
+    text-align: center; cursor: pointer; transition: all 0.2s;
+    position: relative;
+  }
+  .winbox:hover { transform: translateY(-2px); box-shadow: 0 6px 14px rgba(0,0,0,0.14); }
+  .winbox.active {
+    box-shadow: 0 6px 16px rgba(31, 78, 121, 0.25);
+    transform: translateY(-2px);
+  }
+  .winbox.active::after {
+    content: ''; position: absolute; bottom: -10px; left: 50%;
+    transform: translateX(-50%); width: 0; height: 0;
+    border-left: 10px solid transparent; border-right: 10px solid transparent;
+    border-top: 10px solid var(--navy);
+  }
+  .winbox.w1.active::after { border-top-color: var(--green); }
+  .winbox.w2.active::after { border-top-color: var(--orange); }
+  .winbox.w3.active::after { border-top-color: var(--navy); }
+  .winbox.w4.active::after { border-top-color: var(--yellow); }
+  .windeep {
+    margin-top: 22px;
+    animation: fadeIn 0.25s ease;
+  }
+  .windeep.hidden { display: none; }
+  .windeep-title {
+    font-size: 22px; font-weight: 700; color: var(--navy);
+    margin-bottom: 16px; padding-bottom: 6px;
+    border-bottom: 3px solid var(--orange); display: inline-block;
   }
   .winbox.w1 { border-top-color: var(--green); }
   .winbox.w2 { border-top-color: var(--orange); }
   .winbox.w3 { border-top-color: var(--navy); }
   .winbox.w4 { border-top-color: var(--yellow); }
   .winbox .winnum {
-    font-size: 44px; font-weight: 700; color: var(--navy); margin-bottom: 8px;
+    font-size: 38px; font-weight: 700; color: var(--navy); margin-bottom: 6px;
   }
   .winbox.w1 .winnum { color: var(--green); }
   .winbox.w2 .winnum { color: var(--orange); }
   .winbox.w3 .winnum { color: var(--navy); }
   .winbox.w4 .winnum { color: var(--yellow); }
-  .winbox .wintitle { font-size: 21px; font-weight: 700; color: var(--text); margin-bottom: 14px; line-height: 1.2; }
-  .winbox .winval { font-size: 16px; color: var(--text-light); line-height: 1.55; }
+  .winbox .wintitle { font-size: 17px; font-weight: 700; color: var(--text); margin-bottom: 10px; line-height: 1.2; }
+  .winbox .winval { font-size: 14px; color: var(--text-light); line-height: 1.5; }
 
-  /* WIN DETAIL SLIDES (5, 6, 7, 10) */
-  .wintwocol { display: grid; grid-template-columns: 1fr 1fr; gap: 28px; align-items: stretch; }
+  /* WIN DETAIL PANELS (folded into slide 4) */
+  .wintwocol { display: grid; grid-template-columns: 1fr 1fr; gap: 22px; align-items: stretch; }
   .winnumbig {
-    background: var(--white); padding: 50px 40px; border-radius: 14px;
-    border: 3px solid var(--green); text-align: center;
+    background: var(--card-bg); padding: 28px 26px; border-radius: 12px;
+    border: 2px solid var(--green); text-align: center;
     box-shadow: 0 2px 6px rgba(0,0,0,0.06);
     display: flex; flex-direction: column; justify-content: center;
   }
-  .winnumbig .label { font-size: 14px; font-weight: 700; color: var(--green); letter-spacing: 1.5px; text-transform: uppercase; margin-bottom: 20px; }
-  .winnumbig .num { font-size: 92px; font-weight: 800; color: var(--green); margin-bottom: 16px; line-height: 1; font-family: var(--head); }
-  .winnumbig .sub { font-size: 17px; color: var(--text-light); }
+  .winnumbig .label { font-size: 12px; font-weight: 700; color: var(--green); letter-spacing: 1.3px; text-transform: uppercase; margin-bottom: 12px; }
+  .winnumbig .num { font-size: 66px; font-weight: 800; color: var(--green); margin-bottom: 12px; line-height: 1; font-family: var(--head); }
+  .winnumbig .sub { font-size: 15px; color: var(--text-light); }
   .winnumbig.alt { border-color: var(--orange); }
   .winnumbig.alt .label { color: var(--orange); }
   .winnumbig.alt .num { color: var(--orange); }
@@ -197,28 +332,28 @@
   .winnumbig.alt-yellow .num { color: var(--yellow); }
 
   .winexplain {
-    background: var(--white); padding: 36px; border-radius: 14px;
+    background: var(--card-bg); padding: 26px 28px; border-radius: 12px;
     border: 1px solid var(--rule); box-shadow: 0 2px 5px rgba(0,0,0,0.06);
   }
-  .winexplain h3 { font-size: 20px; color: var(--navy); margin-bottom: 16px; }
-  .winexplain p { font-size: 16px; color: var(--text-light); line-height: 1.6; margin-bottom: 14px; }
-  .winexplain ul { margin-left: 22px; }
-  .winexplain li { font-size: 16px; color: var(--text-light); line-height: 1.75; margin-bottom: 4px; }
+  .winexplain h3 { font-size: 17px; color: var(--navy); margin-bottom: 12px; }
+  .winexplain p { font-size: 14.5px; color: var(--text-light); line-height: 1.55; margin-bottom: 10px; }
+  .winexplain ul { margin-left: 20px; }
+  .winexplain li { font-size: 14.5px; color: var(--text-light); line-height: 1.6; margin-bottom: 3px; }
   .winbottom {
-    margin-top: 24px; padding: 18px 28px; background: var(--navy); color: var(--white);
-    border-radius: 10px; font-size: 16px; font-weight: 600; text-align: center;
+    margin-top: 18px; padding: 14px 24px; background: var(--navy); color: var(--white);
+    border-radius: 8px; font-size: 14.5px; font-weight: 600; text-align: center;
   }
 
   /* SLIDE 7 - FAILOVER ANIMATION */
   .failovervis {
-    background: var(--white); border-radius: 12px; padding: 40px;
+    background: var(--card-bg); border-radius: 12px; padding: 40px;
     border: 1px solid var(--rule); box-shadow: 0 1px 3px rgba(0,0,0,0.05);
     margin-bottom: 18px;
   }
   .failoverflow { display: flex; align-items: center; justify-content: center; gap: 22px; height: 220px; }
   .procbox {
     width: 200px; height: 130px; border-radius: 12px;
-    background: var(--white); border: 3px solid var(--rule);
+    background: var(--card-bg); border: 3px solid var(--rule);
     display: flex; flex-direction: column; align-items: center; justify-content: center;
     font-weight: 700; transition: all 0.5s ease;
     position: relative;
@@ -248,97 +383,98 @@
     color: var(--text-light); font-style: italic;
   }
 
-  /* SLIDE 8 - ROUTING MODES */
-  .modesgrid { display: grid; grid-template-columns: repeat(7, 1fr); gap: 12px; margin-bottom: 20px; }
+  /* SLIDE 5 - ROUTING MODES */
+  .modesgrid { display: grid; grid-template-columns: repeat(7, 1fr); gap: 8px; margin-bottom: 12px; }
   .modecard {
-    background: var(--white); padding: 20px 16px; border-radius: 10px;
+    background: var(--card-bg); padding: 14px 14px 22px; border-radius: 8px;
     border: 1px solid var(--rule); cursor: pointer;
     transition: all 0.2s; box-shadow: 0 2px 3px rgba(0,0,0,0.05);
     text-align: left; position: relative;
+    min-height: 170px;
   }
-  .modecard:hover { transform: translateY(-4px); box-shadow: 0 6px 14px rgba(0,0,0,0.14); border-color: var(--navy); }
+  .modecard:hover { transform: translateY(-3px); box-shadow: 0 6px 12px rgba(0,0,0,0.14); border-color: var(--navy); }
   .modecard.active { border-color: var(--orange); border-width: 2px; background: rgba(192, 86, 33, 0.06); }
   .modecard .modenum {
     display: inline-flex; align-items: center; justify-content: center;
-    width: 34px; height: 34px; border-radius: 50%;
-    background: var(--navy); color: var(--white); font-weight: 700; font-size: 16px;
-    margin-bottom: 12px;
+    width: 26px; height: 26px; border-radius: 50%;
+    background: var(--navy); color: var(--white); font-weight: 700; font-size: 13px;
+    margin-bottom: 6px;
   }
   .modecard.active .modenum { background: var(--orange); }
-  .modecard .modetitle { font-size: 16px; font-weight: 700; color: var(--navy); margin-bottom: 6px; line-height: 1.2; }
-  .modecard .modedesc { font-size: 13px; color: var(--text-light); line-height: 1.45; }
+  .modecard .modetitle { font-size: 14px; font-weight: 700; color: var(--navy); margin-bottom: 4px; line-height: 1.2; }
+  .modecard .modedesc { font-size: 12.5px; color: var(--text-light); line-height: 1.4; }
 
   .modedeep {
-    background: var(--white); padding: 32px 36px; border-radius: 12px;
-    border-left: 5px solid var(--orange); margin-bottom: 18px;
+    background: var(--card-bg); padding: 22px 26px; border-radius: 10px;
+    border-left: 5px solid var(--orange); margin-bottom: 14px;
     display: none; box-shadow: 0 2px 5px rgba(0,0,0,0.06);
     animation: fadeIn 0.25s ease;
   }
   .modedeep.shown { display: block; }
-  .modedeep h4 { font-size: 20px; color: var(--orange); margin-bottom: 12px; }
-  .modedeep p { font-size: 15px; color: var(--text-light); line-height: 1.65; margin-bottom: 10px; }
-  .modedeep ul { margin-left: 22px; margin-top: 8px; }
-  .modedeep li { font-size: 15px; color: var(--text-light); line-height: 1.75; margin-bottom: 4px; }
+  .modedeep h4 { font-size: 17px; color: var(--orange); margin-bottom: 10px; }
+  .modedeep p { font-size: 14px; color: var(--text-light); line-height: 1.55; margin-bottom: 8px; }
+  .modedeep ul { margin-left: 20px; margin-top: 6px; }
+  .modedeep li { font-size: 14px; color: var(--text-light); line-height: 1.6; margin-bottom: 3px; }
 
   .paramrow {
-    display: grid; grid-template-columns: repeat(3, 1fr); gap: 14px;
-    margin-top: 18px;
+    display: grid; grid-template-columns: repeat(3, 1fr); gap: 12px;
+    margin-top: 12px; margin-bottom: 22px;
   }
   .paramcard {
-    background: var(--ice); padding: 18px 22px; border-radius: 10px;
+    background: var(--ice); padding: 14px 16px; border-radius: 8px;
     border: 1px solid var(--rule);
   }
-  .paramcard .paramcat { font-size: 15px; font-weight: 700; color: var(--navy); margin-bottom: 6px; }
-  .paramcard .paramitems { font-size: 13px; color: var(--text-light); line-height: 1.5; }
+  .paramcard .paramcat { font-size: 14px; font-weight: 700; color: var(--navy); margin-bottom: 4px; }
+  .paramcard .paramitems { font-size: 12.5px; color: var(--text-light); line-height: 1.45; }
 
   .codecallout {
-    background: var(--navy); color: var(--white); padding: 18px 28px;
-    border-radius: 10px; font-size: 15px; font-weight: 600;
-    text-align: center; margin-top: 18px;
+    background: var(--navy); color: var(--white); padding: 12px 22px;
+    border-radius: 8px; font-size: 14px; font-weight: 600;
+    text-align: center; margin-top: 12px;
   }
 
   .cascadenote {
-    background: var(--green); color: var(--white); padding: 14px 24px;
-    border-radius: 8px; font-size: 14px; text-align: center; margin-bottom: 18px;
+    background: var(--green); color: var(--white); padding: 8px 18px;
+    border-radius: 6px; font-size: 12px; text-align: center; margin-bottom: 10px;
   }
 
-  /* SLIDE 9 - BUILDING BLOCKS */
-  .blocksgrid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 16px; }
+  /* SLIDE 6 - BUILDING BLOCKS */
+  .blocksgrid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 10px; }
   .blockcard {
-    background: var(--white); padding: 24px 22px; border-radius: 12px;
+    background: var(--card-bg); padding: 14px 16px; border-radius: 10px;
     border: 2px solid var(--green); cursor: pointer;
     transition: all 0.2s; box-shadow: 0 2px 5px rgba(0,0,0,0.06);
-    position: relative; min-height: 240px;
+    position: relative; min-height: 150px;
   }
   .blockcard.paid { border-color: var(--orange); }
-  .blockcard:hover { transform: translateY(-4px); box-shadow: 0 6px 16px rgba(0,0,0,0.14); }
+  .blockcard:hover { transform: translateY(-3px); box-shadow: 0 6px 14px rgba(0,0,0,0.14); }
   .blockcard.active { background: rgba(31, 78, 121, 0.05); border-width: 3px; }
   .blockcard .blocknum {
     display: inline-flex; align-items: center; justify-content: center;
-    width: 44px; height: 44px; border-radius: 50%;
-    background: var(--green); color: var(--white); font-weight: 700; font-size: 20px;
-    margin-bottom: 12px;
+    width: 32px; height: 32px; border-radius: 50%;
+    background: var(--green); color: var(--white); font-weight: 700; font-size: 15px;
+    margin-bottom: 6px;
   }
   .blockcard.paid .blocknum { background: var(--orange); }
   .blocktag {
-    position: absolute; top: 22px; right: 20px;
+    position: absolute; top: 12px; right: 12px;
     background: var(--green); color: var(--white);
-    font-size: 11px; font-weight: 700; padding: 4px 12px;
-    border-radius: 4px; letter-spacing: 0.5px;
+    font-size: 9.5px; font-weight: 700; padding: 2px 8px;
+    border-radius: 3px; letter-spacing: 0.4px;
   }
   .blockcard.paid .blocktag { background: var(--orange); }
-  .blockcard .blocktitle { font-size: 17px; font-weight: 700; color: var(--navy); margin-bottom: 8px; line-height: 1.2; }
-  .blockcard .blockdesc { font-size: 13px; color: var(--text-light); line-height: 1.55; }
+  .blockcard .blocktitle { font-size: 15.5px; font-weight: 700; color: var(--navy); margin-bottom: 6px; line-height: 1.2; }
+  .blockcard .blockdesc { font-size: 12.5px; color: var(--text-light); line-height: 1.45; }
 
   .blockprice {
-    margin-top: 18px; background: var(--navy); color: var(--white);
-    padding: 14px 22px; border-radius: 8px; font-size: 13px; text-align: center;
+    margin-top: 12px; background: var(--navy); color: var(--white);
+    padding: 10px 22px; border-radius: 6px; font-size: 12.5px; text-align: center;
   }
 
-  /* MARKETS SLIDE */
-  .markettwo { display: grid; grid-template-columns: 1fr 1fr; gap: 24px; }
+  /* MARKETS SLIDE (used in Win 4 panel) */
+  .markettwo { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
   .marketcard {
-    background: var(--white); padding: 44px; border-radius: 14px;
+    background: var(--card-bg); padding: 22px 26px; border-radius: 12px;
     border: 1px solid var(--rule); text-align: center;
     box-shadow: 0 2px 5px rgba(0,0,0,0.06);
   }
@@ -346,64 +482,64 @@
   .marketcard.with { border-color: var(--green); border-width: 3px; }
   .marketcard .markettag {
     display: inline-block; background: var(--dim); color: var(--white);
-    font-size: 13px; font-weight: 700; padding: 6px 18px;
-    border-radius: 4px; letter-spacing: 1px; margin-bottom: 20px;
+    font-size: 11px; font-weight: 700; padding: 4px 14px;
+    border-radius: 4px; letter-spacing: 0.8px; margin-bottom: 10px;
   }
   .marketcard.with .markettag { background: var(--green); }
-  .marketcard h3 { font-size: 21px; color: var(--text); margin-bottom: 18px; }
+  .marketcard h3 { font-size: 16px; color: var(--text); margin-bottom: 12px; }
   .marketcard .bignum {
-    font-size: 84px; font-weight: 800; color: var(--orange);
-    margin-bottom: 14px; font-family: var(--head); line-height: 1;
+    font-size: 58px; font-weight: 800; color: var(--orange);
+    margin-bottom: 10px; font-family: var(--head); line-height: 1;
   }
   .marketcard.with .bignum { color: var(--green); }
-  .marketcard .markeydesc { font-size: 16px; color: var(--text-light); line-height: 1.5; }
+  .marketcard .markeydesc { font-size: 14.5px; color: var(--text-light); line-height: 1.45; }
 
   /* RISK SLIDE */
-  .risktwo { display: grid; grid-template-columns: 1fr 1fr; gap: 24px; }
+  .risktwo { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; }
   .riskcol {
-    background: var(--white); padding: 34px; border-radius: 14px;
+    background: var(--card-bg); padding: 24px 28px; border-radius: 12px;
     border: 1px solid var(--rule); box-shadow: 0 2px 5px rgba(0,0,0,0.06);
   }
-  .riskcol.bet { border-left: 6px solid var(--green); }
-  .riskcol.notbet { border-left: 6px solid var(--orange); }
+  .riskcol.bet { border-left: 5px solid var(--green); }
+  .riskcol.notbet { border-left: 5px solid var(--orange); }
   .riskcol h3 {
-    font-size: 20px; color: var(--navy); margin-bottom: 20px;
-    text-transform: uppercase; letter-spacing: 0.5px;
+    font-size: 16px; color: var(--navy); margin-bottom: 14px;
+    text-transform: uppercase; letter-spacing: 0.4px;
   }
   .riskitem {
-    display: flex; align-items: flex-start; gap: 16px;
-    padding: 12px 0; border-bottom: 1px dashed var(--rule);
+    display: flex; align-items: flex-start; gap: 12px;
+    padding: 9px 0; border-bottom: 1px dashed var(--rule);
   }
   .riskitem:last-child { border-bottom: none; }
   .riskicon {
-    flex-shrink: 0; width: 28px; height: 28px; border-radius: 50%;
+    flex-shrink: 0; width: 24px; height: 24px; border-radius: 50%;
     background: var(--green); color: var(--white); font-weight: 700;
-    display: flex; align-items: center; justify-content: center; font-size: 15px;
+    display: flex; align-items: center; justify-content: center; font-size: 13px;
   }
   .riskcol.notbet .riskicon { background: var(--orange); }
-  .riskitem .risktext { font-size: 15px; color: var(--text); line-height: 1.55; }
+  .riskitem .risktext { font-size: 14px; color: var(--text); line-height: 1.5; }
 
   /* RECOMMENDATION SLIDE */
   .recoslide {
     background: linear-gradient(135deg, var(--navy-dark) 0%, var(--navy) 100%);
-    color: var(--white); padding: 70px 60px; border-radius: 16px;
-    min-height: 580px;
+    color: var(--white); padding: 46px 50px; border-radius: 14px;
+    min-height: 440px;
   }
   .recoslide h2 {
-    font-size: 42px; margin-bottom: 12px; color: var(--white);
+    font-size: 36px; margin-bottom: 8px; color: var(--white);
   }
-  .recoslide .recosub { font-size: 19px; color: var(--ice); margin-bottom: 36px; }
-  .recogrid { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 22px; margin-bottom: 30px; }
+  .recoslide .recosub { font-size: 16px; color: var(--ice); margin-bottom: 24px; }
+  .recogrid { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 18px; margin-bottom: 22px; }
   .recobox {
-    background: rgba(255,255,255,0.08); padding: 28px; border-radius: 12px;
+    background: rgba(255,255,255,0.08); padding: 22px 22px; border-radius: 10px;
     border: 1px solid rgba(255,255,255,0.2);
   }
-  .recobox .lab { font-size: 12px; font-weight: 700; color: var(--orange-light); letter-spacing: 1.5px; margin-bottom: 10px; }
-  .recobox .val { font-size: 28px; font-weight: 700; color: var(--white); margin-bottom: 8px; }
-  .recobox .sub { font-size: 14px; color: var(--ice); line-height: 1.55; }
+  .recobox .lab { font-size: 11.5px; font-weight: 700; color: var(--orange-light); letter-spacing: 1.3px; margin-bottom: 8px; }
+  .recobox .val { font-size: 24px; font-weight: 700; color: var(--white); margin-bottom: 6px; }
+  .recobox .sub { font-size: 13.5px; color: var(--ice); line-height: 1.5; }
   .recofinal {
-    margin-top: 10px; padding: 28px 34px; background: var(--orange);
-    border-radius: 12px; text-align: center; font-size: 20px; font-weight: 700;
+    margin-top: 8px; padding: 20px 28px; background: var(--orange);
+    border-radius: 10px; text-align: center; font-size: 16px; font-weight: 700;
     line-height: 1.5;
   }
 
@@ -417,22 +553,33 @@
     height: 3px; width: 60px; background: var(--orange); margin-bottom: 18px;
   }
   .ref-tabs {
-    display: flex; gap: 8px; margin-bottom: 22px; border-bottom: 2px solid var(--rule);
+    display: flex; gap: 6px; margin-bottom: 24px;
+    background: var(--ice); padding: 6px; border-radius: 12px;
+    border: 1px solid var(--rule); width: fit-content;
   }
   .ref-tab {
-    background: none; border: none; padding: 10px 18px; font-size: 13px;
-    font-weight: 600; color: var(--dim); cursor: pointer; border-bottom: 3px solid transparent;
-    transition: all 0.15s; font-family: var(--head);
+    background: transparent; border: none; padding: 12px 28px; font-size: 14px;
+    font-weight: 700; color: var(--text-light); cursor: pointer;
+    border-radius: 8px; transition: all 0.18s; font-family: var(--head);
+    letter-spacing: 0.3px;
   }
-  .ref-tab:hover { color: var(--navy); }
-  .ref-tab.active { color: var(--navy); border-bottom-color: var(--orange); }
+  .ref-tab:hover {
+    background: var(--card-bg); color: var(--navy);
+  }
+  .ref-tab.active {
+    background: var(--orange); color: var(--white);
+    box-shadow: var(--shadow);
+  }
+  .ref-tab.active:hover {
+    background: var(--orange); color: var(--white);
+  }
   .ref-panel { display: none; }
   .ref-panel.active { display: block; }
 
   /* Cost calculator */
   .calcgrid { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; margin-bottom: 20px; }
   .calcside {
-    background: var(--white); padding: 22px; border-radius: 10px;
+    background: var(--card-bg); padding: 22px; border-radius: 10px;
     border: 1px solid var(--rule);
   }
   .calcside h3 { font-size: 15px; color: var(--navy); margin-bottom: 14px; }
@@ -456,7 +603,7 @@
   .calcinput:focus { outline: 2px solid var(--orange); }
 
   .pertx {
-    background: var(--white); padding: 22px; border-radius: 10px;
+    background: var(--card-bg); padding: 22px; border-radius: 10px;
     border: 1px solid var(--rule);
   }
   .pertxtable { width: 100%; border-collapse: collapse; font-size: 13px; }
@@ -466,7 +613,7 @@
 
   /* Q&A Prep */
   .qaitem {
-    background: var(--white); padding: 16px 20px; border-radius: 8px;
+    background: var(--card-bg); padding: 16px 20px; border-radius: 8px;
     border-left: 4px solid var(--orange); margin-bottom: 12px;
     box-shadow: 0 1px 2px rgba(0,0,0,0.04);
   }
@@ -485,20 +632,48 @@
     color: var(--dim); background: rgba(255,255,255,0.9); padding: 4px 10px;
     border-radius: 4px; border: 1px solid var(--rule); z-index: 50;
   }
+
+  /* Theme toggle button (lives in topnav) */
+  .theme-toggle {
+    background: transparent; color: var(--ice);
+    border: 1px solid rgba(255,255,255,0.25);
+    font-size: 12px; padding: 5px 12px; margin-left: 10px;
+    border-radius: 4px; cursor: pointer; font-family: var(--head); font-weight: 600;
+    transition: all 0.15s;
+  }
+  .theme-toggle:hover { background: rgba(255,255,255,0.1); border-color: rgba(255,255,255,0.5); }
+
+  /* ============================================================
+     DARK THEME OVERRIDES (slide-1 dark aesthetic across all slides)
+     ============================================================ */
+  /* dark theme handled via body.dark variable swap above */
 </style>
 </head>
-<body>
+<body class="dark">
 
 <!-- TOP NAV -->
 <div class="topnav">
-  <div class="topnav-title">HyperSwitch for Unicity - CFO + Risk Briefing</div>
+  <div class="topnav-title">HyperSwitch for Unicity</div>
   <div class="topnav-spacer"></div>
+  <button class="topnav-toggle" id="themebtn" onclick="toggleTheme()" title="Toggle light / dark"><span id="themeicon">&#9789;</span></button>
   <a class="topnav-link" id="navmain" onclick="showMain()">Presentation</a>
   <a class="topnav-link" id="navref" onclick="showRef()">Reference</a>
 </div>
+
+<!-- SECTION TAB BAR -->
+<div class="tabbar" id="tabbar">
+  <button class="tab" data-slide="2" onclick="goToSlide(2)"><span class="tab-num">02</span>Problem</button>
+  <button class="tab" data-slide="3" onclick="goToSlide(3)"><span class="tab-num">03</span>Overview</button>
+  <button class="tab" data-slide="4" onclick="goToSlide(4)"><span class="tab-num">04</span>Wins</button>
+  <button class="tab" data-slide="5" onclick="goToSlide(5)"><span class="tab-num">05</span>Routing</button>
+  <button class="tab" data-slide="6" onclick="goToSlide(6)"><span class="tab-num">06</span>Modules</button>
+  <button class="tab" data-slide="7" onclick="goToSlide(7)"><span class="tab-num">07</span>Features</button>
+  <button class="tab" data-slide="11" onclick="goToSlide(11)"><span class="tab-num">11</span>Risk</button>
+  <button class="tab" data-slide="12" onclick="goToSlide(12)"><span class="tab-num">12</span>Recommendation</button>
+</div>
+
 <div class="progress"><div class="progress-bar" id="progbar"></div></div>
 
-<div class="kbdhint">Use &larr; &rarr; arrow keys or buttons below</div>
 
 <!-- DECK -->
 <div class="deck" id="deck">
@@ -509,7 +684,7 @@
     <h1>HyperSwitch for Unicity</h1>
     <div class="subtitle">A modern payment orchestration platform</div>
     <div class="meta">
-      <strong>Presented by:</strong> Howard Koziara, Payment Operations<br>
+      <strong>Presented by:</strong> Payment Operations<br>
       <strong>Date:</strong> May 2026
     </div>
   </div>
@@ -578,118 +753,132 @@
   </div>
 </section>
 
-<!-- SLIDE 4: FOUR BIG WINS -->
+<!-- SLIDE 4: FOUR BIG WINS (INTERACTIVE - all detail folds in here) -->
 <section class="slide" data-slide="4">
   <div class="slide-title">Four Big Wins, In Plain Terms</div>
   <div class="slide-rule"></div>
   <p style="font-size:14px;color:var(--text-light);margin-bottom:22px;font-style:italic;">
-    Why the project matters in terms a CFO and Risk officer care about.
+    Why the project matters in terms a CFO and Risk officer care about. Click any win below for detail.
   </p>
   <div class="winsgrid">
-    <div class="winbox w1">
+    <div class="winbox w1 active" onclick="selectWin(1)">
       <div class="winnum">1</div>
       <div class="wintitle">Recover Revenue We Are Losing</div>
       <div class="winval">$1.0M to $1.7M / year that today gets declined by our own retry gaps</div>
     </div>
-    <div class="winbox w2">
+    <div class="winbox w2" onclick="selectWin(2)">
       <div class="winnum">2</div>
       <div class="wintitle">Own The Customer Card Vault</div>
       <div class="winval">Switch processors without re-enrolling customers. Break PSP lock-in.</div>
     </div>
-    <div class="winbox w3">
+    <div class="winbox w3" onclick="selectWin(3)">
       <div class="winnum">3</div>
       <div class="wintitle">Failover Protection</div>
       <div class="winval">Auto-reroute when a processor has an outage. No manual intervention.</div>
     </div>
-    <div class="winbox w4">
+    <div class="winbox w4" onclick="selectWin(4)">
       <div class="winnum">4</div>
       <div class="wintitle">Add Markets Faster</div>
       <div class="winval">New market live in under 2 weeks instead of 4. Configuration, not code.</div>
     </div>
   </div>
-  <div style="margin-top:24px;background:var(--white);padding:16px 22px;border-radius:8px;border:1px solid var(--rule);">
-    <div style="font-size:13px;color:var(--text-light);line-height:1.6;">
-      The next four slides walk through each win in detail with the specific Unicity numbers behind it.
+
+  <!-- WIN 1 DETAIL PANEL -->
+  <div class="windeep" id="windeep-1">
+    <div class="windeep-title">Win 1: Recover Revenue We Are Losing</div>
+    <div class="wintwocol">
+      <div class="winnumbig">
+        <div class="label">Per Year Opportunity</div>
+        <div class="num">$1.0M<br>to $1.7M</div>
+        <div class="sub">Already quantified in TKT-6827 / Section 5.39</div>
+      </div>
+      <div class="winexplain">
+        <h3>How HyperSwitch captures it</h3>
+        <p>The Revenue Recovery module is an ML-driven retry engine with 30+ decision parameters. It addresses exactly the gaps the retry-modifications proposal flagged:</p>
+        <ul>
+          <li>Delays same-order retries by 48-72h instead of failing immediately</li>
+          <li>Auto-escalates failed same-order retries to new-order retries (77% recovery vs 11%)</li>
+          <li>Filters dead subscriptions out of the retry pool (45% of current retries are dead)</li>
+          <li>Code-aware retry decisions, not just time-based</li>
+        </ul>
+      </div>
+    </div>
+    <div class="winbottom">
+      The retry analysis already done by Payment Ops shows the lift is real. HyperSwitch is the engine to capture it.
+    </div>
+  </div>
+
+  <!-- WIN 2 DETAIL PANEL -->
+  <div class="windeep hidden" id="windeep-2">
+    <div class="windeep-title">Win 2: Own The Customer Card Vault</div>
+    <div class="wintwocol">
+      <div class="winnumbig alt">
+        <div class="label">Strategic Leverage</div>
+        <div class="num">Vault<br>Portability</div>
+        <div class="sub">Switch processors without re-enrolling customers</div>
+      </div>
+      <div class="winexplain">
+        <h3>Why this matters operationally</h3>
+        <p>Today, our card-on-file tokens live at each PSP. NMI holds US tokens. WorldPay holds EU tokens. If we want to change processors in either market, we have to either re-enroll every customer or accept a major drop in subscription continuity.</p>
+        <p>HyperSwitch stores the actual card data (PAN + Network Transaction ID + network tokens) in a PCI Level 1 vault that Unicity controls. Once a customer's card is in our vault, we can route their next charge to ANY processor without the customer noticing.</p>
+        <p>That is real leverage at the negotiating table.</p>
+      </div>
+    </div>
+    <div class="winbottom">
+      Apache 2.0 open source. Self-hostable in Unicity infrastructure. Vendor lock-in eliminated.
+    </div>
+  </div>
+
+  <!-- WIN 3 DETAIL PANEL (failover animation) -->
+  <div class="windeep hidden" id="windeep-3">
+    <div class="windeep-title">Win 3: Failover Protection</div>
+    <p style="font-size:14px;color:var(--text-light);margin-bottom:16px;font-style:italic;">
+      When a payment processor has an outage today, transactions fail. With HyperSwitch they reroute automatically. Watch the flow:
+    </p>
+    <div class="failovervis">
+      <div class="failoverflow">
+        <div class="procbox" id="proc-a">
+          <div class="procname">Primary Processor</div>
+          <div class="procstate">Standing by</div>
+        </div>
+        <div class="arrow" id="arrow1">&rarr;</div>
+        <div class="procbox" id="proc-b">
+          <div class="procname">Backup Processor</div>
+          <div class="procstate">Standing by</div>
+        </div>
+      </div>
+      <div class="failovercaption" id="failcaption">Click Win 3 again to replay.</div>
+    </div>
+    <div class="winbottom" style="background:var(--green);">
+      No engineer wake-up call at 2am. Smart retry routes to the next-best processor automatically via NTID.
+    </div>
+  </div>
+
+  <!-- WIN 4 DETAIL PANEL -->
+  <div class="windeep hidden" id="windeep-4">
+    <div class="windeep-title">Win 4: Add New Markets Faster</div>
+    <div class="markettwo">
+      <div class="marketcard now">
+        <div class="markettag">TODAY</div>
+        <h3>Adding a new market</h3>
+        <div class="bignum">4 weeks</div>
+        <div class="markeydesc">of dedicated dev work to build a new processor integration from scratch.</div>
+      </div>
+      <div class="marketcard with">
+        <div class="markettag">WITH HYPERSWITCH</div>
+        <h3>Adding a new market</h3>
+        <div class="bignum">&lt; 2 weeks</div>
+        <div class="markeydesc">120+ processors already pre-integrated. Configuration, not code.</div>
+      </div>
+    </div>
+    <div class="winbottom" style="background:var(--green);">
+      Growth velocity: 2x faster market expansion. Lower cost per launch.
     </div>
   </div>
 </section>
 
-<!-- SLIDE 5: WIN 1 REVENUE RECOVERY -->
+<!-- SLIDE 5: ROUTING MODES + PARAMETERS -->
 <section class="slide" data-slide="5">
-  <div class="slide-title">Win 1: Recover Revenue We Are Losing</div>
-  <div class="slide-rule"></div>
-  <div class="wintwocol">
-    <div class="winnumbig">
-      <div class="label">Per Year Opportunity</div>
-      <div class="num">$1.0M<br>to $1.7M</div>
-      <div class="sub">Already quantified in TKT-6827 / Section 5.39</div>
-    </div>
-    <div class="winexplain">
-      <h3>How HyperSwitch captures it</h3>
-      <p>The Revenue Recovery module is an ML-driven retry engine with 30+ decision parameters. It addresses exactly the gaps the retry-modifications proposal flagged:</p>
-      <ul>
-        <li>Delays same-order retries by 48-72h instead of failing immediately</li>
-        <li>Auto-escalates failed same-order retries to new-order retries (77% recovery vs 11%)</li>
-        <li>Filters dead subscriptions out of the retry pool (45% of current retries are dead)</li>
-        <li>Code-aware retry decisions, not just time-based</li>
-      </ul>
-    </div>
-  </div>
-  <div class="winbottom">
-    The retry analysis already done by Payment Ops shows the lift is real. HyperSwitch is the engine to capture it.
-  </div>
-</section>
-
-<!-- SLIDE 6: WIN 2 OWN YOUR VAULT -->
-<section class="slide" data-slide="6">
-  <div class="slide-title">Win 2: Own The Customer Card Vault</div>
-  <div class="slide-rule"></div>
-  <div class="wintwocol">
-    <div class="winnumbig alt">
-      <div class="label">Strategic Leverage</div>
-      <div class="num">Vault<br>Portability</div>
-      <div class="sub">Switch processors without re-enrolling customers</div>
-    </div>
-    <div class="winexplain">
-      <h3>Why this matters operationally</h3>
-      <p>Today, our card-on-file tokens live at each PSP. NMI holds US tokens. WorldPay holds EU tokens. If we want to change processors in either market, we have to either re-enroll every customer or accept a major drop in subscription continuity.</p>
-      <p>HyperSwitch stores the actual card data (PAN + Network Transaction ID + network tokens) in a PCI Level 1 vault that Unicity controls. Once a customer's card is in our vault, we can route their next charge to ANY processor without the customer noticing.</p>
-      <p>That is real leverage at the negotiating table.</p>
-    </div>
-  </div>
-  <div class="winbottom">
-    Apache 2.0 open source. Self-hostable in Unicity infrastructure. Vendor lock-in eliminated.
-  </div>
-</section>
-
-<!-- SLIDE 7: WIN 3 FAILOVER (with animation) -->
-<section class="slide" data-slide="7">
-  <div class="slide-title">Win 3: Failover Protection</div>
-  <div class="slide-rule"></div>
-  <p style="font-size:14px;color:var(--text-light);margin-bottom:16px;font-style:italic;">
-    When a payment processor has an outage today, transactions fail. With HyperSwitch they reroute automatically. Watch the flow:
-  </p>
-  <div class="failovervis">
-    <div class="failoverflow">
-      <div class="procbox" id="proc-a">
-        <div class="procname">Primary Processor</div>
-        <div class="procstate">Standing by</div>
-      </div>
-      <div class="arrow" id="arrow1">&rarr;</div>
-      <div class="procbox" id="proc-b">
-        <div class="procname">Backup Processor</div>
-        <div class="procstate">Standing by</div>
-      </div>
-    </div>
-    <div class="failovercaption" id="failcaption">When you click on this slide, the animation plays.</div>
-  </div>
-  <div class="winbottom" style="background:var(--green);">
-    No engineer wake-up call at 2am. Smart retry routes to the next-best processor automatically via NTID.
-  </div>
-</section>
-
-<!-- SLIDE 8: ROUTING MODES + PARAMETERS -->
-<section class="slide" data-slide="8">
   <div class="slide-title">Seven Ways to Control Where Every Transaction Goes</div>
   <div class="slide-rule"></div>
   <div style="font-size:13px;font-weight:700;color:var(--navy);margin-bottom:8px;">SEVEN ROUTING MODES (click any for detail)</div>
@@ -763,8 +952,8 @@
   <div class="codecallout">All routing configured in the dashboard. No code deploy. Payment Ops owns the rules, not engineering.</div>
 </section>
 
-<!-- SLIDE 9: 8 BUILDING BLOCKS -->
-<section class="slide" data-slide="9">
+<!-- SLIDE 6: 8 BUILDING BLOCKS -->
+<section class="slide" data-slide="6">
   <div class="slide-title">The 8 Building Blocks</div>
   <div class="slide-rule"></div>
   <p style="font-size:13px;color:var(--text-light);margin-bottom:16px;font-style:italic;">
@@ -824,26 +1013,122 @@
   <div class="blockprice">Add-on pricing: Revenue Recovery $24K/yr  |  Reconciliation $24K/yr  |  Network Tokenization $0.01/token  |  3DS + Cost Observability priced on request</div>
 </section>
 
-<!-- SLIDE 10: WIN 4 ADD MARKETS FASTER -->
-<section class="slide" data-slide="10">
-  <div class="slide-title">Win 4: Add New Markets Faster</div>
+<!-- SLIDE 7: PAYMENT METHOD COVERAGE -->
+<section class="slide" data-slide="7">
+  <div class="slide-title">Payment Method Coverage</div>
   <div class="slide-rule"></div>
-  <div class="markettwo">
-    <div class="marketcard now">
-      <div class="markettag">TODAY</div>
-      <h3>Adding a new market</h3>
-      <div class="bignum">4 weeks</div>
-      <div class="markeydesc">of dedicated dev work to build a new processor integration from scratch.</div>
+  <p style="font-size:14px;color:var(--text-light);margin-bottom:20px;font-style:italic;">
+    Every modern payment method our customers want to use, ready to drop in. Device-aware so each customer sees only what works on their device.
+  </p>
+  <div class="wintwocol">
+    <div class="winnumbig alt-navy">
+      <div class="label">Methods Supported</div>
+      <div class="num">200+</div>
+      <div class="sub">Cards, wallets, BNPL, bank rails, and regional methods across 210+ connectors</div>
     </div>
-    <div class="marketcard with">
-      <div class="markettag">WITH HYPERSWITCH</div>
-      <h3>Adding a new market</h3>
-      <div class="bignum">&lt; 2 weeks</div>
-      <div class="markeydesc">120+ processors already pre-integrated. Configuration, not code.</div>
+    <div class="winexplain">
+      <h3>What's actually in the catalog</h3>
+      <p><strong>Digital wallets:</strong> Apple Pay, Google Pay, Samsung Pay, PayPal (one-time and Reference Transactions for subscriptions).</p>
+      <p><strong>Buy now pay later:</strong> Klarna, Afterpay, Affirm, Atome.</p>
+      <p><strong>Bank rails and account-to-account:</strong> Pay by Bank (open banking), ACH, SEPA Direct Debit, iDEAL, BLIK, OXXO Pay, PIX.</p>
+      <p><strong>Cards:</strong> Visa, Mastercard, Amex, Discover, UnionPay, JCB. Credit, debit, prepaid.</p>
+      <p>Drop-in widgets are device-aware: Apple Pay only surfaces on Apple devices, Google Pay on Android and supported browsers. The customer sees only what will work for them.</p>
+    </div>
+  </div>
+  <div class="winbottom">
+    Today: each new payment method = a code project. With HyperSwitch: configuration in the dashboard. New methods turned on in days.
+  </div>
+</section>
+
+<!-- SLIDE 8: COST OBSERVABILITY -->
+<section class="slide" data-slide="8">
+  <div class="slide-title">Cost Observability</div>
+  <div class="slide-rule"></div>
+  <p style="font-size:14px;color:var(--text-light);margin-bottom:20px;font-style:italic;">
+    See exactly what each transaction actually costs after interchange, scheme fees, downgrade penalties, and processor markup. Find the money hiding in the statements.
+  </p>
+  <div class="wintwocol">
+    <div class="winnumbig alt">
+      <div class="label">Margin Recovery</div>
+      <div class="num">3 to 8<br>bps</div>
+      <div class="sub">Per year, by catching downgrade fees and renegotiating with data. Material at our $150M annual volume.</div>
+    </div>
+    <div class="winexplain">
+      <h3>What the module actually tracks</h3>
+      <ul>
+        <li>True per-transaction cost across every processor (interchange + scheme + acquirer markup)</li>
+        <li>Hidden fees surfaced: downgrade penalties, cross-border, scheme assessments</li>
+        <li>Side-by-side processor comparison on real transactions, by card type and country</li>
+        <li>Cost-by-BIN, currency, time-of-day, sales channel</li>
+        <li>Anomaly detection when a processor silently increases fees</li>
+        <li>Validates least-cost routing decisions are actually delivering the savings</li>
+      </ul>
+    </div>
+  </div>
+  <div class="winbottom" style="background:var(--orange);">
+    Today: we catch fee surprises at month-end when the statement arrives. With HyperSwitch: we see them per-transaction, in real time.
+  </div>
+</section>
+
+<!-- SLIDE 9: UNIFIED ANALYTICS -->
+<section class="slide" data-slide="9">
+  <div class="slide-title">Unified Analytics</div>
+  <div class="slide-rule"></div>
+  <p style="font-size:14px;color:var(--text-light);margin-bottom:20px;font-style:italic;">
+    One dashboard, every processor, every market. Stop pivoting CSV exports from ten different gateway portals.
+  </p>
+  <div class="wintwocol">
+    <div class="winnumbig alt-navy">
+      <div class="label">Dashboards</div>
+      <div class="num">1</div>
+      <div class="sub">Every metric, every processor, every market, in one view. Real-time.</div>
+    </div>
+    <div class="winexplain">
+      <h3>Every metric in one place, by every dimension</h3>
+      <ul>
+        <li>Approval and decline rates across every PSP, side by side</li>
+        <li>Authorization trends week-over-week, month-over-month</li>
+        <li>Decline patterns by reason, BIN, issuer, region</li>
+        <li>Routing performance by mode and segment</li>
+        <li>3DS challenge rates and friction analysis</li>
+        <li>Custom dashboards for finance, ops, marketing</li>
+        <li>Export to CSV, scheduled email reports, API access</li>
+      </ul>
+    </div>
+  </div>
+  <div class="winbottom">
+    Today: payment ops pivots 10 CSV exports per month to see basic trends. With HyperSwitch: real-time visibility, no manual work.
+  </div>
+</section>
+
+<!-- SLIDE 10: AUTOMATED RECONCILIATION -->
+<section class="slide" data-slide="10">
+  <div class="slide-title">Automated Reconciliation</div>
+  <div class="slide-rule"></div>
+  <p style="font-size:14px;color:var(--text-light);margin-bottom:20px;font-style:italic;">
+    Statements pulled, matched, and exception-flagged automatically. Two-way and three-way reconciliation across every processor.
+  </p>
+  <div class="wintwocol">
+    <div class="winnumbig alt-yellow">
+      <div class="label">Manual Recon Work Reduced</div>
+      <div class="num">60 to 80%</div>
+      <div class="sub">Faster month-end close. Exceptions surfaced in days, not weeks.</div>
+    </div>
+    <div class="winexplain">
+      <h3>What the module does</h3>
+      <ul>
+        <li><strong>2-way reconciliation:</strong> processor statement matched against our system of record</li>
+        <li><strong>3-way reconciliation:</strong> add the bank settlement deposit as the third leg</li>
+        <li>Backdated reconciliation for historical periods</li>
+        <li>Scheduled runs: daily, weekly, or monthly</li>
+        <li>Custom export formats tailored to our finance team's existing workflows</li>
+        <li>Exceptions surfaced automatically (mystery orders, missing settlements, fee variances)</li>
+        <li>Operates as a SaaS dashboard plugin on top of self-hosted deployment</li>
+      </ul>
     </div>
   </div>
   <div class="winbottom" style="background:var(--green);">
-    Growth velocity: 2x faster market expansion. Lower cost per launch.
+    Today: month-end reconciliation eats finance ops time. With HyperSwitch: the dashboard surfaces exceptions while we sleep.
   </div>
 </section>
 
@@ -1027,7 +1312,7 @@
     <p style="font-size:13px;color:var(--text-light);margin-bottom:16px;font-style:italic;">
       Direct from the Juspay quote document. For when someone asks about specific line items.
     </p>
-    <div style="background:var(--white);padding:22px;border-radius:10px;border:1px solid var(--rule);margin-bottom:14px;">
+    <div style="background: var(--card-bg);padding:22px;border-radius:10px;border:1px solid var(--rule);margin-bottom:14px;">
       <h3 style="font-size:15px;color:var(--navy);margin-bottom:10px;">Enterprise Edition (paid Juspay support)</h3>
       <ul style="margin-left:18px;font-size:13px;color:var(--text-light);line-height:1.8;">
         <li>$7,000 / month commercial license fee</li>
@@ -1040,7 +1325,7 @@
         <li>Year 3+: option to drop to free Community Edition or renew Enterprise</li>
       </ul>
     </div>
-    <div style="background:var(--white);padding:22px;border-radius:10px;border:1px solid var(--rule);margin-bottom:14px;">
+    <div style="background: var(--card-bg);padding:22px;border-radius:10px;border:1px solid var(--rule);margin-bottom:14px;">
       <h3 style="font-size:15px;color:var(--navy);margin-bottom:10px;">Community Edition (free)</h3>
       <ul style="margin-left:18px;font-size:13px;color:var(--text-light);line-height:1.8;">
         <li>$0 license fee</li>
@@ -1051,7 +1336,7 @@
         <li>2-3 month go-live instead of 1 month</li>
       </ul>
     </div>
-    <div style="background:var(--white);padding:22px;border-radius:10px;border:1px solid var(--rule);">
+    <div style="background: var(--card-bg);padding:22px;border-radius:10px;border:1px solid var(--rule);">
       <h3 style="font-size:15px;color:var(--navy);margin-bottom:10px;">Paid add-ons (apply to BOTH editions)</h3>
       <ul style="margin-left:18px;font-size:13px;color:var(--text-light);line-height:1.8;">
         <li>Revenue Recovery: $2,000 / month ($24K / year)</li>
@@ -1077,6 +1362,11 @@
   let current = 1;
   let mode = 'main';
 
+  // THEME TOGGLE (light <-> dark, persisted in localStorage)
+  function applyTheme(theme) {
+    // data-theme attribute path kept as no-op for backward compat
+  }
+
   function showMain() {
     mode = 'main';
     document.getElementById('navmain').classList.add('active');
@@ -1084,7 +1374,6 @@
     document.getElementById('deck').style.display = 'block';
     document.getElementById('refsection').classList.remove('active');
     document.querySelector('.bottomnav').style.display = 'flex';
-    document.querySelector('.kbdhint').style.display = 'block';
     document.querySelector('.progress').style.display = 'block';
     renderSlide(current);
   }
@@ -1096,7 +1385,6 @@
     document.getElementById('deck').style.display = 'none';
     document.getElementById('refsection').classList.add('active');
     document.querySelector('.bottomnav').style.display = 'none';
-    document.querySelector('.kbdhint').style.display = 'none';
     document.querySelector('.progress').style.display = 'none';
   }
 
@@ -1114,9 +1402,46 @@
     document.getElementById('prev').disabled = (n === 1);
     document.getElementById('next').disabled = (n === TOTAL_SLIDES);
     document.getElementById('progbar').style.width = (n / TOTAL_SLIDES * 100) + '%';
-    if (n === 7) playFailoverAnimation();
-    if (n === 8) { clearMode(); }
-    if (n === 9) { clearBlock(); }
+    if (n === 4) selectWin(1);           // default to Win 1 when landing on slide 4
+    if (n === 5) { clearMode(); }        // routing slide
+    if (n === 6) { clearBlock(); }       // building blocks slide
+    updateActiveTab(n);
+  }
+
+  // Section-tab active state. Each tab "owns" a slide range.
+  function updateActiveTab(n) {
+    const ranges = [
+      { tab: 2, slides: [2] },
+      { tab: 3, slides: [3] },
+      { tab: 4, slides: [4] },
+      { tab: 5, slides: [5] },
+      { tab: 6, slides: [6] },
+      { tab: 7, slides: [7, 8, 9, 10] },
+      { tab: 11, slides: [11] },
+      { tab: 12, slides: [12] }
+    ];
+    document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+    for (const r of ranges) {
+      if (r.slides.indexOf(n) !== -1) {
+        const el = document.querySelector('.tab[data-slide="' + r.tab + '"]');
+        if (el) el.classList.add('active');
+        break;
+      }
+    }
+  }
+
+  // WIN CARD CLICK - swap which Win detail panel is visible
+  function selectWin(n) {
+    const boxes = document.querySelectorAll('.winsgrid .winbox');
+    const panels = document.querySelectorAll('.windeep');
+    boxes.forEach((b, i) => b.classList.toggle('active', i === n - 1));
+    panels.forEach((p, i) => p.classList.toggle('hidden', i !== n - 1));
+    if (n === 3) playFailoverAnimation();
+  }
+
+  function goToSlide(n) {
+    if (mode !== 'main') showMain();
+    if (n >= 1 && n <= TOTAL_SLIDES) { current = n; renderSlide(current); }
   }
 
   function goPrev() { if (current > 1) { current--; renderSlide(current); } }
@@ -1251,6 +1576,22 @@
     document.getElementById('oPerTx3').textContent = vol > 0 ? fmtPertx(y3 / vol) : '-';
   }
   recalc();
+
+  // THEME TOGGLE - dark is default; toggle flips and persists
+  function toggleTheme() {
+    document.body.classList.toggle('dark');
+    const isDark = document.body.classList.contains('dark');
+    document.getElementById('themeicon').innerHTML = isDark ? '&#9789;' : '&#9788;';
+    try { localStorage.setItem('hsdemo-theme', isDark ? 'dark' : 'light'); } catch(e) {}
+  }
+  // Restore theme on load - dark is the default, only swap to light if user previously chose it
+  try {
+    const saved = localStorage.getItem('hsdemo-theme');
+    if (saved === 'light') {
+      document.body.classList.remove('dark');
+      document.getElementById('themeicon').innerHTML = '&#9788;';
+    }
+  } catch(e) {}
 
   // INIT
   showMain();
