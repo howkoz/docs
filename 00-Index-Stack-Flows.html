@@ -1,0 +1,13 @@
+<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Orchestrator Stack Flows</title>
+<style>body{margin:0;font-family:Segoe UI,Arial,sans-serif;background:#f6f8fb;color:#1a1a1a}header{background:#1f4e78;color:#fff;padding:18px 24px}
+h1{margin:0;font-size:22px}header p{margin:4px 0 0;font-size:13px;opacity:.85}main{display:grid;grid-template-columns:repeat(auto-fit,minmax(420px,1fr));gap:18px;padding:20px 24px;max-width:1400px;margin:0 auto}
+a.card{display:block;background:#fff;border:1px solid #d9dee5;border-radius:10px;padding:12px;text-decoration:none;color:inherit}a.card:hover{border-color:#185fa5}
+a.card img{width:100%;height:auto;border:1px solid #eef2f7;border-radius:6px}h2{font-size:16px;margin:4px 0 6px;color:#1f4e78}p.d{font-size:13px;color:#555;margin:0 0 10px}</style></head><body>
+<header><h1>In-house orchestrator: four stack flows</h1><p>PAYMT-520, read from github.com/Unicity/frontier on 9 Nov 2026. Click a card to open the live diagram: Play the steps, hover and click boxes, Light or Dark. Static versions: the same names without -Live, plus PNGs.</p></header>
+<main>
+<a class="card" href="S1-Card-Payment-End-To-End-Live.html"><h2>1. A card payment, end to end</h2><p class="d">Shopper, checkout, hosted form, payments API, routing engine, processor, signed webhook back to checkout.</p><img src="S1-Card-Payment-End-To-End.png" alt="Card payment end to end"></a>
+<a class="card" href="S2-Routing-Decision-And-Failover-Live.html"><h2>2. How the engine picks an account, and fails over</h2><p class="d">Scope, pinned version, rebill check, rules in order, split, eligibility, charge; fallback, refused and one failover.</p><img src="S2-Routing-Decision-And-Failover.png" alt="Routing decision and failover"></a>
+<a class="card" href="S3-Rule-Publishing-And-Versions-Live.html"><h2>3. How a routing rule change goes live</h2><p class="d">Draft, checks, admin-only publish, versions; open payments keep their version; history and roll back.</p><img src="S3-Rule-Publishing-And-Versions.png" alt="Rule publishing and versions"></a>
+<a class="card" href="S4-Webhooks-To-Merchants-Live.html"><h2>4. How checkout hears a payment's result</h2><p class="d">Event written with the status, signed delivery, delivery log, 9 retries over about 75 hours, portal resend.</p><img src="S4-Webhooks-To-Merchants.png" alt="Webhooks to merchants"></a>
+</main></body></html>
