@@ -1,13 +1,50 @@
 <!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
 <title>Orchestrator Stack Flows</title>
-<style>body{margin:0;font-family:Segoe UI,Arial,sans-serif;background:#f6f8fb;color:#1a1a1a}header{background:#1f4e78;color:#fff;padding:18px 24px}
-h1{margin:0;font-size:22px}header p{margin:4px 0 0;font-size:13px;opacity:.85}main{display:grid;grid-template-columns:repeat(auto-fit,minmax(420px,1fr));gap:18px;padding:20px 24px;max-width:1400px;margin:0 auto}
-a.card{display:block;background:#fff;border:1px solid #d9dee5;border-radius:10px;padding:12px;text-decoration:none;color:inherit}a.card:hover{border-color:#185fa5}
-a.card img{width:100%;height:auto;border:1px solid #eef2f7;border-radius:6px}h2{font-size:16px;margin:4px 0 6px;color:#1f4e78}p.d{font-size:13px;color:#555;margin:0 0 10px}</style></head><body>
-<header><h1>In-house orchestrator: four stack flows</h1><p>PAYMT-520, read from github.com/Unicity/frontier on 9 Nov 2026. Click a card to open the live diagram: Play the steps, hover and click boxes, Light or Dark. Static versions: the same names without -Live, plus PNGs.</p></header>
+<script>
+/* set the theme before paint: the saved choice (shared with the live flows), else the system setting */
+(function(){var t=null;try{t=localStorage.getItem('fm-stack-theme')}catch(e){}
+if(!t)t=(window.matchMedia&&matchMedia('(prefers-color-scheme: dark)').matches)?'dark':'light';
+document.documentElement.setAttribute('data-theme',t);})();
+</script>
+<style>
+:root{--bg:#f6f8fb;--card:#ffffff;--ink:#1a1a1a;--mut:#555555;--line:#d9dee5;--line2:#eef2f7;--head:#1f4e78;--headink:#ffffff;--acc:#185fa5;--h2:#1f4e78}
+[data-theme="dark"]{--bg:#0f1318;--card:#171c23;--ink:#e8ecf1;--mut:#a6b0bc;--line:#2c3540;--line2:#232b35;--head:#12304b;--headink:#e8ecf1;--acc:#6aa8e8;--h2:#8fc0f0}
+*{box-sizing:border-box}
+body{margin:0;font-family:Segoe UI,Arial,sans-serif;background:var(--bg);color:var(--ink);transition:background .2s,color .2s}
+header{background:var(--head);color:var(--headink);padding:18px 24px;display:flex;gap:16px;align-items:center;flex-wrap:wrap}
+header .t{flex:1;min-width:260px}h1{margin:0;font-size:22px}header p{margin:4px 0 0;font-size:13px;opacity:.85}
+.seg{display:inline-flex;border:1px solid rgba(255,255,255,.45);border-radius:8px;overflow:hidden}
+.seg button{font:600 13px Segoe UI,Arial,sans-serif;background:transparent;color:var(--headink);border:0;padding:7px 16px;cursor:pointer}
+.seg button+button{border-left:1px solid rgba(255,255,255,.45)}
+.seg button[aria-pressed="true"]{background:#ffffff;color:#1f4e78}
+main{display:grid;grid-template-columns:repeat(auto-fit,minmax(420px,1fr));gap:18px;padding:20px 24px;max-width:1400px;margin:0 auto}
+@media (max-width:480px){main{grid-template-columns:1fr;padding:16px}}
+a.card{display:block;background:var(--card);border:1px solid var(--line);border-radius:10px;padding:12px;text-decoration:none;color:inherit}
+a.card:hover{border-color:var(--acc)}
+a.card img{width:100%;height:auto;border:1px solid var(--line2);border-radius:6px}
+h2{font-size:16px;margin:4px 0 6px;color:var(--h2)}p.d{font-size:13px;color:var(--mut);margin:0 0 10px}
+.s{font-size:12px;color:var(--mut);margin-top:8px}.s a{color:var(--acc)}
+img.dk{display:none}[data-theme="dark"] img.lt{display:none}[data-theme="dark"] img.dk{display:block}
+</style></head><body>
+<header><div class="t"><h1>In-house orchestrator: four stack flows</h1>
+<p>PAYMT-520, read from github.com/Unicity/frontier on 9 Nov 2026. Click a card to open the live diagram: Play the steps, hover and click boxes. Your Light or Dark choice carries into the diagrams.</p></div>
+<span class="seg" role="group" aria-label="Colour mode"><button id="light" aria-pressed="true">Light</button><button id="dark" aria-pressed="false">Dark</button></span>
+</header>
 <main>
-<a class="card" href="S1-Card-Payment-End-To-End-Live.html"><h2>1. A card payment, end to end</h2><p class="d">Shopper, checkout, hosted form, payments API, routing engine, processor, signed webhook back to checkout.</p><img src="S1-Card-Payment-End-To-End.png" alt="Card payment end to end"></a>
-<a class="card" href="S2-Routing-Decision-And-Failover-Live.html"><h2>2. How the engine picks an account, and fails over</h2><p class="d">Scope, pinned version, rebill check, rules in order, split, eligibility, charge; fallback, refused and one failover.</p><img src="S2-Routing-Decision-And-Failover.png" alt="Routing decision and failover"></a>
-<a class="card" href="S3-Rule-Publishing-And-Versions-Live.html"><h2>3. How a routing rule change goes live</h2><p class="d">Draft, checks, admin-only publish, versions; open payments keep their version; history and roll back.</p><img src="S3-Rule-Publishing-And-Versions.png" alt="Rule publishing and versions"></a>
-<a class="card" href="S4-Webhooks-To-Merchants-Live.html"><h2>4. How checkout hears a payment's result</h2><p class="d">Event written with the status, signed delivery, delivery log, 9 retries over about 75 hours, portal resend.</p><img src="S4-Webhooks-To-Merchants.png" alt="Webhooks to merchants"></a>
-</main></body></html>
+<a class="card" href="S1-Card-Payment-End-To-End-Live.html"><h2>1. A card payment, end to end</h2><p class="d">Shopper, checkout, hosted form, payments API, routing engine, processor, signed webhook back to checkout.</p>
+<img class="lt" src="S1-Card-Payment-End-To-End.png" alt="Card payment end to end"><img class="dk" src="S1-Card-Payment-End-To-End-dark.png" alt="Card payment end to end, dark"></a>
+<a class="card" href="S2-Routing-Decision-And-Failover-Live.html"><h2>2. How the engine picks an account, and fails over</h2><p class="d">Scope, pinned version, rebill check, rules in order, split, eligibility, charge; fallback, refused and one failover.</p>
+<img class="lt" src="S2-Routing-Decision-And-Failover.png" alt="Routing decision and failover"><img class="dk" src="S2-Routing-Decision-And-Failover-dark.png" alt="Routing decision and failover, dark"></a>
+<a class="card" href="S3-Rule-Publishing-And-Versions-Live.html"><h2>3. How a routing rule change goes live</h2><p class="d">Draft, checks, admin-only publish, versions; open payments keep their version; history and roll back.</p>
+<img class="lt" src="S3-Rule-Publishing-And-Versions.png" alt="Rule publishing and versions"><img class="dk" src="S3-Rule-Publishing-And-Versions-dark.png" alt="Rule publishing and versions, dark"></a>
+<a class="card" href="S4-Webhooks-To-Merchants-Live.html"><h2>4. How checkout hears a payment's result</h2><p class="d">Event written with the status, signed delivery, delivery log, 9 retries over about 75 hours, portal resend.</p>
+<img class="lt" src="S4-Webhooks-To-Merchants.png" alt="Webhooks to merchants"><img class="dk" src="S4-Webhooks-To-Merchants-dark.png" alt="Webhooks to merchants, dark"></a>
+</main>
+<p class="s" style="text-align:center;padding-bottom:20px">Static versions: the same names without -Live (.html), plus light and dark PNGs in this folder. Full review: <a href="../Orchestrator-Code-And-Routing-Review-09Nov2026.html">Orchestrator-Code-And-Routing-Review-09Nov2026.html</a></p>
+<script>
+(function(){var r=document.documentElement,L=document.getElementById('light'),D=document.getElementById('dark');
+function set(t){r.setAttribute('data-theme',t);L.setAttribute('aria-pressed',t!=='dark');D.setAttribute('aria-pressed',t==='dark');try{localStorage.setItem('fm-stack-theme',t)}catch(e){}}
+set(r.getAttribute('data-theme')||'light');L.onclick=function(){set('light')};D.onclick=function(){set('dark')};
+document.addEventListener('keydown',function(e){if(e.key==='d'||e.key==='D')set(r.getAttribute('data-theme')==='dark'?'light':'dark')});})();
+</script>
+</body></html>
