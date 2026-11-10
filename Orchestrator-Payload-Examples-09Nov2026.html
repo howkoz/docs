@@ -1,0 +1,371 @@
+<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Orchestrator Payload Examples</title>
+<script>(function(){var t=null;try{t=localStorage.getItem('fm-stack-theme')}catch(e){}if(!t)t=(matchMedia&&matchMedia('(prefers-color-scheme: dark)').matches)?'dark':'light';document.documentElement.setAttribute('data-theme',t)})();</script>
+<style>
+:root{--bg:#f6f8fb;--card:#fff;--ink:#1a1a1a;--mut:#555;--line:#d9dee5;--head:#1f4e78;--h3:#1f4e78;--code:#eef2f7;--mark:#fff1b8;--acc:#185fa5}
+[data-theme="dark"]{--bg:#0f1318;--card:#171c23;--ink:#e8ecf1;--mut:#a6b0bc;--line:#2c3540;--head:#12304b;--h3:#8fc0f0;--code:#212933;--mark:#5a4a10;--acc:#6aa8e8}
+*{box-sizing:border-box}body{margin:0;font-family:Segoe UI,Arial,sans-serif;background:var(--bg);color:var(--ink)}
+header{background:var(--head);color:#fff;padding:16px 24px;display:flex;gap:16px;align-items:center;flex-wrap:wrap}header .t{flex:1;min-width:260px}
+h1{margin:0;font-size:21px}header p{margin:4px 0 0;font-size:13px;opacity:.85}
+.seg{display:inline-flex;border:1px solid rgba(255,255,255,.45);border-radius:8px;overflow:hidden}.seg button{font:600 13px Segoe UI;background:transparent;color:#fff;border:0;padding:7px 14px;cursor:pointer}
+.seg button[aria-pressed="true"]{background:#fff;color:#1f4e78}
+nav{display:flex;flex-wrap:wrap;gap:4px;padding:8px 16px;background:var(--card);border-bottom:1px solid var(--line);position:sticky;top:0;z-index:5}
+nav button{border:1px solid var(--line);background:var(--card);color:var(--ink);padding:7px 12px;border-radius:6px;cursor:pointer;font-size:13px}nav button.on{background:#1f4e78;color:#fff;border-color:#1f4e78}
+.tab{display:none;padding:16px 24px;max-width:1300px;margin:0 auto}.tab.on{display:block}
+h3{color:var(--h3)}.lead{font-size:15px;line-height:1.55;background:var(--card);border-left:4px solid #1f4e78;padding:10px 14px}
+.sc{background:var(--card);border:1px solid var(--line);border-radius:10px;padding:12px 16px;margin:14px 0}.sc h3{margin:4px 0}
+.id{background:#1f4e78;color:#fff;border-radius:5px;padding:1px 7px;font-size:12px;margin-right:6px}
+.meta{font-size:12.5px;color:var(--mut);margin:4px 0}.note{font-size:13px;color:var(--mut)}
+.req{border-top:1px dashed var(--line);margin-top:10px;padding-top:8px}.line{font-size:13px}.m{background:#0f6e56;color:#fff;border-radius:4px;padding:1px 6px;font-size:11px;font-weight:700}
+.hd{font-size:12px;color:var(--mut);margin:4px 0}
+pre{background:var(--code);padding:10px;border-radius:6px;overflow:auto;font-size:12px;line-height:1.45;max-height:520px}
+code{font-family:Consolas,monospace;font-size:12px}mark{background:var(--mark);color:inherit;border-radius:2px}
+table{border-collapse:collapse;width:100%;font-size:13px;margin:6px 0;background:var(--card)}th{background:var(--code);text-align:left;padding:6px}td{padding:5px 6px;border-bottom:1px solid var(--line);vertical-align:top}
+table.kv tr.hl td{background:var(--mark)}.toc a{color:var(--acc);margin-right:4px}.f li{margin:6px 0;line-height:1.5}
+</style></head><body>
+<header><div class="t"><h1>What the orchestrator sends each processor</h1><p>PAYMT-520 · 11 situations captured from github.com/Unicity/frontier's own charge code on 9 Nov 2026 · highlighted fields change with the situation</p></div>
+<span class="seg"><button id="light" aria-pressed="true">Light</button><button id="dark" aria-pressed="false">Dark</button></span></header>
+<nav><button data-t="ov" class="on">Overview and findings</button><button data-t="worldpay" class="">Worldpay (5)</button><button data-t="nmi" class="">NMI (4)</button><button data-t="nuvei" class="">Nuvei (2)</button></nav><section id="ov" class="tab on">
+<p class="lead">These are the exact requests the in-house orchestrator's own charge code builds for each processor, captured by running
+the real adapters (<code>packages/payments-service-domain/src/processors</code>, github.com/Unicity/frontier main, 9 Nov 2026) with a
+recording stand-in for the network. Nothing was sent to any processor. Card numbers are the published test card, shown masked; the CVV
+is masked; credentials are placeholders and never appear.</p>
+<h3>Why not real QA transactions?</h3>
+<ul>
+<li><b>No log keeps them.</b> The service's own rule: "No adapter logs a body". The processor log line names only the operation, the order code and the answer's kind (<code>apps/payments-service/docs/processor-requests.md</code>).</li>
+<li><b>The service's logs are not in our Datadog.</b> 0 lines for payments-service, payments-portal-service, payments-merchant-demo-service and cart-service over 14 days (us5, read 9 Nov 2026).</li>
+<li><b>The database keeps only the outcome.</b> Each attempt stores brand, expiry, fingerprint, decline code, processor transaction id, response code and message, scheme transaction id and the 3-D Secure result; never the request.</li>
+<li><b>So the only place a real QA payload can be seen is at the processor:</b> the NMI merchant portal (test transactions under the QA user on the same gateway host), the Worldpay test Merchant Interface, and the Nuvei sandbox control panel. Each needs your sign-in.</li>
+</ul>
+<h3>What changes from one situation to the next</h3>
+<table class="mx"><tr><th>Situation</th><th>Worldpay (XML)</th><th>NMI (form)</th><th>Nuvei (JSON)</th></tr><tr><td><b>Customer paying once</b></td><td>no storedCredentials; cvc; browser; session</td><td>initiated_by=customer, stored_credential_indicator=stored, cvv</td><td>storedCredentialsMode 0, isRebilling 0, CVV</td></tr><tr><td><b>Signing up a subscription</b></td><td>storedCredentials usage FIRST, customerInitiatedReason RECURRING, consent YES; challengeMandated when 3DS runs</td><td>as above plus billing_method=recurring</td><td>as paying once, plus userTokenId (also sent when paying once with a customer reference)</td></tr><tr><td><b>Merchant rebill with an anchor</b></td><td>storedCredentials usage USED, merchantInitiatedReason RECURRING, schemeTransactionIdentifier; no cvc, no browser; <b>session still sent</b></td><td>initiated_by=merchant, stored_credential_indicator=used, initial_transaction_id, billing_method=recurring; no cvv</td><td>storedCredentialsMode 1, isRebilling 1, rebillingType Recurring, relatedTransactionId; no CVV</td></tr><tr><td><b>Phone order (MOTO)</b></td><td>plain sale on the MOTO merchant code, cvc sent, no phone-order marker in the body</td><td>no stored-credential parameters; processor_id of the phone account</td><td>not routed to Nuvei</td></tr><tr><td><b>3-D Secure</b></td><td>riskData and additional3DSData only for online cards in EEA and UK markets</td><td>never</td><td>never</td></tr><tr><td><b>Test versus live</b></td><td>secure-test.worldpay.com versus secure.worldpay.com</td><td>same host; test_mode=enabled on test accounts</td><td>ppp-test.nuvei.com versus secure.safecharge.com</td></tr></table>
+<h3>What the payloads show</h3>
+<ol class="f">
+<li><b>Nobody keeps the payload.</b> Teller's full wire bodies are in Datadog today; this service keeps none, in logs or in the database. A disputed or failed charge cannot be checked field by field after the fact. Proposed owner: Matthew Winn, to accept or reassign.</li>
+<li><b>Worldpay rebills still send the shopper session.</b> WP-4 carries <code>&lt;session id shopperIPAddress&gt;</code> on a merchant-initiated rebill; the team's own <code>processor-requests.md</code> says a rebill sends "no CVV, session or browser". The element is unconditional in <code>worldpay/build.ts</code> (line 212). The same defect was fixed on teller under TKT-7341. Proposed owner: Matthew Winn.</li>
+<li><b>NMI test and live share one host.</b> Only <code>test_mode=enabled</code>, added when the account is in Test mode (<code>nmi/index.ts</code> line 26), keeps a test charge from being real; the credentials decide the rest.</li>
+<li><b>Done right:</b> card data only in the body, never the URL (the teller NMI defect TKT-7331 does not exist here); no CVV on rebills; stored-credential flags follow who started the charge; the NMI order description is the merchant reference, not the full stop teller sends (TKT-7586).</li>
+<li><b>Questions, not findings:</b> the Worldpay phone-order body has no phone-order marker and relies on the MOTO merchant code (inference: confirm with Worldpay); the test seed sends US phone orders to NMI <code>unicityecom</code>; production's phone account is set in the portal and NOT ESTABLISHED.</li>
+</ol>
+<p class="note">Not captured: Braintree and PayPal (GraphQL and REST calls that need live tokens from the browser), Apple Pay and Google Pay (need wallet tokens), and the Worldpay 3-D Secure completion call. The builder of this page: <code>build\payloads\capture_payloads.ts</code> (run with Bun in the read-only clone) and <code>render_payloads.py</code>.</p>
+</section><section id="worldpay" class="tab "><p class="toc"><a href="#WP-1">WP-1</a> · <a href="#WP-2">WP-2</a> · <a href="#WP-3">WP-3</a> · <a href="#WP-4">WP-4</a> · <a href="#WP-5">WP-5</a></p><section class="sc" id="WP-1"><h3><span class="id">WP-1</span> US online card, customer paying once</h3><p class="meta">Account type <b>ecom</b> · merchant code or processor id <b>UNICITYUSUSDECOM</b> · result the code read from the stub reply: <b>approved</b></p><p class="note">Plain customer sale: no storedCredentials, no 3-D Secure blocks. Description is customer reference and merchant reference joined.</p><div class="req"><div class="line"><span class="m">POST</span> <code>https://secure-test.worldpay.com/jsp/merchant/xml/paymentService.jsp</code></div><div class="hd"><div><code>authorization: Basic &lt;XML username:password from the account's encrypted config&gt;</code></div><div><code>content-type: text/xml</code></div></div><pre>&lt;paymentService <mark>merchantCode</mark>=&quot;UNICITYUSUSDECOM&quot; version=&quot;1.4&quot;&gt;
+  &lt;submit&gt;
+    &lt;order orderCode=&quot;pi_demo_1&quot;&gt;
+      &lt;description&gt;279103601-1470216&lt;/description&gt;
+      &lt;amount currencyCode=&quot;USD&quot; exponent=&quot;2&quot; value=&quot;17315&quot;/&gt;
+      &lt;orderContent/&gt;
+      &lt;paymentDetails&gt;
+        &lt;CARD-SSL&gt;
+          &lt;cardNumber&gt;411111******1111&lt;/cardNumber&gt;
+          &lt;expiryDate&gt;
+            &lt;date month=&quot;08&quot; year=&quot;2031&quot;/&gt;
+          &lt;/expiryDate&gt;
+          &lt;cardHolderName&gt;Ada Lovelace&lt;/cardHolderName&gt;
+          &lt;<mark>cvc</mark>&gt;***&lt;/<mark>cvc</mark>&gt;
+          &lt;cardAddress&gt;
+            &lt;address&gt;
+              &lt;address1&gt;1 Main St&lt;/address1&gt;
+              &lt;postalCode&gt;30303&lt;/postalCode&gt;
+              &lt;city&gt;Atlanta&lt;/city&gt;
+              &lt;state&gt;GA&lt;/state&gt;
+              &lt;countryCode&gt;US&lt;/countryCode&gt;
+            &lt;/address&gt;
+          &lt;/cardAddress&gt;
+        &lt;/CARD-SSL&gt;
+        &lt;<mark>session</mark> id=&quot;c678e627-219b-4bcc-8eaa-ebeacf7c891e&quot; shopperIPAddress=&quot;203.0.113.7&quot;/&gt;
+      &lt;/paymentDetails&gt;
+      &lt;shopper&gt;
+        &lt;shopperEmailAddress&gt;shopper@example.com&lt;/shopperEmailAddress&gt;
+        &lt;authenticatedShopperID&gt;279103601&lt;/authenticatedShopperID&gt;
+        &lt;<mark>browser</mark>&gt;
+          &lt;acceptHeader&gt;text/html&lt;/acceptHeader&gt;
+          &lt;userAgentHeader&gt;Mozilla/5.0 (test)&lt;/userAgentHeader&gt;
+          &lt;timeZone&gt;300&lt;/timeZone&gt;
+          &lt;browserLanguage&gt;en-US&lt;/browserLanguage&gt;
+          &lt;browserJavaEnabled&gt;false&lt;/browserJavaEnabled&gt;
+          &lt;browserJavaScriptEnabled&gt;true&lt;/browserJavaScriptEnabled&gt;
+          &lt;browserColourDepth&gt;24&lt;/browserColourDepth&gt;
+          &lt;browserScreenHeight&gt;892&lt;/browserScreenHeight&gt;
+          &lt;browserScreenWidth&gt;412&lt;/browserScreenWidth&gt;
+        &lt;/<mark>browser</mark>&gt;
+      &lt;/shopper&gt;
+    &lt;/order&gt;
+  &lt;/submit&gt;
+&lt;/paymentService&gt;</pre><details><summary>Exact body as sent (one line, masked)</summary><pre>&lt;?xml version=&quot;1.0&quot; encoding=&quot;UTF-8&quot;?&gt;
+&lt;!DOCTYPE paymentService PUBLIC &quot;-//Worldpay//DTD Worldpay PaymentService v1//EN&quot; &quot;http://dtd.worldpay.com/paymentService_v1.dtd&quot;&gt;
+&lt;paymentService merchantCode=&quot;UNICITYUSUSDECOM&quot; version=&quot;1.4&quot;&gt;&lt;submit&gt;&lt;order orderCode=&quot;pi_demo_1&quot;&gt;&lt;description&gt;279103601-1470216&lt;/description&gt;&lt;amount currencyCode=&quot;USD&quot; exponent=&quot;2&quot; value=&quot;17315&quot;/&gt;&lt;orderContent&gt;&lt;![CDATA[]]&gt;&lt;/orderContent&gt;&lt;paymentDetails&gt;&lt;CARD-SSL&gt;&lt;cardNumber&gt;411111******1111&lt;/cardNumber&gt;&lt;expiryDate&gt;&lt;date month=&quot;08&quot; year=&quot;2031&quot;/&gt;&lt;/expiryDate&gt;&lt;cardHolderName&gt;Ada Lovelace&lt;/cardHolderName&gt;&lt;cvc&gt;***&lt;/cvc&gt;&lt;cardAddress&gt;&lt;address&gt;&lt;address1&gt;1 Main St&lt;/address1&gt;&lt;postalCode&gt;30303&lt;/postalCode&gt;&lt;city&gt;Atlanta&lt;/city&gt;&lt;state&gt;GA&lt;/state&gt;&lt;countryCode&gt;US&lt;/countryCode&gt;&lt;/address&gt;&lt;/cardAddress&gt;&lt;/CARD-SSL&gt;&lt;session id=&quot;c678e627-219b-4bcc-8eaa-ebeacf7c891e&quot; shopperIPAddress=&quot;203.0.113.7&quot;/&gt;&lt;/paymentDetails&gt;&lt;shopper&gt;&lt;shopperEmailAddress&gt;shopper@example.com&lt;/shopperEmailAddress&gt;&lt;authenticatedShopperID&gt;279103601&lt;/authenticatedShopperID&gt;&lt;browser&gt;&lt;acceptHeader&gt;text/html&lt;/acceptHeader&gt;&lt;userAgentHeader&gt;Mozilla/5.0 (test)&lt;/userAgentHeader&gt;&lt;timeZone&gt;300&lt;/timeZone&gt;&lt;browserLanguage&gt;en-US&lt;/browserLanguage&gt;&lt;browserJavaEnabled&gt;false&lt;/browserJavaEnabled&gt;&lt;browserJavaScriptEnabled&gt;true&lt;/browserJavaScriptEnabled&gt;&lt;browserColourDepth&gt;24&lt;/browserColourDepth&gt;&lt;browserScreenHeight&gt;892&lt;/browserScreenHeight&gt;&lt;browserScreenWidth&gt;412&lt;/browserScreenWidth&gt;&lt;/browser&gt;&lt;/shopper&gt;&lt;/order&gt;&lt;/submit&gt;&lt;/paymentService&gt;</pre></details></div></section><section class="sc" id="WP-2"><h3><span class="id">WP-2</span> Germany online card, paying once, with 3-D Secure</h3><p class="meta">Account type <b>ecom</b> · merchant code or processor id <b>UNICITYEUEURECOM</b> · result the code read from the stub reply: <b>approved</b></p><p class="note">Same as WP-1 plus riskData and additional3DSData (noPreference) because the market (DE) is in the EEA and the account is Worldpay.</p><div class="req"><div class="line"><span class="m">POST</span> <code>https://secure-test.worldpay.com/jsp/merchant/xml/paymentService.jsp</code></div><div class="hd"><div><code>authorization: Basic &lt;XML username:password from the account's encrypted config&gt;</code></div><div><code>content-type: text/xml</code></div></div><pre>&lt;paymentService <mark>merchantCode</mark>=&quot;UNICITYEUEURECOM&quot; version=&quot;1.4&quot;&gt;
+  &lt;submit&gt;
+    &lt;order orderCode=&quot;pi_demo_1&quot;&gt;
+      &lt;description&gt;279103601-1470216&lt;/description&gt;
+      &lt;amount currencyCode=&quot;EUR&quot; exponent=&quot;2&quot; value=&quot;17315&quot;/&gt;
+      &lt;orderContent/&gt;
+      &lt;paymentDetails&gt;
+        &lt;CARD-SSL&gt;
+          &lt;cardNumber&gt;411111******1111&lt;/cardNumber&gt;
+          &lt;expiryDate&gt;
+            &lt;date month=&quot;08&quot; year=&quot;2031&quot;/&gt;
+          &lt;/expiryDate&gt;
+          &lt;cardHolderName&gt;Ada Lovelace&lt;/cardHolderName&gt;
+          &lt;<mark>cvc</mark>&gt;***&lt;/<mark>cvc</mark>&gt;
+          &lt;cardAddress&gt;
+            &lt;address&gt;
+              &lt;address1&gt;Unter den Linden 1&lt;/address1&gt;
+              &lt;postalCode&gt;10117&lt;/postalCode&gt;
+              &lt;city&gt;Berlin&lt;/city&gt;
+              &lt;countryCode&gt;DE&lt;/countryCode&gt;
+            &lt;/address&gt;
+          &lt;/cardAddress&gt;
+        &lt;/CARD-SSL&gt;
+        &lt;<mark>session</mark> id=&quot;681534d7-119f-46e1-815f-0515313d7866&quot; shopperIPAddress=&quot;203.0.113.7&quot;/&gt;
+      &lt;/paymentDetails&gt;
+      &lt;shopper&gt;
+        &lt;shopperEmailAddress&gt;shopper@example.com&lt;/shopperEmailAddress&gt;
+        &lt;authenticatedShopperID&gt;279103601&lt;/authenticatedShopperID&gt;
+        &lt;<mark>browser</mark>&gt;
+          &lt;acceptHeader&gt;text/html&lt;/acceptHeader&gt;
+          &lt;userAgentHeader&gt;Mozilla/5.0 (test)&lt;/userAgentHeader&gt;
+          &lt;timeZone&gt;300&lt;/timeZone&gt;
+          &lt;browserLanguage&gt;en-US&lt;/browserLanguage&gt;
+          &lt;browserJavaEnabled&gt;false&lt;/browserJavaEnabled&gt;
+          &lt;browserJavaScriptEnabled&gt;true&lt;/browserJavaScriptEnabled&gt;
+          &lt;browserColourDepth&gt;24&lt;/browserColourDepth&gt;
+          &lt;browserScreenHeight&gt;892&lt;/browserScreenHeight&gt;
+          &lt;browserScreenWidth&gt;412&lt;/browserScreenWidth&gt;
+        &lt;/<mark>browser</mark>&gt;
+      &lt;/shopper&gt;
+      &lt;<mark>riskData</mark>&gt;
+        &lt;authenticationRiskData authenticationMethod=&quot;guestCheckout&quot;&gt;
+          &lt;authenticationTimestamp&gt;
+            &lt;date dayOfMonth=&quot;09&quot; hour=&quot;15&quot; minute=&quot;30&quot; month=&quot;11&quot; second=&quot;00&quot; year=&quot;2026&quot;/&gt;
+          &lt;/authenticationTimestamp&gt;
+        &lt;/authenticationRiskData&gt;
+        &lt;transactionRiskData deliveryEmailAddress=&quot;shopper@example.com&quot; deliveryTimeframe=&quot;otherShipping&quot; giftCardCount=&quot;00&quot; preOrderPurchase=&quot;false&quot; reorderingPreviousPurchases=&quot;false&quot; shippingMethod=&quot;shipToBillingAddress&quot;/&gt;
+      &lt;/<mark>riskData</mark>&gt;
+      &lt;<mark>additional3DSData</mark> <mark>challengePreference</mark>=&quot;noPreference&quot; challengeWindowSize=&quot;fullPage&quot; deviceChannel=&quot;Browser&quot; dfReferenceId=&quot;0_dedf37aa&quot; javaScriptEnabled=&quot;true&quot;/&gt;
+    &lt;/order&gt;
+  &lt;/submit&gt;
+&lt;/paymentService&gt;</pre><details><summary>Exact body as sent (one line, masked)</summary><pre>&lt;?xml version=&quot;1.0&quot; encoding=&quot;UTF-8&quot;?&gt;
+&lt;!DOCTYPE paymentService PUBLIC &quot;-//Worldpay//DTD Worldpay PaymentService v1//EN&quot; &quot;http://dtd.worldpay.com/paymentService_v1.dtd&quot;&gt;
+&lt;paymentService merchantCode=&quot;UNICITYEUEURECOM&quot; version=&quot;1.4&quot;&gt;&lt;submit&gt;&lt;order orderCode=&quot;pi_demo_1&quot;&gt;&lt;description&gt;279103601-1470216&lt;/description&gt;&lt;amount currencyCode=&quot;EUR&quot; exponent=&quot;2&quot; value=&quot;17315&quot;/&gt;&lt;orderContent&gt;&lt;![CDATA[]]&gt;&lt;/orderContent&gt;&lt;paymentDetails&gt;&lt;CARD-SSL&gt;&lt;cardNumber&gt;411111******1111&lt;/cardNumber&gt;&lt;expiryDate&gt;&lt;date month=&quot;08&quot; year=&quot;2031&quot;/&gt;&lt;/expiryDate&gt;&lt;cardHolderName&gt;Ada Lovelace&lt;/cardHolderName&gt;&lt;cvc&gt;***&lt;/cvc&gt;&lt;cardAddress&gt;&lt;address&gt;&lt;address1&gt;Unter den Linden 1&lt;/address1&gt;&lt;postalCode&gt;10117&lt;/postalCode&gt;&lt;city&gt;Berlin&lt;/city&gt;&lt;countryCode&gt;DE&lt;/countryCode&gt;&lt;/address&gt;&lt;/cardAddress&gt;&lt;/CARD-SSL&gt;&lt;session id=&quot;681534d7-119f-46e1-815f-0515313d7866&quot; shopperIPAddress=&quot;203.0.113.7&quot;/&gt;&lt;/paymentDetails&gt;&lt;shopper&gt;&lt;shopperEmailAddress&gt;shopper@example.com&lt;/shopperEmailAddress&gt;&lt;authenticatedShopperID&gt;279103601&lt;/authenticatedShopperID&gt;&lt;browser&gt;&lt;acceptHeader&gt;text/html&lt;/acceptHeader&gt;&lt;userAgentHeader&gt;Mozilla/5.0 (test)&lt;/userAgentHeader&gt;&lt;timeZone&gt;300&lt;/timeZone&gt;&lt;browserLanguage&gt;en-US&lt;/browserLanguage&gt;&lt;browserJavaEnabled&gt;false&lt;/browserJavaEnabled&gt;&lt;browserJavaScriptEnabled&gt;true&lt;/browserJavaScriptEnabled&gt;&lt;browserColourDepth&gt;24&lt;/browserColourDepth&gt;&lt;browserScreenHeight&gt;892&lt;/browserScreenHeight&gt;&lt;browserScreenWidth&gt;412&lt;/browserScreenWidth&gt;&lt;/browser&gt;&lt;/shopper&gt;&lt;riskData&gt;&lt;authenticationRiskData authenticationMethod=&quot;guestCheckout&quot;&gt;&lt;authenticationTimestamp&gt;&lt;date dayOfMonth=&quot;09&quot; hour=&quot;15&quot; minute=&quot;30&quot; month=&quot;11&quot; second=&quot;00&quot; year=&quot;2026&quot;/&gt;&lt;/authenticationTimestamp&gt;&lt;/authenticationRiskData&gt;&lt;transactionRiskData deliveryEmailAddress=&quot;shopper@example.com&quot; deliveryTimeframe=&quot;otherShipping&quot; giftCardCount=&quot;00&quot; preOrderPurchase=&quot;false&quot; reorderingPreviousPurchases=&quot;false&quot; shippingMethod=&quot;shipToBillingAddress&quot;/&gt;&lt;/riskData&gt;&lt;additional3DSData challengePreference=&quot;noPreference&quot; challengeWindowSize=&quot;fullPage&quot; deviceChannel=&quot;Browser&quot; dfReferenceId=&quot;0_dedf37aa&quot; javaScriptEnabled=&quot;true&quot;/&gt;&lt;/order&gt;&lt;/submit&gt;&lt;/paymentService&gt;</pre></details></div></section><section class="sc" id="WP-3"><h3><span class="id">WP-3</span> UK online card, signing up a subscription (FIRST), 3-D Secure challenge mandated</h3><p class="meta">Account type <b>ecom</b> · merchant code or processor id <b>UNICITYEUGBPECOM</b> · result the code read from the stub reply: <b>approved</b></p><p class="note">Subscription signup: storedCredentials usage FIRST with consent YES, and challengePreference challengeMandated.</p><div class="req"><div class="line"><span class="m">POST</span> <code>https://secure-test.worldpay.com/jsp/merchant/xml/paymentService.jsp</code></div><div class="hd"><div><code>authorization: Basic &lt;XML username:password from the account's encrypted config&gt;</code></div><div><code>content-type: text/xml</code></div></div><pre>&lt;paymentService <mark>merchantCode</mark>=&quot;UNICITYEUGBPECOM&quot; version=&quot;1.4&quot;&gt;
+  &lt;submit&gt;
+    &lt;order orderCode=&quot;pi_demo_1&quot;&gt;
+      &lt;description&gt;279103601-1470216&lt;/description&gt;
+      &lt;amount currencyCode=&quot;GBP&quot; exponent=&quot;2&quot; value=&quot;17315&quot;/&gt;
+      &lt;orderContent/&gt;
+      &lt;paymentDetails&gt;
+        &lt;CARD-SSL&gt;
+          &lt;cardNumber&gt;411111******1111&lt;/cardNumber&gt;
+          &lt;expiryDate&gt;
+            &lt;date month=&quot;08&quot; year=&quot;2031&quot;/&gt;
+          &lt;/expiryDate&gt;
+          &lt;cardHolderName&gt;Ada Lovelace&lt;/cardHolderName&gt;
+          &lt;<mark>cvc</mark>&gt;***&lt;/<mark>cvc</mark>&gt;
+          &lt;cardAddress&gt;
+            &lt;address&gt;
+              &lt;address1&gt;1 High St&lt;/address1&gt;
+              &lt;postalCode&gt;SW1A 1AA&lt;/postalCode&gt;
+              &lt;city&gt;London&lt;/city&gt;
+              &lt;countryCode&gt;GB&lt;/countryCode&gt;
+            &lt;/address&gt;
+          &lt;/cardAddress&gt;
+        &lt;/CARD-SSL&gt;
+        &lt;<mark>storedCredentials</mark> <mark>customerInitiatedReason</mark>=&quot;RECURRING&quot; <mark>usage</mark>=&quot;FIRST&quot;&gt;
+          &lt;<mark>isConsumerConsentReceived</mark>&gt;YES&lt;/<mark>isConsumerConsentReceived</mark>&gt;
+        &lt;/<mark>storedCredentials</mark>&gt;
+        &lt;<mark>session</mark> id=&quot;d5fb9be8-045b-4dce-a0b3-64950a202361&quot; shopperIPAddress=&quot;203.0.113.7&quot;/&gt;
+      &lt;/paymentDetails&gt;
+      &lt;shopper&gt;
+        &lt;shopperEmailAddress&gt;shopper@example.com&lt;/shopperEmailAddress&gt;
+        &lt;authenticatedShopperID&gt;279103601&lt;/authenticatedShopperID&gt;
+        &lt;<mark>browser</mark>&gt;
+          &lt;acceptHeader&gt;text/html&lt;/acceptHeader&gt;
+          &lt;userAgentHeader&gt;Mozilla/5.0 (test)&lt;/userAgentHeader&gt;
+          &lt;timeZone&gt;300&lt;/timeZone&gt;
+          &lt;browserLanguage&gt;en-US&lt;/browserLanguage&gt;
+          &lt;browserJavaEnabled&gt;false&lt;/browserJavaEnabled&gt;
+          &lt;browserJavaScriptEnabled&gt;true&lt;/browserJavaScriptEnabled&gt;
+          &lt;browserColourDepth&gt;24&lt;/browserColourDepth&gt;
+          &lt;browserScreenHeight&gt;892&lt;/browserScreenHeight&gt;
+          &lt;browserScreenWidth&gt;412&lt;/browserScreenWidth&gt;
+        &lt;/<mark>browser</mark>&gt;
+      &lt;/shopper&gt;
+      &lt;<mark>riskData</mark>&gt;
+        &lt;authenticationRiskData authenticationMethod=&quot;guestCheckout&quot;&gt;
+          &lt;authenticationTimestamp&gt;
+            &lt;date dayOfMonth=&quot;09&quot; hour=&quot;15&quot; minute=&quot;30&quot; month=&quot;11&quot; second=&quot;00&quot; year=&quot;2026&quot;/&gt;
+          &lt;/authenticationTimestamp&gt;
+        &lt;/authenticationRiskData&gt;
+        &lt;transactionRiskData deliveryEmailAddress=&quot;shopper@example.com&quot; deliveryTimeframe=&quot;otherShipping&quot; giftCardCount=&quot;00&quot; preOrderPurchase=&quot;false&quot; reorderingPreviousPurchases=&quot;false&quot; shippingMethod=&quot;shipToBillingAddress&quot;/&gt;
+      &lt;/<mark>riskData</mark>&gt;
+      &lt;<mark>additional3DSData</mark> <mark>challengePreference</mark>=&quot;challengeMandated&quot; challengeWindowSize=&quot;fullPage&quot; deviceChannel=&quot;Browser&quot; dfReferenceId=&quot;0_dedf37aa&quot; javaScriptEnabled=&quot;true&quot;/&gt;
+    &lt;/order&gt;
+  &lt;/submit&gt;
+&lt;/paymentService&gt;</pre><details><summary>Exact body as sent (one line, masked)</summary><pre>&lt;?xml version=&quot;1.0&quot; encoding=&quot;UTF-8&quot;?&gt;
+&lt;!DOCTYPE paymentService PUBLIC &quot;-//Worldpay//DTD Worldpay PaymentService v1//EN&quot; &quot;http://dtd.worldpay.com/paymentService_v1.dtd&quot;&gt;
+&lt;paymentService merchantCode=&quot;UNICITYEUGBPECOM&quot; version=&quot;1.4&quot;&gt;&lt;submit&gt;&lt;order orderCode=&quot;pi_demo_1&quot;&gt;&lt;description&gt;279103601-1470216&lt;/description&gt;&lt;amount currencyCode=&quot;GBP&quot; exponent=&quot;2&quot; value=&quot;17315&quot;/&gt;&lt;orderContent&gt;&lt;![CDATA[]]&gt;&lt;/orderContent&gt;&lt;paymentDetails&gt;&lt;CARD-SSL&gt;&lt;cardNumber&gt;411111******1111&lt;/cardNumber&gt;&lt;expiryDate&gt;&lt;date month=&quot;08&quot; year=&quot;2031&quot;/&gt;&lt;/expiryDate&gt;&lt;cardHolderName&gt;Ada Lovelace&lt;/cardHolderName&gt;&lt;cvc&gt;***&lt;/cvc&gt;&lt;cardAddress&gt;&lt;address&gt;&lt;address1&gt;1 High St&lt;/address1&gt;&lt;postalCode&gt;SW1A 1AA&lt;/postalCode&gt;&lt;city&gt;London&lt;/city&gt;&lt;countryCode&gt;GB&lt;/countryCode&gt;&lt;/address&gt;&lt;/cardAddress&gt;&lt;/CARD-SSL&gt;&lt;storedCredentials customerInitiatedReason=&quot;RECURRING&quot; usage=&quot;FIRST&quot;&gt;&lt;isConsumerConsentReceived&gt;YES&lt;/isConsumerConsentReceived&gt;&lt;/storedCredentials&gt;&lt;session id=&quot;d5fb9be8-045b-4dce-a0b3-64950a202361&quot; shopperIPAddress=&quot;203.0.113.7&quot;/&gt;&lt;/paymentDetails&gt;&lt;shopper&gt;&lt;shopperEmailAddress&gt;shopper@example.com&lt;/shopperEmailAddress&gt;&lt;authenticatedShopperID&gt;279103601&lt;/authenticatedShopperID&gt;&lt;browser&gt;&lt;acceptHeader&gt;text/html&lt;/acceptHeader&gt;&lt;userAgentHeader&gt;Mozilla/5.0 (test)&lt;/userAgentHeader&gt;&lt;timeZone&gt;300&lt;/timeZone&gt;&lt;browserLanguage&gt;en-US&lt;/browserLanguage&gt;&lt;browserJavaEnabled&gt;false&lt;/browserJavaEnabled&gt;&lt;browserJavaScriptEnabled&gt;true&lt;/browserJavaScriptEnabled&gt;&lt;browserColourDepth&gt;24&lt;/browserColourDepth&gt;&lt;browserScreenHeight&gt;892&lt;/browserScreenHeight&gt;&lt;browserScreenWidth&gt;412&lt;/browserScreenWidth&gt;&lt;/browser&gt;&lt;/shopper&gt;&lt;riskData&gt;&lt;authenticationRiskData authenticationMethod=&quot;guestCheckout&quot;&gt;&lt;authenticationTimestamp&gt;&lt;date dayOfMonth=&quot;09&quot; hour=&quot;15&quot; minute=&quot;30&quot; month=&quot;11&quot; second=&quot;00&quot; year=&quot;2026&quot;/&gt;&lt;/authenticationTimestamp&gt;&lt;/authenticationRiskData&gt;&lt;transactionRiskData deliveryEmailAddress=&quot;shopper@example.com&quot; deliveryTimeframe=&quot;otherShipping&quot; giftCardCount=&quot;00&quot; preOrderPurchase=&quot;false&quot; reorderingPreviousPurchases=&quot;false&quot; shippingMethod=&quot;shipToBillingAddress&quot;/&gt;&lt;/riskData&gt;&lt;additional3DSData challengePreference=&quot;challengeMandated&quot; challengeWindowSize=&quot;fullPage&quot; deviceChannel=&quot;Browser&quot; dfReferenceId=&quot;0_dedf37aa&quot; javaScriptEnabled=&quot;true&quot;/&gt;&lt;/order&gt;&lt;/submit&gt;&lt;/paymentService&gt;</pre></details></div></section><section class="sc" id="WP-4"><h3><span class="id">WP-4</span> US merchant rebill against an anchor (USED)</h3><p class="meta">Account type <b>rec</b> · merchant code or processor id <b>UNICITYUSUSDREC</b> · result the code read from the stub reply: <b>approved</b></p><p class="note">Merchant rebill: storedCredentials usage USED with the anchor as schemeTransactionIdentifier, no cvc, no browser. The session element with the shopper IP is still sent: the team&#x27;s own doc says a rebill sends no session.</p><div class="req"><div class="line"><span class="m">POST</span> <code>https://secure-test.worldpay.com/jsp/merchant/xml/paymentService.jsp</code></div><div class="hd"><div><code>authorization: Basic &lt;XML username:password from the account's encrypted config&gt;</code></div><div><code>content-type: text/xml</code></div></div><pre>&lt;paymentService <mark>merchantCode</mark>=&quot;UNICITYUSUSDREC&quot; version=&quot;1.4&quot;&gt;
+  &lt;submit&gt;
+    &lt;order orderCode=&quot;pi_demo_1&quot;&gt;
+      &lt;description&gt;279103601-1470216&lt;/description&gt;
+      &lt;amount currencyCode=&quot;USD&quot; exponent=&quot;2&quot; value=&quot;17315&quot;/&gt;
+      &lt;orderContent/&gt;
+      &lt;paymentDetails&gt;
+        &lt;CARD-SSL&gt;
+          &lt;cardNumber&gt;411111******1111&lt;/cardNumber&gt;
+          &lt;expiryDate&gt;
+            &lt;date month=&quot;08&quot; year=&quot;2031&quot;/&gt;
+          &lt;/expiryDate&gt;
+          &lt;cardHolderName&gt;Ada Lovelace&lt;/cardHolderName&gt;
+          &lt;cardAddress&gt;
+            &lt;address&gt;
+              &lt;address1&gt;1 Main St&lt;/address1&gt;
+              &lt;postalCode&gt;30303&lt;/postalCode&gt;
+              &lt;city&gt;Atlanta&lt;/city&gt;
+              &lt;state&gt;GA&lt;/state&gt;
+              &lt;countryCode&gt;US&lt;/countryCode&gt;
+            &lt;/address&gt;
+          &lt;/cardAddress&gt;
+        &lt;/CARD-SSL&gt;
+        &lt;<mark>storedCredentials</mark> <mark>merchantInitiatedReason</mark>=&quot;RECURRING&quot; <mark>usage</mark>=&quot;USED&quot;&gt;
+          &lt;<mark>schemeTransactionIdentifier</mark>&gt;486250******4467&lt;/<mark>schemeTransactionIdentifier</mark>&gt;
+        &lt;/<mark>storedCredentials</mark>&gt;
+        &lt;<mark>session</mark> id=&quot;bca89802-5e41-4164-8d44-cbdf7f42f76a&quot; shopperIPAddress=&quot;203.0.113.7&quot;/&gt;
+      &lt;/paymentDetails&gt;
+      &lt;shopper&gt;
+        &lt;shopperEmailAddress&gt;shopper@example.com&lt;/shopperEmailAddress&gt;
+        &lt;authenticatedShopperID&gt;279103601&lt;/authenticatedShopperID&gt;
+      &lt;/shopper&gt;
+    &lt;/order&gt;
+  &lt;/submit&gt;
+&lt;/paymentService&gt;</pre><details><summary>Exact body as sent (one line, masked)</summary><pre>&lt;?xml version=&quot;1.0&quot; encoding=&quot;UTF-8&quot;?&gt;
+&lt;!DOCTYPE paymentService PUBLIC &quot;-//Worldpay//DTD Worldpay PaymentService v1//EN&quot; &quot;http://dtd.worldpay.com/paymentService_v1.dtd&quot;&gt;
+&lt;paymentService merchantCode=&quot;UNICITYUSUSDREC&quot; version=&quot;1.4&quot;&gt;&lt;submit&gt;&lt;order orderCode=&quot;pi_demo_1&quot;&gt;&lt;description&gt;279103601-1470216&lt;/description&gt;&lt;amount currencyCode=&quot;USD&quot; exponent=&quot;2&quot; value=&quot;17315&quot;/&gt;&lt;orderContent&gt;&lt;![CDATA[]]&gt;&lt;/orderContent&gt;&lt;paymentDetails&gt;&lt;CARD-SSL&gt;&lt;cardNumber&gt;411111******1111&lt;/cardNumber&gt;&lt;expiryDate&gt;&lt;date month=&quot;08&quot; year=&quot;2031&quot;/&gt;&lt;/expiryDate&gt;&lt;cardHolderName&gt;Ada Lovelace&lt;/cardHolderName&gt;&lt;cardAddress&gt;&lt;address&gt;&lt;address1&gt;1 Main St&lt;/address1&gt;&lt;postalCode&gt;30303&lt;/postalCode&gt;&lt;city&gt;Atlanta&lt;/city&gt;&lt;state&gt;GA&lt;/state&gt;&lt;countryCode&gt;US&lt;/countryCode&gt;&lt;/address&gt;&lt;/cardAddress&gt;&lt;/CARD-SSL&gt;&lt;storedCredentials merchantInitiatedReason=&quot;RECURRING&quot; usage=&quot;USED&quot;&gt;&lt;schemeTransactionIdentifier&gt;486250******4467&lt;/schemeTransactionIdentifier&gt;&lt;/storedCredentials&gt;&lt;session id=&quot;bca89802-5e41-4164-8d44-cbdf7f42f76a&quot; shopperIPAddress=&quot;203.0.113.7&quot;/&gt;&lt;/paymentDetails&gt;&lt;shopper&gt;&lt;shopperEmailAddress&gt;shopper@example.com&lt;/shopperEmailAddress&gt;&lt;authenticatedShopperID&gt;279103601&lt;/authenticatedShopperID&gt;&lt;/shopper&gt;&lt;/order&gt;&lt;/submit&gt;&lt;/paymentService&gt;</pre></details></div></section><section class="sc" id="WP-5"><h3><span class="id">WP-5</span> US phone order (MOTO), plain sale</h3><p class="meta">Account type <b>moto</b> · merchant code or processor id <b>UNICITYUSUSDMOTO</b> · result the code read from the stub reply: <b>approved</b></p><p class="note">Phone order on the MOTO merchant code: a plain sale with cvc. Nothing in the body marks it as a phone order; the merchant code carries that.</p><div class="req"><div class="line"><span class="m">POST</span> <code>https://secure-test.worldpay.com/jsp/merchant/xml/paymentService.jsp</code></div><div class="hd"><div><code>authorization: Basic &lt;XML username:password from the account's encrypted config&gt;</code></div><div><code>content-type: text/xml</code></div></div><pre>&lt;paymentService <mark>merchantCode</mark>=&quot;UNICITYUSUSDMOTO&quot; version=&quot;1.4&quot;&gt;
+  &lt;submit&gt;
+    &lt;order orderCode=&quot;pi_demo_1&quot;&gt;
+      &lt;description&gt;279103601-1470216&lt;/description&gt;
+      &lt;amount currencyCode=&quot;USD&quot; exponent=&quot;2&quot; value=&quot;17315&quot;/&gt;
+      &lt;orderContent/&gt;
+      &lt;paymentDetails&gt;
+        &lt;CARD-SSL&gt;
+          &lt;cardNumber&gt;411111******1111&lt;/cardNumber&gt;
+          &lt;expiryDate&gt;
+            &lt;date month=&quot;08&quot; year=&quot;2031&quot;/&gt;
+          &lt;/expiryDate&gt;
+          &lt;cardHolderName&gt;Ada Lovelace&lt;/cardHolderName&gt;
+          &lt;<mark>cvc</mark>&gt;***&lt;/<mark>cvc</mark>&gt;
+          &lt;cardAddress&gt;
+            &lt;address&gt;
+              &lt;address1&gt;1 Main St&lt;/address1&gt;
+              &lt;postalCode&gt;30303&lt;/postalCode&gt;
+              &lt;city&gt;Atlanta&lt;/city&gt;
+              &lt;state&gt;GA&lt;/state&gt;
+              &lt;countryCode&gt;US&lt;/countryCode&gt;
+            &lt;/address&gt;
+          &lt;/cardAddress&gt;
+        &lt;/CARD-SSL&gt;
+        &lt;<mark>session</mark> id=&quot;c016dc36-3832-4d29-ad76-3d8983e62312&quot; shopperIPAddress=&quot;203.0.113.7&quot;/&gt;
+      &lt;/paymentDetails&gt;
+      &lt;shopper&gt;
+        &lt;shopperEmailAddress&gt;shopper@example.com&lt;/shopperEmailAddress&gt;
+        &lt;authenticatedShopperID&gt;279103601&lt;/authenticatedShopperID&gt;
+      &lt;/shopper&gt;
+    &lt;/order&gt;
+  &lt;/submit&gt;
+&lt;/paymentService&gt;</pre><details><summary>Exact body as sent (one line, masked)</summary><pre>&lt;?xml version=&quot;1.0&quot; encoding=&quot;UTF-8&quot;?&gt;
+&lt;!DOCTYPE paymentService PUBLIC &quot;-//Worldpay//DTD Worldpay PaymentService v1//EN&quot; &quot;http://dtd.worldpay.com/paymentService_v1.dtd&quot;&gt;
+&lt;paymentService merchantCode=&quot;UNICITYUSUSDMOTO&quot; version=&quot;1.4&quot;&gt;&lt;submit&gt;&lt;order orderCode=&quot;pi_demo_1&quot;&gt;&lt;description&gt;279103601-1470216&lt;/description&gt;&lt;amount currencyCode=&quot;USD&quot; exponent=&quot;2&quot; value=&quot;17315&quot;/&gt;&lt;orderContent&gt;&lt;![CDATA[]]&gt;&lt;/orderContent&gt;&lt;paymentDetails&gt;&lt;CARD-SSL&gt;&lt;cardNumber&gt;411111******1111&lt;/cardNumber&gt;&lt;expiryDate&gt;&lt;date month=&quot;08&quot; year=&quot;2031&quot;/&gt;&lt;/expiryDate&gt;&lt;cardHolderName&gt;Ada Lovelace&lt;/cardHolderName&gt;&lt;cvc&gt;***&lt;/cvc&gt;&lt;cardAddress&gt;&lt;address&gt;&lt;address1&gt;1 Main St&lt;/address1&gt;&lt;postalCode&gt;30303&lt;/postalCode&gt;&lt;city&gt;Atlanta&lt;/city&gt;&lt;state&gt;GA&lt;/state&gt;&lt;countryCode&gt;US&lt;/countryCode&gt;&lt;/address&gt;&lt;/cardAddress&gt;&lt;/CARD-SSL&gt;&lt;session id=&quot;c016dc36-3832-4d29-ad76-3d8983e62312&quot; shopperIPAddress=&quot;203.0.113.7&quot;/&gt;&lt;/paymentDetails&gt;&lt;shopper&gt;&lt;shopperEmailAddress&gt;shopper@example.com&lt;/shopperEmailAddress&gt;&lt;authenticatedShopperID&gt;279103601&lt;/authenticatedShopperID&gt;&lt;/shopper&gt;&lt;/order&gt;&lt;/submit&gt;&lt;/paymentService&gt;</pre></details></div></section></section><section id="nmi" class="tab "><p class="toc"><a href="#NMI-1">NMI-1</a> · <a href="#NMI-2">NMI-2</a> · <a href="#NMI-3">NMI-3</a> · <a href="#NMI-4">NMI-4</a></p><section class="sc" id="NMI-1"><h3><span class="id">NMI-1</span> US online card, customer paying once (nuveiusdecom)</h3><p class="meta">Account type <b>ecom</b> · merchant code or processor id <b>nuveiusdecom</b> · result the code read from the stub reply: <b>approved</b></p><p class="note">Customer sale: initiated_by customer, stored_credential_indicator stored, cvv, processor_id nuveiusdecom, test_mode enabled (test accounts only).</p><div class="req"><div class="line"><span class="m">POST</span> <code>https://specializedprocessingsolutions.transactiongateway.com/api/transact.php</code></div><div class="hd"><div><code>content-type: application/x-www-form-urlencoded</code></div></div><table class="kv"><tr><th>Parameter</th><th>Value</th></tr><tr class=""><td><code>password</code></td><td><code>&lt;from the account&#39;s encrypted config&gt;</code></td></tr><tr class=""><td><code>username</code></td><td><code>&lt;from the account&#39;s encrypted config&gt;</code></td></tr><tr class=""><td><code>address1</code></td><td><code>1 Main St</code></td></tr><tr class=""><td><code>address2</code></td><td><code></code></td></tr><tr class=""><td><code>amount</code></td><td><code>173.15</code></td></tr><tr class=""><td><code>ccexp</code></td><td><code>0831</code></td></tr><tr class=""><td><code>ccnumber</code></td><td><code>411111******1111</code></td></tr><tr class=""><td><code>city</code></td><td><code>Atlanta</code></td></tr><tr class=""><td><code>country</code></td><td><code>US</code></td></tr><tr class=""><td><code>currency</code></td><td><code>USD</code></td></tr><tr class=""><td><code>email</code></td><td><code>shopper@example.com</code></td></tr><tr class=""><td><code>first_name</code></td><td><code>Ada</code></td></tr><tr class=""><td><code>ipaddress</code></td><td><code>203.0.113.7</code></td></tr><tr class=""><td><code>last_name</code></td><td><code>Lovelace</code></td></tr><tr class=""><td><code>order_description</code></td><td><code>1470216</code></td></tr><tr class=""><td><code>orderid</code></td><td><code>pi_demo_1</code></td></tr><tr class=""><td><code>payment</code></td><td><code>creditcard</code></td></tr><tr class=""><td><code>state</code></td><td><code>GA</code></td></tr><tr class=""><td><code>type</code></td><td><code>sale</code></td></tr><tr class=""><td><code>zip</code></td><td><code>30303</code></td></tr><tr class="hl"><td><code>initiated_by</code></td><td><code>customer</code></td></tr><tr class="hl"><td><code>stored_credential_indicator</code></td><td><code>stored</code></td></tr><tr class="hl"><td><code>cvv</code></td><td><code>***</code></td></tr><tr class="hl"><td><code>processor_id</code></td><td><code>nuveiusdecom</code></td></tr><tr class="hl"><td><code>test_mode</code></td><td><code>enabled</code></td></tr></table><details><summary>Exact body as sent (one line, masked)</summary><pre>password=&lt;from the account&#x27;s encrypted config&gt;&amp;username=&lt;from the account&#x27;s encrypted config&gt;&amp;address1=1+Main+St&amp;address2=&amp;amount=173.15&amp;ccexp=0831&amp;ccnumber=411111******1111&amp;city=Atlanta&amp;country=US&amp;currency=USD&amp;email=shopper%40example.com&amp;first_name=Ada&amp;ipaddress=203.0.113.7&amp;last_name=Lovelace&amp;order_description=1470216&amp;orderid=pi_demo_1&amp;payment=creditcard&amp;state=GA&amp;type=sale&amp;zip=30303&amp;initiated_by=customer&amp;stored_credential_indicator=stored&amp;cvv=***&amp;processor_id=nuveiusdecom&amp;test_mode=enabled</pre></details></div></section><section class="sc" id="NMI-2"><h3><span class="id">NMI-2</span> US online card, signing up a subscription</h3><p class="meta">Account type <b>ecom</b> · merchant code or processor id <b>nuveiusdecom</b> · result the code read from the stub reply: <b>approved</b></p><p class="note">Subscription signup: the same plus billing_method recurring.</p><div class="req"><div class="line"><span class="m">POST</span> <code>https://specializedprocessingsolutions.transactiongateway.com/api/transact.php</code></div><div class="hd"><div><code>content-type: application/x-www-form-urlencoded</code></div></div><table class="kv"><tr><th>Parameter</th><th>Value</th></tr><tr class=""><td><code>password</code></td><td><code>&lt;from the account&#39;s encrypted config&gt;</code></td></tr><tr class=""><td><code>username</code></td><td><code>&lt;from the account&#39;s encrypted config&gt;</code></td></tr><tr class=""><td><code>address1</code></td><td><code>1 Main St</code></td></tr><tr class=""><td><code>address2</code></td><td><code></code></td></tr><tr class=""><td><code>amount</code></td><td><code>173.15</code></td></tr><tr class=""><td><code>ccexp</code></td><td><code>0831</code></td></tr><tr class=""><td><code>ccnumber</code></td><td><code>411111******1111</code></td></tr><tr class=""><td><code>city</code></td><td><code>Atlanta</code></td></tr><tr class=""><td><code>country</code></td><td><code>US</code></td></tr><tr class=""><td><code>currency</code></td><td><code>USD</code></td></tr><tr class=""><td><code>email</code></td><td><code>shopper@example.com</code></td></tr><tr class=""><td><code>first_name</code></td><td><code>Ada</code></td></tr><tr class=""><td><code>ipaddress</code></td><td><code>203.0.113.7</code></td></tr><tr class=""><td><code>last_name</code></td><td><code>Lovelace</code></td></tr><tr class=""><td><code>order_description</code></td><td><code>1470216</code></td></tr><tr class=""><td><code>orderid</code></td><td><code>pi_demo_1</code></td></tr><tr class=""><td><code>payment</code></td><td><code>creditcard</code></td></tr><tr class=""><td><code>state</code></td><td><code>GA</code></td></tr><tr class=""><td><code>type</code></td><td><code>sale</code></td></tr><tr class=""><td><code>zip</code></td><td><code>30303</code></td></tr><tr class="hl"><td><code>initiated_by</code></td><td><code>customer</code></td></tr><tr class="hl"><td><code>stored_credential_indicator</code></td><td><code>stored</code></td></tr><tr class="hl"><td><code>billing_method</code></td><td><code>recurring</code></td></tr><tr class="hl"><td><code>cvv</code></td><td><code>***</code></td></tr><tr class="hl"><td><code>processor_id</code></td><td><code>nuveiusdecom</code></td></tr><tr class="hl"><td><code>test_mode</code></td><td><code>enabled</code></td></tr></table><details><summary>Exact body as sent (one line, masked)</summary><pre>password=&lt;from the account&#x27;s encrypted config&gt;&amp;username=&lt;from the account&#x27;s encrypted config&gt;&amp;address1=1+Main+St&amp;address2=&amp;amount=173.15&amp;ccexp=0831&amp;ccnumber=411111******1111&amp;city=Atlanta&amp;country=US&amp;currency=USD&amp;email=shopper%40example.com&amp;first_name=Ada&amp;ipaddress=203.0.113.7&amp;last_name=Lovelace&amp;order_description=1470216&amp;orderid=pi_demo_1&amp;payment=creditcard&amp;state=GA&amp;type=sale&amp;zip=30303&amp;initiated_by=customer&amp;stored_credential_indicator=stored&amp;billing_method=recurring&amp;cvv=***&amp;processor_id=nuveiusdecom&amp;test_mode=enabled</pre></details></div></section><section class="sc" id="NMI-3"><h3><span class="id">NMI-3</span> US merchant rebill against an anchor (nuveiusdmoto)</h3><p class="meta">Account type <b>rec</b> · merchant code or processor id <b>nuveiusdmoto</b> · result the code read from the stub reply: <b>approved</b></p><p class="note">Merchant rebill: initiated_by merchant, stored_credential_indicator used, initial_transaction_id (NMI&#x27;s own transaction id), billing_method recurring, no cvv, processor_id nuveiusdmoto.</p><div class="req"><div class="line"><span class="m">POST</span> <code>https://specializedprocessingsolutions.transactiongateway.com/api/transact.php</code></div><div class="hd"><div><code>content-type: application/x-www-form-urlencoded</code></div></div><table class="kv"><tr><th>Parameter</th><th>Value</th></tr><tr class=""><td><code>password</code></td><td><code>&lt;from the account&#39;s encrypted config&gt;</code></td></tr><tr class=""><td><code>username</code></td><td><code>&lt;from the account&#39;s encrypted config&gt;</code></td></tr><tr class=""><td><code>address1</code></td><td><code>1 Main St</code></td></tr><tr class=""><td><code>address2</code></td><td><code></code></td></tr><tr class=""><td><code>amount</code></td><td><code>173.15</code></td></tr><tr class=""><td><code>ccexp</code></td><td><code>0831</code></td></tr><tr class=""><td><code>ccnumber</code></td><td><code>411111******1111</code></td></tr><tr class=""><td><code>city</code></td><td><code>Atlanta</code></td></tr><tr class=""><td><code>country</code></td><td><code>US</code></td></tr><tr class=""><td><code>currency</code></td><td><code>USD</code></td></tr><tr class=""><td><code>email</code></td><td><code>shopper@example.com</code></td></tr><tr class=""><td><code>first_name</code></td><td><code>Ada</code></td></tr><tr class=""><td><code>ipaddress</code></td><td><code>203.0.113.7</code></td></tr><tr class=""><td><code>last_name</code></td><td><code>Lovelace</code></td></tr><tr class=""><td><code>order_description</code></td><td><code>1470216</code></td></tr><tr class=""><td><code>orderid</code></td><td><code>pi_demo_1</code></td></tr><tr class=""><td><code>payment</code></td><td><code>creditcard</code></td></tr><tr class=""><td><code>state</code></td><td><code>GA</code></td></tr><tr class=""><td><code>type</code></td><td><code>sale</code></td></tr><tr class=""><td><code>zip</code></td><td><code>30303</code></td></tr><tr class="hl"><td><code>billing_method</code></td><td><code>recurring</code></td></tr><tr class="hl"><td><code>initial_transaction_id</code></td><td><code>12378909002</code></td></tr><tr class="hl"><td><code>initiated_by</code></td><td><code>merchant</code></td></tr><tr class="hl"><td><code>stored_credential_indicator</code></td><td><code>used</code></td></tr><tr class="hl"><td><code>processor_id</code></td><td><code>nuveiusdmoto</code></td></tr><tr class="hl"><td><code>test_mode</code></td><td><code>enabled</code></td></tr></table><details><summary>Exact body as sent (one line, masked)</summary><pre>password=&lt;from the account&#x27;s encrypted config&gt;&amp;username=&lt;from the account&#x27;s encrypted config&gt;&amp;address1=1+Main+St&amp;address2=&amp;amount=173.15&amp;ccexp=0831&amp;ccnumber=411111******1111&amp;city=Atlanta&amp;country=US&amp;currency=USD&amp;email=shopper%40example.com&amp;first_name=Ada&amp;ipaddress=203.0.113.7&amp;last_name=Lovelace&amp;order_description=1470216&amp;orderid=pi_demo_1&amp;payment=creditcard&amp;state=GA&amp;type=sale&amp;zip=30303&amp;billing_method=recurring&amp;initial_transaction_id=12378909002&amp;initiated_by=merchant&amp;stored_credential_indicator=used&amp;processor_id=nuveiusdmoto&amp;test_mode=enabled</pre></details></div></section><section class="sc" id="NMI-4"><h3><span class="id">NMI-4</span> US phone order (MOTO), plain sale (unicityecom in the seed)</h3><p class="meta">Account type <b>moto</b> · merchant code or processor id <b>unicityecom</b> · result the code read from the stub reply: <b>approved</b></p><p class="note">Phone order: no stored-credential parameters at all; processor_id unicityecom is what the test seed uses. Which processor id production phone orders use is set in the portal and is NOT ESTABLISHED here.</p><div class="req"><div class="line"><span class="m">POST</span> <code>https://specializedprocessingsolutions.transactiongateway.com/api/transact.php</code></div><div class="hd"><div><code>content-type: application/x-www-form-urlencoded</code></div></div><table class="kv"><tr><th>Parameter</th><th>Value</th></tr><tr class=""><td><code>password</code></td><td><code>&lt;from the account&#39;s encrypted config&gt;</code></td></tr><tr class=""><td><code>username</code></td><td><code>&lt;from the account&#39;s encrypted config&gt;</code></td></tr><tr class=""><td><code>address1</code></td><td><code>1 Main St</code></td></tr><tr class=""><td><code>address2</code></td><td><code></code></td></tr><tr class=""><td><code>amount</code></td><td><code>173.15</code></td></tr><tr class=""><td><code>ccexp</code></td><td><code>0831</code></td></tr><tr class=""><td><code>ccnumber</code></td><td><code>411111******1111</code></td></tr><tr class=""><td><code>city</code></td><td><code>Atlanta</code></td></tr><tr class=""><td><code>country</code></td><td><code>US</code></td></tr><tr class=""><td><code>currency</code></td><td><code>USD</code></td></tr><tr class=""><td><code>email</code></td><td><code>shopper@example.com</code></td></tr><tr class=""><td><code>first_name</code></td><td><code>Ada</code></td></tr><tr class=""><td><code>ipaddress</code></td><td><code>203.0.113.7</code></td></tr><tr class=""><td><code>last_name</code></td><td><code>Lovelace</code></td></tr><tr class=""><td><code>order_description</code></td><td><code>1470216</code></td></tr><tr class=""><td><code>orderid</code></td><td><code>pi_demo_1</code></td></tr><tr class=""><td><code>payment</code></td><td><code>creditcard</code></td></tr><tr class=""><td><code>state</code></td><td><code>GA</code></td></tr><tr class=""><td><code>type</code></td><td><code>sale</code></td></tr><tr class=""><td><code>zip</code></td><td><code>30303</code></td></tr><tr class="hl"><td><code>cvv</code></td><td><code>***</code></td></tr><tr class="hl"><td><code>processor_id</code></td><td><code>unicityecom</code></td></tr><tr class="hl"><td><code>test_mode</code></td><td><code>enabled</code></td></tr></table><details><summary>Exact body as sent (one line, masked)</summary><pre>password=&lt;from the account&#x27;s encrypted config&gt;&amp;username=&lt;from the account&#x27;s encrypted config&gt;&amp;address1=1+Main+St&amp;address2=&amp;amount=173.15&amp;ccexp=0831&amp;ccnumber=411111******1111&amp;city=Atlanta&amp;country=US&amp;currency=USD&amp;email=shopper%40example.com&amp;first_name=Ada&amp;ipaddress=203.0.113.7&amp;last_name=Lovelace&amp;order_description=1470216&amp;orderid=pi_demo_1&amp;payment=creditcard&amp;state=GA&amp;type=sale&amp;zip=30303&amp;cvv=***&amp;processor_id=unicityecom&amp;test_mode=enabled</pre></details></div></section></section><section id="nuvei" class="tab "><p class="toc"><a href="#NUV-1">NUV-1</a> · <a href="#NUV-2">NUV-2</a></p><section class="sc" id="NUV-1"><h3><span class="id">NUV-1</span> Canada online card, customer paying once (session token, then payment)</h3><p class="meta">Account type <b>ecom</b> · merchant code or processor id <b>311768</b> · result the code read from the stub reply: <b>approved</b></p><p class="note">Two calls: a session token (signed checksum), then payment.do with storedCredentialsMode 0, CVV, isRebilling 0 and a userTokenId hashed from the customer reference.</p><div class="req"><div class="line"><span class="m">POST</span> <code>https://ppp-test.nuvei.com/ppp/api/v1/getSessionToken.do</code> (call 1 of 2)</div><div class="hd"><div><code>content-type: application/json</code></div></div><pre>{
+  &quot;checksum&quot;: &quot;9ff36aeca9f17bbedbe84aeae18c17ba9851c3718a9db346b396f5b577ecb900&quot;,
+  &quot;clientRequestId&quot;: &quot;21e8bd2b8215c6d0f53ca87a6c2d87ff&quot;,
+  &quot;merchantId&quot;: &quot;NUVEI_MERCHANT_ID&quot;,
+  &quot;merchantSiteId&quot;: &quot;311768&quot;,
+  &quot;timeStamp&quot;: &quot;202611******3000&quot;
+}</pre><details><summary>Exact body as sent (one line, masked)</summary><pre>{&quot;checksum&quot;:&quot;9ff36aeca9f17bbedbe84aeae18c17ba9851c3718a9db346b396f5b577ecb900&quot;,&quot;clientRequestId&quot;:&quot;21e8bd2b8215c6d0f53ca87a6c2d87ff&quot;,&quot;merchantId&quot;:&quot;NUVEI_MERCHANT_ID&quot;,&quot;merchantSiteId&quot;:&quot;311768&quot;,&quot;timeStamp&quot;:&quot;202611******3000&quot;}</pre></details></div><div class="req"><div class="line"><span class="m">POST</span> <code>https://ppp-test.nuvei.com/ppp/api/v1/payment.do</code> (call 2 of 2)</div><div class="hd"><div><code>content-type: application/json</code></div></div><pre>{
+  &quot;amount&quot;: &quot;173.15&quot;,
+  &quot;billingAddress&quot;: {
+    &quot;address&quot;: &quot;1 King St W&quot;,
+    &quot;city&quot;: &quot;Toronto&quot;,
+    &quot;country&quot;: &quot;CA&quot;,
+    &quot;email&quot;: &quot;shopper@example.com&quot;,
+    &quot;firstName&quot;: &quot;Ada&quot;,
+    &quot;lastName&quot;: &quot;Lovelace&quot;,
+    &quot;state&quot;: &quot;ON&quot;,
+    &quot;zip&quot;: &quot;M5H 1A1&quot;
+  },
+  &quot;checksum&quot;: &quot;6ab1a109aaa6005947b79c069f377cfbccc1eb088b30db25a7767fa4210d5dc5&quot;,
+  &quot;clientRequestId&quot;: &quot;de562211a7d32ab04a4e078a382265c2&quot;,
+  &quot;clientUniqueId&quot;: &quot;pi_demo_1&quot;,
+  &quot;currency&quot;: &quot;CAD&quot;,
+  &quot;deviceDetails&quot;: {
+    &quot;ipAddress&quot;: &quot;203.0.113.7&quot;
+  },
+  &quot;<mark>isRebilling</mark>&quot;: &quot;0&quot;,
+  &quot;merchantId&quot;: &quot;NUVEI_MERCHANT_ID&quot;,
+  &quot;merchantSiteId&quot;: &quot;311768&quot;,
+  &quot;paymentOption&quot;: {
+    &quot;card&quot;: {
+      &quot;cardHolderName&quot;: &quot;Ada Lovelace&quot;,
+      &quot;cardNumber&quot;: &quot;411111******1111&quot;,
+      &quot;expirationMonth&quot;: &quot;08&quot;,
+      &quot;expirationYear&quot;: &quot;2031&quot;,
+      &quot;<mark>storedCredentials</mark>&quot;: {
+        &quot;<mark>storedCredentialsMode</mark>&quot;: &quot;0&quot;
+      },
+      &quot;<mark>CVV</mark>&quot;: &quot;***&quot;
+    }
+  },
+  &quot;sessionToken&quot;: &quot;<mark>session</mark>-token-from-nuvei&quot;,
+  &quot;timeStamp&quot;: &quot;202611******3000&quot;,
+  &quot;transactionType&quot;: &quot;Sale&quot;,
+  &quot;<mark>userTokenId</mark>&quot;: &quot;65da381109d0d3787c3387ed1a9637b8&quot;
+}</pre><details><summary>Exact body as sent (one line, masked)</summary><pre>{&quot;amount&quot;:&quot;173.15&quot;,&quot;billingAddress&quot;:{&quot;address&quot;:&quot;1 King St W&quot;,&quot;city&quot;:&quot;Toronto&quot;,&quot;country&quot;:&quot;CA&quot;,&quot;email&quot;:&quot;shopper@example.com&quot;,&quot;firstName&quot;:&quot;Ada&quot;,&quot;lastName&quot;:&quot;Lovelace&quot;,&quot;state&quot;:&quot;ON&quot;,&quot;zip&quot;:&quot;M5H 1A1&quot;},&quot;checksum&quot;:&quot;6ab1a109aaa6005947b79c069f377cfbccc1eb088b30db25a7767fa4210d5dc5&quot;,&quot;clientRequestId&quot;:&quot;de562211a7d32ab04a4e078a382265c2&quot;,&quot;clientUniqueId&quot;:&quot;pi_demo_1&quot;,&quot;currency&quot;:&quot;CAD&quot;,&quot;deviceDetails&quot;:{&quot;ipAddress&quot;:&quot;203.0.113.7&quot;},&quot;isRebilling&quot;:&quot;0&quot;,&quot;merchantId&quot;:&quot;NUVEI_MERCHANT_ID&quot;,&quot;merchantSiteId&quot;:&quot;311768&quot;,&quot;paymentOption&quot;:{&quot;card&quot;:{&quot;cardHolderName&quot;:&quot;Ada Lovelace&quot;,&quot;cardNumber&quot;:&quot;411111******1111&quot;,&quot;expirationMonth&quot;:&quot;08&quot;,&quot;expirationYear&quot;:&quot;2031&quot;,&quot;storedCredentials&quot;:{&quot;storedCredentialsMode&quot;:&quot;0&quot;},&quot;CVV&quot;:&quot;***&quot;}},&quot;sessionToken&quot;:&quot;session-token-from-nuvei&quot;,&quot;timeStamp&quot;:&quot;202611******3000&quot;,&quot;transactionType&quot;:&quot;Sale&quot;,&quot;userTokenId&quot;:&quot;65da381109d0d3787c3387ed1a9637b8&quot;}</pre></details></div></section><section class="sc" id="NUV-2"><h3><span class="id">NUV-2</span> Canada merchant rebill against an anchor</h3><p class="meta">Account type <b>ecom</b> · merchant code or processor id <b>311768</b> · result the code read from the stub reply: <b>approved</b></p><p class="note">Rebill: storedCredentialsMode 1, isRebilling 1, rebillingType Recurring, relatedTransactionId (Nuvei&#x27;s own transaction id), no CVV.</p><div class="req"><div class="line"><span class="m">POST</span> <code>https://ppp-test.nuvei.com/ppp/api/v1/getSessionToken.do</code> (call 1 of 2)</div><div class="hd"><div><code>content-type: application/json</code></div></div><pre>{
+  &quot;checksum&quot;: &quot;3003c86fd98cc3ac098b183ddd4cb21e0b23abb40e2abfa0bc0ae34c1186e45b&quot;,
+  &quot;clientRequestId&quot;: &quot;debdb34ec4522c2e59118f91a2caf34b&quot;,
+  &quot;merchantId&quot;: &quot;NUVEI_MERCHANT_ID&quot;,
+  &quot;merchantSiteId&quot;: &quot;311768&quot;,
+  &quot;timeStamp&quot;: &quot;202611******3000&quot;
+}</pre><details><summary>Exact body as sent (one line, masked)</summary><pre>{&quot;checksum&quot;:&quot;3003c86fd98cc3ac098b183ddd4cb21e0b23abb40e2abfa0bc0ae34c1186e45b&quot;,&quot;clientRequestId&quot;:&quot;debdb34ec4522c2e59118f91a2caf34b&quot;,&quot;merchantId&quot;:&quot;NUVEI_MERCHANT_ID&quot;,&quot;merchantSiteId&quot;:&quot;311768&quot;,&quot;timeStamp&quot;:&quot;202611******3000&quot;}</pre></details></div><div class="req"><div class="line"><span class="m">POST</span> <code>https://ppp-test.nuvei.com/ppp/api/v1/payment.do</code> (call 2 of 2)</div><div class="hd"><div><code>content-type: application/json</code></div></div><pre>{
+  &quot;amount&quot;: &quot;173.15&quot;,
+  &quot;billingAddress&quot;: {
+    &quot;address&quot;: &quot;1 King St W&quot;,
+    &quot;city&quot;: &quot;Toronto&quot;,
+    &quot;country&quot;: &quot;CA&quot;,
+    &quot;email&quot;: &quot;shopper@example.com&quot;,
+    &quot;firstName&quot;: &quot;Ada&quot;,
+    &quot;lastName&quot;: &quot;Lovelace&quot;,
+    &quot;state&quot;: &quot;ON&quot;,
+    &quot;zip&quot;: &quot;M5H 1A1&quot;
+  },
+  &quot;checksum&quot;: &quot;45df9c879284e717f4e45ac49c84ccdbd71b3530b55292aebdc6e7bc93b58468&quot;,
+  &quot;clientRequestId&quot;: &quot;d34edb61dc2714fecee86969996b3613&quot;,
+  &quot;clientUniqueId&quot;: &quot;pi_demo_1&quot;,
+  &quot;currency&quot;: &quot;CAD&quot;,
+  &quot;deviceDetails&quot;: {
+    &quot;ipAddress&quot;: &quot;203.0.113.7&quot;
+  },
+  &quot;<mark>isRebilling</mark>&quot;: &quot;1&quot;,
+  &quot;merchantId&quot;: &quot;NUVEI_MERCHANT_ID&quot;,
+  &quot;merchantSiteId&quot;: &quot;311768&quot;,
+  &quot;paymentOption&quot;: {
+    &quot;card&quot;: {
+      &quot;cardHolderName&quot;: &quot;Ada Lovelace&quot;,
+      &quot;cardNumber&quot;: &quot;411111******1111&quot;,
+      &quot;expirationMonth&quot;: &quot;08&quot;,
+      &quot;expirationYear&quot;: &quot;2031&quot;,
+      &quot;<mark>storedCredentials</mark>&quot;: {
+        &quot;<mark>storedCredentialsMode</mark>&quot;: &quot;1&quot;
+      }
+    }
+  },
+  &quot;<mark>rebillingType</mark>&quot;: &quot;Recurring&quot;,
+  &quot;<mark>relatedTransactionId</mark>&quot;: &quot;711000******2345&quot;,
+  &quot;sessionToken&quot;: &quot;<mark>session</mark>-token-from-nuvei&quot;,
+  &quot;timeStamp&quot;: &quot;202611******3000&quot;,
+  &quot;transactionType&quot;: &quot;Sale&quot;,
+  &quot;<mark>userTokenId</mark>&quot;: &quot;65da381109d0d3787c3387ed1a9637b8&quot;
+}</pre><details><summary>Exact body as sent (one line, masked)</summary><pre>{&quot;amount&quot;:&quot;173.15&quot;,&quot;billingAddress&quot;:{&quot;address&quot;:&quot;1 King St W&quot;,&quot;city&quot;:&quot;Toronto&quot;,&quot;country&quot;:&quot;CA&quot;,&quot;email&quot;:&quot;shopper@example.com&quot;,&quot;firstName&quot;:&quot;Ada&quot;,&quot;lastName&quot;:&quot;Lovelace&quot;,&quot;state&quot;:&quot;ON&quot;,&quot;zip&quot;:&quot;M5H 1A1&quot;},&quot;checksum&quot;:&quot;45df9c879284e717f4e45ac49c84ccdbd71b3530b55292aebdc6e7bc93b58468&quot;,&quot;clientRequestId&quot;:&quot;d34edb61dc2714fecee86969996b3613&quot;,&quot;clientUniqueId&quot;:&quot;pi_demo_1&quot;,&quot;currency&quot;:&quot;CAD&quot;,&quot;deviceDetails&quot;:{&quot;ipAddress&quot;:&quot;203.0.113.7&quot;},&quot;isRebilling&quot;:&quot;1&quot;,&quot;merchantId&quot;:&quot;NUVEI_MERCHANT_ID&quot;,&quot;merchantSiteId&quot;:&quot;311768&quot;,&quot;paymentOption&quot;:{&quot;card&quot;:{&quot;cardHolderName&quot;:&quot;Ada Lovelace&quot;,&quot;cardNumber&quot;:&quot;411111******1111&quot;,&quot;expirationMonth&quot;:&quot;08&quot;,&quot;expirationYear&quot;:&quot;2031&quot;,&quot;storedCredentials&quot;:{&quot;storedCredentialsMode&quot;:&quot;1&quot;}}},&quot;rebillingType&quot;:&quot;Recurring&quot;,&quot;relatedTransactionId&quot;:&quot;711000******2345&quot;,&quot;sessionToken&quot;:&quot;session-token-from-nuvei&quot;,&quot;timeStamp&quot;:&quot;202611******3000&quot;,&quot;transactionType&quot;:&quot;Sale&quot;,&quot;userTokenId&quot;:&quot;65da381109d0d3787c3387ed1a9637b8&quot;}</pre></details></div></section></section><script>
+const bs=document.querySelectorAll('nav button'),ss=document.querySelectorAll('.tab');
+function show(id){bs.forEach(b=>b.classList.toggle('on',b.dataset.t===id));ss.forEach(s=>s.classList.toggle('on',s.id===id));}
+bs.forEach(b=>b.onclick=()=>show(b.dataset.t));
+const r=document.documentElement,L=document.getElementById('light'),Dk=document.getElementById('dark');
+function set(t){r.setAttribute('data-theme',t);L.setAttribute('aria-pressed',t!=='dark');Dk.setAttribute('aria-pressed',t==='dark');try{localStorage.setItem('fm-stack-theme',t)}catch(e){}}
+set(r.getAttribute('data-theme')||'light');L.onclick=()=>set('light');Dk.onclick=()=>set('dark');
+</script></body></html>
