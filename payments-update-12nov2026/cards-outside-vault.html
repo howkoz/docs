@@ -1,0 +1,150 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="dark">
+<head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1"><title>Card numbers outside the vault</title>
+<style>:root{--bg:#070b16;--bg2:#0d1426;--panel:#121a30;--panel2:#18223d;--border:#263354;--ink:#eef2fb;--dim:#9aa8c4;--mute:#6b7a99;
+--today:#8fa3cc;--good:#34d399;--accent:#60a5fa;--warn:#fbbf24;--bad:#f87171;--violet:#c084fc;--shadow:0 10px 40px rgba(0,0,0,.45)}
+html[data-theme="light"]{--bg:#f4f6fb;--bg2:#ffffff;--panel:#ffffff;--panel2:#f1f5f9;--border:#d5dceb;--ink:#0f172a;--dim:#475569;--mute:#7c8aa3;
+--today:#64748b;--good:#0f8a6a;--accent:#2563eb;--warn:#b45309;--bad:#dc2626;--violet:#7c3aed;--shadow:0 10px 30px rgba(15,23,42,.12)}
+*{box-sizing:border-box}
+body{margin:0;background:radial-gradient(1200px 600px at 80% -10%,var(--bg2),var(--bg));background-attachment:fixed;color:var(--ink);font-family:"Segoe UI",system-ui,Arial,sans-serif;min-height:100vh}
+a{color:var(--accent)}
+.bar{position:fixed;top:0;left:0;right:0;z-index:50;background:color-mix(in srgb,var(--bg) 88%,transparent);backdrop-filter:blur(10px);border-bottom:1px solid var(--border);display:flex;align-items:center;gap:14px;padding:10px 22px}
+.bar .ttl{font-size:13px;color:var(--mute);text-transform:uppercase;letter-spacing:.12em;flex:1}
+.chip{border:1px solid var(--border);background:var(--panel);color:var(--dim);padding:6px 13px;border-radius:999px;font-size:13px;font-weight:600;cursor:pointer;text-decoration:none;transition:.15s}
+.chip:hover{color:var(--ink);border-color:var(--accent)}
+.theme{display:flex;border:1px solid var(--border);border-radius:999px;overflow:hidden}
+.theme button{background:transparent;border:0;color:var(--dim);padding:6px 12px;font-size:12px;font-weight:600;cursor:pointer}
+.theme button.on{background:var(--panel2);color:var(--ink)}
+main{max-width:1780px;margin:0 auto;padding:74px 26px 40px}
+h1{font-size:38px;margin:6px 0 4px;letter-spacing:-.02em}
+h1 span{background:linear-gradient(90deg,var(--accent),var(--good));-webkit-background-clip:text;background-clip:text;color:transparent}
+.sub{color:var(--dim);font-size:16px;margin:0 0 18px;max-width:1100px}
+h2.sec{font-size:13px;color:var(--mute);text-transform:uppercase;letter-spacing:.14em;margin:28px 0 10px}
+.grid4{display:grid;grid-template-columns:repeat(4,1fr);gap:14px}.grid3{display:grid;grid-template-columns:repeat(3,1fr);gap:14px}.grid2{display:grid;grid-template-columns:1fr 1fr;gap:14px}
+.stat{background:var(--panel);border:1px solid var(--border);border-radius:16px;padding:18px 20px;box-shadow:var(--shadow)}
+.stat .k{font-size:12px;color:var(--mute);text-transform:uppercase;letter-spacing:.1em}
+.stat .v{font-size:42px;font-weight:800;letter-spacing:-.02em;margin:4px 0 2px;font-variant-numeric:tabular-nums}
+.stat .n{font-size:14px;color:var(--dim)}
+.card{background:var(--panel);border:1px solid var(--border);border-radius:16px;padding:18px 20px;box-shadow:var(--shadow)}
+.card h3{margin:0 0 2px;font-size:18px}.card .cs{color:var(--dim);font-size:13.5px;margin-bottom:10px}
+.c-good{color:var(--good)}.c-warn{color:var(--warn)}.c-bad{color:var(--bad)}.c-acc{color:var(--accent)}.c-vio{color:var(--violet)}
+.pbar{display:flex;height:46px;border-radius:10px;overflow:hidden;gap:2px;margin:6px 0}
+.pbar div{display:flex;align-items:center;justify-content:center;font-weight:700;font-size:14px;color:#06101c;white-space:nowrap;overflow:hidden;min-width:0;animation:grow .9s ease both;transform-origin:left}
+@keyframes grow{from{transform:scaleX(0)}to{transform:scaleX(1)}}
+.b-good{background:var(--good)}.b-warn{background:var(--warn)}.b-bad{background:var(--bad)}.b-today{background:var(--today)}.b-acc{background:var(--accent)}.b-vio{background:var(--violet)}
+table{width:100%;border-collapse:collapse;font-size:14px;font-variant-numeric:tabular-nums}
+th{text-align:left;color:var(--mute);font-size:11.5px;text-transform:uppercase;letter-spacing:.06em;padding:8px 10px;border-bottom:1px solid var(--border)}
+td{padding:9px 10px;border-bottom:1px solid var(--border);vertical-align:top}td.r,th.r{text-align:right;white-space:nowrap}
+tr:last-child td{border-bottom:0}
+.hb{height:10px;border-radius:0 4px 4px 0;display:inline-block;vertical-align:middle;min-width:2px}
+.pts{list-style:none;margin:0;padding:0}.pts li{padding:9px 0 9px 26px;border-bottom:1px solid var(--border);position:relative;font-size:15px;line-height:1.4;color:var(--dim)}
+.pts li:last-child{border:0}.pts li:before{content:"";position:absolute;left:4px;top:16px;width:9px;height:9px;border-radius:50%;background:var(--accent)}
+.pts b{color:var(--ink)}
+.note{background:var(--panel2);border:1px solid var(--border);border-left:4px solid var(--warn);border-radius:10px;padding:12px 16px;color:var(--dim);font-size:13.5px;line-height:1.5;margin-top:14px}
+.note b{color:var(--ink)}
+.stages{display:grid;grid-template-columns:repeat(4,1fr);gap:10px}
+.stage{background:var(--panel2);border:1px solid var(--border);border-radius:12px;overflow:hidden;position:relative}
+.stage .hd{padding:8px 12px;font-weight:800;font-size:13px;color:#06101c}.stage .bd{padding:12px}
+.stage .t{font-weight:700;font-size:15px}.stage .c{font-size:28px;font-weight:800;margin:6px 0;font-variant-numeric:tabular-nums}.stage .d{font-size:13px;color:var(--dim);line-height:1.45}
+.flow{display:grid;grid-template-columns:1fr 34px 1fr 34px 1fr;gap:0;align-items:stretch}
+.flow .box{background:var(--panel2);border:1px solid var(--border);border-radius:12px;padding:12px 14px}
+.flow .box h4{margin:0 0 8px;font-size:12px;color:var(--mute);text-transform:uppercase;letter-spacing:.1em}
+.flow .it{font-size:13.5px;padding:6px 0;border-bottom:1px solid var(--border);color:var(--dim)}.flow .it:last-child{border:0}.flow .it b{color:var(--ink)}
+.flow .ar{display:flex;align-items:center;justify-content:center;color:var(--accent);font-size:22px}
+.tip{position:fixed;z-index:99;pointer-events:none;background:var(--panel2);border:1px solid var(--border);border-radius:10px;padding:8px 12px;font-size:13px;line-height:1.45;box-shadow:var(--shadow);display:none;max-width:340px}
+svg text{fill:var(--mute);font-size:12px;font-family:inherit}
+.foot{color:var(--mute);font-size:12px;margin-top:26px;line-height:1.6}
+/* front page */
+.stops{display:grid;grid-template-columns:repeat(4,1fr);gap:16px;align-items:stretch}
+.stop{background:linear-gradient(170deg,color-mix(in srgb,var(--c) 9%,var(--panel)),var(--panel));border:1.5px solid color-mix(in srgb,var(--c) 70%,transparent);border-radius:18px;padding:22px;display:flex;flex-direction:column;box-shadow:var(--shadow);transition:.2s}
+.stop:hover{transform:translateY(-4px);box-shadow:0 16px 50px color-mix(in srgb,var(--c) 28%,transparent)}
+.stop .lb{font-size:12.5px;font-weight:800;letter-spacing:.1em;color:var(--c);text-transform:uppercase}
+.stop h3{margin:6px 0 4px;font-size:21px}
+.stop .big{font-size:50px;font-weight:800;letter-spacing:-.02em;color:var(--c);line-height:1.05;margin:6px 0 4px;font-variant-numeric:tabular-nums}
+.stop .sb{color:var(--dim);font-size:15px;line-height:1.4;min-height:44px}
+.stop .tg{font-size:13px;color:var(--dim);font-weight:600}
+.stop .viz{margin:14px 0 6px;background:var(--panel2);border:1px solid var(--border);border-radius:12px;padding:12px}
+.stop .vt{font-size:11px;color:var(--mute);text-transform:uppercase;letter-spacing:.1em;margin-bottom:6px}
+.stop ul{list-style:none;margin:10px 0 0;padding:0}.stop li{position:relative;padding:6px 0 6px 20px;font-size:14.5px;color:var(--dim);line-height:1.4}
+.stop li:before{content:"";position:absolute;left:2px;top:13px;width:8px;height:8px;border-radius:50%;background:var(--c)}
+.stop .ask{margin-top:auto;padding-top:14px}.stop .ask .k{font-size:11px;color:var(--mute);text-transform:uppercase;letter-spacing:.1em}
+.stop .ask .a{font-size:15.5px;font-weight:700;margin:2px 0 14px}
+.btn{display:inline-block;background:var(--c);color:#06101c;font-weight:800;font-size:15px;padding:11px 18px;border-radius:11px;text-decoration:none;box-shadow:0 6px 22px color-mix(in srgb,var(--c) 40%,transparent)}
+.btn:hover{filter:brightness(1.1)}.btn2{font-size:13px;color:var(--dim);margin-left:12px}
+.asks{margin-top:16px;background:var(--panel);border:1px solid var(--border);border-radius:18px;padding:16px 22px;box-shadow:var(--shadow)}
+.asks .at{font-size:12.5px;font-weight:800;letter-spacing:.12em;text-transform:uppercase;color:var(--mute);margin-bottom:10px}
+.asks .ag{display:grid;grid-template-columns:repeat(4,1fr);gap:16px}
+.aq{display:flex;gap:12px;align-items:flex-start;border-left:3px solid var(--c);padding:4px 0 4px 14px}
+.aq .an{flex:none;width:30px;height:30px;border-radius:50%;background:var(--c);color:#06101c;font-weight:800;display:flex;align-items:center;justify-content:center;font-size:15px}
+.aq b{display:block;font-size:16px;line-height:1.3}.aq small{display:block;color:var(--dim);font-size:12.5px;margin-top:3px}
+@media(max-width:1300px){.asks .ag{grid-template-columns:repeat(2,1fr)}}
+.mini{display:flex;gap:10px;margin-top:8px}.mini div{flex:1;font-size:12px;color:var(--dim)}.mini b{display:block;font-size:17px;color:var(--ink);font-variant-numeric:tabular-nums}
+.pill{display:inline-flex;align-items:center;gap:6px;border:1px solid var(--border);border-radius:999px;padding:5px 11px;font-size:13px;font-weight:700;margin:0 6px 6px 0;background:var(--panel)}
+.dot{width:11px;height:11px;border-radius:50%;display:inline-block}
+@media(max-width:1300px){.stops,.grid4,.stages{grid-template-columns:repeat(2,1fr)}.grid2,.grid3{grid-template-columns:1fr}.flow{grid-template-columns:1fr}.flow .ar{transform:rotate(90deg);padding:4px}}
+@media print{.bar{display:none}}
+</style></head>
+<body>
+<div class="bar"><a class="chip" href="index.html">&larr; Back to the demo</a><span class="ttl">Stop 3 &middot; Card numbers outside the vault</span>
+<div class="theme"><button id="thL">Light</button><button id="thD">Dark</button></div></div>
+<main>
+<h1>Card numbers outside the vault: <span>where they sit, what to do</span></h1>
+<p class="sub">Full card numbers that can be read outside the card vault, counted on 6 November 2026. This page shows counts only: no card number, and no server, table or column name.</p>
+<div class="grid4">
+<div class="stat"><div class="k">Different cards, readable today</div><div class="v ">1.13M</div><div class="n">1,128,817, counted once across every place</div></div>
+<div class="stat"><div class="k">Stored copies</div><div class="v c-bad">7.13M</div><div class="n">7,126,573 rows, each one a full card number</div></div>
+<div class="stat"><div class="k">Places</div><div class="v c-warn">68</div><div class="n">5 databases on 4 servers</div></div>
+<div class="stat"><div class="k">Rows written in 2025</div><div class="v c-bad">2,673</div><div class="n">something is still writing them</div></div>
+</div>
+<div class="card" style="margin-top:14px"><h3>Where the 7,126,573 copies sit</h3><div class="cs">By system. Hover a block for the count.</div>
+<div class="pbar" style="height:54px"><div class="b-bad" style="flex:0.61328" data-tip="<b>Production and its archive</b><br>4,370,556 copies">Production and its archive: 61 in 100</div><div class="b-warn" style="flex:0.23389" data-tip="<b>Replica and test</b><br>1,666,800 copies">Replica and test: 23 in 100</div><div class="b-today" style="flex:0.15284" data-tip="<b>Data warehouse</b><br>1,089,217 copies">Warehouse: 15</div></div></div>
+
+<h2 class="sec">By system</h2>
+<div class="grid3"><div class="card" style="border-color:var(--bad)"><div style="display:flex;align-items:baseline"><h3 class="c-bad">Production</h3><b style="margin-left:auto;font-size:24px" class="c-bad">4,370,556</b></div><div class="cs">61 in every 100</div><table><tr><td style="width:26px;color:var(--mute)">1</td><td>Legacy order payments, in the archive<br><span class="hb b-bad" style="width:150px"></span></td><td class="r"><b>2,804,034</b></td></tr><tr><td style="width:26px;color:var(--mute)">2</td><td>Order payments, 2004 on<br><span class="hb b-bad" style="width:82px"></span></td><td class="r"><b>1,535,735</b></td></tr><tr><td style="width:26px;color:var(--mute)">3</td><td>Korea order payments, in the archive<br><span class="hb b-bad" style="width:1px"></span></td><td class="r"><b>15,707</b></td></tr><tr><td style="width:26px;color:var(--mute)">4</td><td>Customer service notes, typed by agents<br><span class="hb b-bad" style="width:1px"></span></td><td class="r"><b>15,080</b></td></tr></table></div><div class="card" style="border-color:var(--warn)"><div style="display:flex;align-items:baseline"><h3 class="c-warn">Replica and test</h3><b style="margin-left:auto;font-size:24px" class="c-warn">1,666,800</b></div><div class="cs">23 in every 100</div><table><tr><td style="width:26px;color:var(--mute)">5</td><td>Replica: a copy of production order payments<br><span class="hb b-warn" style="width:150px"></span></td><td class="r"><b>1,535,735</b></td></tr><tr><td style="width:26px;color:var(--mute)">6</td><td>Test copy of order payments and a name field<br><span class="hb b-warn" style="width:6px"></span></td><td class="r"><b>57,218</b></td></tr><tr><td style="width:26px;color:var(--mute)">7</td><td>Test copy of Korea subscriptions (not cleaned)<br><span class="hb b-warn" style="width:3px"></span></td><td class="r"><b>28,923</b></td></tr><tr><td style="width:26px;color:var(--mute)">8</td><td>Notes on the replica and test copies<br><span class="hb b-warn" style="width:4px"></span></td><td class="r"><b>44,924</b></td></tr></table></div><div class="card" style="border-color:var(--warn)"><div style="display:flex;align-items:baseline"><h3 class="c-warn">Warehouse</h3><b style="margin-left:auto;font-size:24px" class="c-warn">1,089,217</b></div><div class="cs">15 in every 100</div><table><tr><td style="width:26px;color:var(--mute)">9</td><td>Legacy subscription payments<br><span class="hb b-warn" style="width:150px"></span></td><td class="r"><b>533,949</b></td></tr><tr><td style="width:26px;color:var(--mute)">10</td><td>Staging copies of the same cards, 10 tables<br><span class="hb b-warn" style="width:150px"></span></td><td class="r"><b>533,931</b></td></tr><tr><td style="width:26px;color:var(--mute)">11</td><td>Warehouse copy of the service notes<br><span class="hb b-warn" style="width:5px"></span></td><td class="r"><b>16,860</b></td></tr><tr><td style="width:26px;color:var(--mute)">12</td><td>Other legacy tables and stage copies<br><span class="hb b-warn" style="width:1px"></span></td><td class="r"><b>4,477</b></td></tr></table></div></div>
+<div class="note">The three columns add to 7,126,573. One card can sit in many rows: <b>1,128,817 different cards</b> in all. The production archive alone holds 610,175 cards found nowhere else.</div>
+
+<h2 class="sec">What the data shows</h2>
+<div class="grid2">
+<div class="card"><h3>Mostly 2004 to 2007, but still being written in 2025</h3><div class="cs">Production order payment rows holding a card, by order year (4 Nov count).</div>
+<svg viewBox="0 0 900 260" width="100%"><path d="M64,230.0 H890" stroke="var(--border)"/><text x="56" y="234.0" text-anchor="end">0</text><path d="M64,179.0 H890" stroke="var(--border)"/><text x="56" y="183.0" text-anchor="end">157,339</text><path d="M64,128.0 H890" stroke="var(--border)"/><text x="56" y="132.0" text-anchor="end">314,679</text><path d="M64,77.0 H890" stroke="var(--border)"/><text x="56" y="81.0" text-anchor="end">472,018</text><path d="M64,26.0 H890" stroke="var(--border)"/><text x="56" y="30.0" text-anchor="end">629,357</text><rect data-tip="<b>2004</b><br>561,926 rows holding a card" x="88.8" y="47.9" width="88.1" height="182.1" rx="4" style="fill:var(--bad)"><animate attributeName="height" from="0" to="182.1" dur="0.7s"/><animate attributeName="y" from="230" to="47.9" dur="0.7s"/></rect><text x="132.8" y="41.9" text-anchor="middle" style="fill:var(--ink);font-weight:700">561,926</text><text x="132.8" y="252" text-anchor="middle">2004</text><rect data-tip="<b>2005</b><br>514,713 rows holding a card" x="226.4" y="63.2" width="88.1" height="166.8" rx="4" style="fill:var(--bad)"><animate attributeName="height" from="0" to="166.8" dur="0.7s"/><animate attributeName="y" from="230" to="63.2" dur="0.7s"/></rect><text x="270.5" y="57.2" text-anchor="middle" style="fill:var(--ink);font-weight:700">514,713</text><text x="270.5" y="252" text-anchor="middle">2005</text><rect data-tip="<b>2006</b><br>406,841 rows holding a card" x="364.1" y="98.1" width="88.1" height="131.9" rx="4" style="fill:var(--bad)"><animate attributeName="height" from="0" to="131.9" dur="0.7s"/><animate attributeName="y" from="230" to="98.1" dur="0.7s"/></rect><text x="408.2" y="92.1" text-anchor="middle" style="fill:var(--ink);font-weight:700">406,841</text><text x="408.2" y="252" text-anchor="middle">2006</text><rect data-tip="<b>2007</b><br>99,043 rows holding a card" x="501.8" y="197.9" width="88.1" height="32.1" rx="4" style="fill:var(--bad)"><animate attributeName="height" from="0" to="32.1" dur="0.7s"/><animate attributeName="y" from="230" to="197.9" dur="0.7s"/></rect><text x="545.8" y="191.9" text-anchor="middle" style="fill:var(--ink);font-weight:700">99,043</text><text x="545.8" y="252" text-anchor="middle">2007</text><rect data-tip="<b>2025</b><br>2,673 rows holding a card" x="639.4" y="229.1" width="88.1" height="2.0" rx="4" style="fill:var(--bad)"><animate attributeName="height" from="0" to="2.0" dur="0.7s"/><animate attributeName="y" from="230" to="229.1" dur="0.7s"/></rect><text x="683.5" y="223.1" text-anchor="middle" style="fill:var(--ink);font-weight:700">2,673</text><text x="683.5" y="252" text-anchor="middle">2025</text><rect data-tip="<b>2026</b><br>33 rows holding a card" x="777.1" y="230.0" width="88.1" height="2.0" rx="4" style="fill:var(--bad)"><animate attributeName="height" from="0" to="2.0" dur="0.7s"/><animate attributeName="y" from="230" to="230.0" dur="0.7s"/></rect><text x="821.2" y="224.0" text-anchor="middle" style="fill:var(--ink);font-weight:700">33</text><text x="821.2" y="252" text-anchor="middle">2026</text></svg></div>
+<div class="card"><h3>Copies by database on 6 Nov</h3><div class="cs">Rows holding a card. The replica is a full copy of production.</div>
+<svg viewBox="0 0 900 260" width="100%"><path d="M64,230.0 H890" stroke="var(--border)"/><text x="56" y="234.0" text-anchor="end">0</text><path d="M64,179.0 H890" stroke="var(--border)"/><text x="56" y="183.0" text-anchor="end">789,527</text><path d="M64,128.0 H890" stroke="var(--border)"/><text x="56" y="132.0" text-anchor="end">1,579,055</text><path d="M64,77.0 H890" stroke="var(--border)"/><text x="56" y="81.0" text-anchor="end">2,368,582</text><path d="M64,26.0 H890" stroke="var(--border)"/><text x="56" y="30.0" text-anchor="end">3,158,110</text><rect data-tip="<b>Test copy</b><br>115,985 rows holding a card" x="93.7" y="222.5" width="105.7" height="7.5" rx="4" style="fill:var(--warn)"><animate attributeName="height" from="0" to="7.5" dur="0.7s"/><animate attributeName="y" from="230" to="222.5" dur="0.7s"/></rect><text x="146.6" y="216.5" text-anchor="middle" style="fill:var(--ink);font-weight:700">115,985</text><text x="146.6" y="252" text-anchor="middle">Test copy</text><rect data-tip="<b>Replica</b><br>1,550,815 rows holding a card" x="258.9" y="129.8" width="105.7" height="100.2" rx="4" style="fill:var(--warn)"><animate attributeName="height" from="0" to="100.2" dur="0.7s"/><animate attributeName="y" from="230" to="129.8" dur="0.7s"/></rect><text x="311.8" y="123.8" text-anchor="middle" style="fill:var(--ink);font-weight:700">1,550,815</text><text x="311.8" y="252" text-anchor="middle">Replica</text><rect data-tip="<b>Production</b><br>1,550,815 rows holding a card" x="424.1" y="129.8" width="105.7" height="100.2" rx="4" style="fill:var(--warn)"><animate attributeName="height" from="0" to="100.2" dur="0.7s"/><animate attributeName="y" from="230" to="129.8" dur="0.7s"/></rect><text x="477.0" y="123.8" text-anchor="middle" style="fill:var(--ink);font-weight:700">1,550,815</text><text x="477.0" y="252" text-anchor="middle">Production</text><rect data-tip="<b>Production archive</b><br>2,819,741 rows holding a card" x="589.3" y="47.9" width="105.7" height="182.1" rx="4" style="fill:var(--warn)"><animate attributeName="height" from="0" to="182.1" dur="0.7s"/><animate attributeName="y" from="230" to="47.9" dur="0.7s"/></rect><text x="642.2" y="41.9" text-anchor="middle" style="fill:var(--ink);font-weight:700">2,819,741</text><text x="642.2" y="252" text-anchor="middle">Production archive</text><rect data-tip="<b>Warehouse</b><br>1,089,217 rows holding a card" x="754.5" y="159.6" width="105.7" height="70.4" rx="4" style="fill:var(--warn)"><animate attributeName="height" from="0" to="70.4" dur="0.7s"/><animate attributeName="y" from="230" to="159.6" dur="0.7s"/></rect><text x="807.4" y="153.6" text-anchor="middle" style="fill:var(--ink);font-weight:700">1,089,217</text><text x="807.4" y="252" text-anchor="middle">Warehouse</text></svg></div>
+</div>
+<div class="grid3" style="margin-top:14px">
+<div class="stat"><div class="k">Rows written in 2025</div><div class="v c-bad">2,673</div><div class="n">Korea orders, mostly September and October. The writer: NOT ESTABLISHED</div></div>
+<div class="stat"><div class="k">Cards expiring 2026 or later</div><div class="v c-warn">21,742</div><div class="n">still chargeable today</div></div>
+<div class="stat"><div class="k">Live vault tokens in the test copy</div><div class="v c-warn">507,277</div><div class="n">plus 78,082 bank tokens: not card numbers, same exposure</div></div>
+</div>
+<div class="grid2" style="margin-top:14px">
+<div class="card" style="border-color:var(--good)"><h3 class="c-good">Cleaned between 4 and 6 Nov</h3><ul class="pts"><li>One Korea subscription table emptied: <b>231,457 rows to 0</b>.</li><li>Three warehouse tables cut from <b>105,344 rows to 306</b>.</li><li>Who did it: <b>NOT ESTABLISHED</b>. The fix is known; only the owner is not.</li></ul></div>
+<div class="card" style="border-color:var(--bad)"><h3 class="c-bad">What the cleanup left</h3><ul class="pts"><li>The same Korea cards survive in a warehouse staging copy: <b>51,797</b>.</li><li>Order payments and legacy subscription payments untouched: <b>2.07 million rows</b>.</li><li>The production archive was not on the first list at all.</li></ul></div>
+</div>
+
+<h2 class="sec">How we found them</h2>
+<div class="card"><div class="flow"><div class="box"><h4>Every database we could reach</h4><div class="it"><b>An ordinary reporting login</b>: read only, the one any analyst has</div><div class="it"><b>Production</b> and its archive</div><div class="it"><b>Replica and test</b>: copies of production</div><div class="it"><b>Data warehouse</b>: legacy payment tables and staging copies</div><div class="it"><b>Other servers</b>: clean in sample</div></div><div class="ar">&rarr;</div><div class="box"><h4>Each column gets tested</h4><div class="it">Holds 13 or more digits? 34,000 tables checked</div><div class="it">Sample 3,000 rows: 5,976 tables</div><div class="it">Share passing the card checksum</div><div class="it">Full count of every flagged column</div><div class="it">One unique count across all</div></div><div class="ar">&rarr;</div><div class="box"><h4>Three outcomes</h4><div class="it"><b class='c-bad'>Card column</b>: 90 to 100 in 100 pass, counted in full</div><div class="it"><b class='c-warn'>Free text</b>: 38 to 45 in 100 pass, agent notes, counted apart</div><div class="it"><b class='c-good'>Chance</b>: 4 to 10 in 100 pass, ruled out</div></div></div>
+<div class="note">Values were tested in memory and unique cards counted by a one-way fingerprint; nothing was kept or printed. The hard part: a clean 3,000-row sample is not a clean table. One sample missed 1.7 million cards, so every flagged column is counted in full.</div></div>
+
+<h2 class="sec">Why it matters</h2>
+<div class="grid2">
+<div class="card"><h3>Stored card numbers must be unreadable</h3><div class="cs">Payment Card Industry Data Security Standard (PCI DSS) v4.0.1, Requirements 3.5.1 and 3.2.1</div>
+<ul class="pts"><li><b>3.5.1:</b> wherever the full card number is stored, it is hashed, truncated, tokenised or strongly encrypted.</li><li><b>3.2.1:</b> a retention and disposal policy limits stored data to what the business needs.</li><li><b>3.2.1:</b> secure deletion when the data is no longer needed; age is no exception.</li><li><b>3.2.1:</b> a check at least every three months that data past retention is gone.</li></ul>
+<div class="cs" style="margin:8px 0 0">Paraphrased from the standard; check the exact wording against the published text before quoting it outward.</div></div>
+<div class="card"><h3>Where we stand</h3><div class="cs">A readable card number is a gap whether it was written in 2004 or in 2025.</div>
+<ul class="pts"><li><b>1,128,817 readable card numbers</b>, reachable with a read-only reporting login.</li><li>The vault itself is clean: tokens only. Everything around it is not.</li><li>A retention rule for order and payment data: <b class="c-bad">NOT ESTABLISHED</b>.</li><li>Backups hold more than any table and were not read.</li></ul></div>
+</div>
+
+<h2 class="sec">What the count cannot see</h2>
+<div class="card"><table><tr><th>Blind spot</th><th>What it means</th><th>How it is handled</th></tr><tr><td style="white-space:nowrap"><b>Sampled, not counted</b></td><td style="color:var(--dim)">5,976 tables were read 3,000 rows deep. A clean sample missed 1.7 million cards once already.</td><td class="c-good" style="font-weight:700">A full sweep reads every row of every remaining column</td></tr><tr><td style="white-space:nowrap"><b>Spaces and dashes</b></td><td style="color:var(--dim)">The count needs 13 digits in a row, so a number stored with spaces inside is missed. Totals are a floor.</td><td class="c-good" style="font-weight:700">The sweep counts digits only; expect the totals to rise</td></tr><tr><td style="white-space:nowrap"><b>Not reached</b></td><td style="color:var(--dim)">Several archive and legacy databases, the commissions system, backups.</td><td class="c-good" style="font-weight:700">Access needed from DevOps</td></tr><tr><td style="white-space:nowrap"><b>Free text notes</b></td><td style="color:var(--dim)">Agent notes pass well above chance, but some hits are other long numbers.</td><td class="c-good" style="font-weight:700">Counted apart from the card columns</td></tr></table></div>
+
+<h2 class="sec">Proposal: confirm, lock down, stop the writer, clean</h2>
+<div class="stages"><div class="stage"><div class="hd b-bad">Stage 1</div><div class="bd"><div class="t">Confirm and lock down</div><div class="c c-bad">68</div><div class="d">Security reruns the check; reporting logins lose read access. No data changed.</div></div></div><div class="stage"><div class="hd b-bad">Stage 2</div><div class="bd"><div class="t">Stop the writer</div><div class="c c-bad">2,673</div><div class="d">Find what wrote the 2025 rows. Until then every cleanup refills.</div></div></div><div class="stage"><div class="hd b-warn">Stage 3</div><div class="bd"><div class="t">Mask or delete</div><div class="c c-warn">4 tickets</div><div class="d">One ticket per system. The test copy and its tokens go first.</div></div></div><div class="stage"><div class="hd b-good">Stage 4</div><div class="bd"><div class="t">Backups and a rule</div><div class="c c-good">&nbsp;</div><div class="d">Purge backups, write the retention rule, recount every quarter.</div></div></div></div>
+<div class="card" style="margin-top:14px"><h3>Decisions needed</h3><ul class="pts"><li>Who confirms a sample and restricts access: <b>proposed Josh Graves (DevOps) with Terrence (security)</b>, to accept or reassign.</li><li>Who cleaned the four tables between 4 and 6 Nov, so the other places can follow the same path.</li><li>Access to what was not reached, including backups: <b>proposed owner DevOps</b>.</li></ul></div>
+<div class="foot">Card numbers outside the vault, counted 6 Nov 2026. Ticket PAYMT-503. Counts only; no card number left its database.</div>
+</main>
+<div class="tip" id="tip"></div>
+<script>const $=id=>document.getElementById(id);
+function theme(t){document.documentElement.dataset.theme=t;$('thL').className=t==='light'?'on':'';$('thD').className=t==='dark'?'on':'';try{localStorage.setItem('demoTheme',t)}catch(e){}}
+$('thL').onclick=()=>theme('light');$('thD').onclick=()=>theme('dark');let t0='dark';try{t0=localStorage.getItem('demoTheme')||'dark'}catch(e){}theme(t0);
+const tip=$('tip');document.querySelectorAll('[data-tip]').forEach(el=>{el.addEventListener('mousemove',e=>{tip.innerHTML=el.dataset.tip;tip.style.display='block';const w=tip.offsetWidth;tip.style.left=Math.min(e.clientX+14,innerWidth-w-10)+'px';tip.style.top=(e.clientY+14)+'px'});el.addEventListener('mouseleave',()=>tip.style.display='none')});
+</script>
+</body></html>

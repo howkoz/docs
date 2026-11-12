@@ -1,0 +1,147 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="dark">
+<head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1"><title>Card vault: keep or remove</title>
+<style>:root{--bg:#070b16;--bg2:#0d1426;--panel:#121a30;--panel2:#18223d;--border:#263354;--ink:#eef2fb;--dim:#9aa8c4;--mute:#6b7a99;
+--today:#8fa3cc;--good:#34d399;--accent:#60a5fa;--warn:#fbbf24;--bad:#f87171;--violet:#c084fc;--shadow:0 10px 40px rgba(0,0,0,.45)}
+html[data-theme="light"]{--bg:#f4f6fb;--bg2:#ffffff;--panel:#ffffff;--panel2:#f1f5f9;--border:#d5dceb;--ink:#0f172a;--dim:#475569;--mute:#7c8aa3;
+--today:#64748b;--good:#0f8a6a;--accent:#2563eb;--warn:#b45309;--bad:#dc2626;--violet:#7c3aed;--shadow:0 10px 30px rgba(15,23,42,.12)}
+*{box-sizing:border-box}
+body{margin:0;background:radial-gradient(1200px 600px at 80% -10%,var(--bg2),var(--bg));background-attachment:fixed;color:var(--ink);font-family:"Segoe UI",system-ui,Arial,sans-serif;min-height:100vh}
+a{color:var(--accent)}
+.bar{position:fixed;top:0;left:0;right:0;z-index:50;background:color-mix(in srgb,var(--bg) 88%,transparent);backdrop-filter:blur(10px);border-bottom:1px solid var(--border);display:flex;align-items:center;gap:14px;padding:10px 22px}
+.bar .ttl{font-size:13px;color:var(--mute);text-transform:uppercase;letter-spacing:.12em;flex:1}
+.chip{border:1px solid var(--border);background:var(--panel);color:var(--dim);padding:6px 13px;border-radius:999px;font-size:13px;font-weight:600;cursor:pointer;text-decoration:none;transition:.15s}
+.chip:hover{color:var(--ink);border-color:var(--accent)}
+.theme{display:flex;border:1px solid var(--border);border-radius:999px;overflow:hidden}
+.theme button{background:transparent;border:0;color:var(--dim);padding:6px 12px;font-size:12px;font-weight:600;cursor:pointer}
+.theme button.on{background:var(--panel2);color:var(--ink)}
+main{max-width:1780px;margin:0 auto;padding:74px 26px 40px}
+h1{font-size:38px;margin:6px 0 4px;letter-spacing:-.02em}
+h1 span{background:linear-gradient(90deg,var(--accent),var(--good));-webkit-background-clip:text;background-clip:text;color:transparent}
+.sub{color:var(--dim);font-size:16px;margin:0 0 18px;max-width:1100px}
+h2.sec{font-size:13px;color:var(--mute);text-transform:uppercase;letter-spacing:.14em;margin:28px 0 10px}
+.grid4{display:grid;grid-template-columns:repeat(4,1fr);gap:14px}.grid3{display:grid;grid-template-columns:repeat(3,1fr);gap:14px}.grid2{display:grid;grid-template-columns:1fr 1fr;gap:14px}
+.stat{background:var(--panel);border:1px solid var(--border);border-radius:16px;padding:18px 20px;box-shadow:var(--shadow)}
+.stat .k{font-size:12px;color:var(--mute);text-transform:uppercase;letter-spacing:.1em}
+.stat .v{font-size:42px;font-weight:800;letter-spacing:-.02em;margin:4px 0 2px;font-variant-numeric:tabular-nums}
+.stat .n{font-size:14px;color:var(--dim)}
+.card{background:var(--panel);border:1px solid var(--border);border-radius:16px;padding:18px 20px;box-shadow:var(--shadow)}
+.card h3{margin:0 0 2px;font-size:18px}.card .cs{color:var(--dim);font-size:13.5px;margin-bottom:10px}
+.c-good{color:var(--good)}.c-warn{color:var(--warn)}.c-bad{color:var(--bad)}.c-acc{color:var(--accent)}.c-vio{color:var(--violet)}
+.pbar{display:flex;height:46px;border-radius:10px;overflow:hidden;gap:2px;margin:6px 0}
+.pbar div{display:flex;align-items:center;justify-content:center;font-weight:700;font-size:14px;color:#06101c;white-space:nowrap;overflow:hidden;min-width:0;animation:grow .9s ease both;transform-origin:left}
+@keyframes grow{from{transform:scaleX(0)}to{transform:scaleX(1)}}
+.b-good{background:var(--good)}.b-warn{background:var(--warn)}.b-bad{background:var(--bad)}.b-today{background:var(--today)}.b-acc{background:var(--accent)}.b-vio{background:var(--violet)}
+table{width:100%;border-collapse:collapse;font-size:14px;font-variant-numeric:tabular-nums}
+th{text-align:left;color:var(--mute);font-size:11.5px;text-transform:uppercase;letter-spacing:.06em;padding:8px 10px;border-bottom:1px solid var(--border)}
+td{padding:9px 10px;border-bottom:1px solid var(--border);vertical-align:top}td.r,th.r{text-align:right;white-space:nowrap}
+tr:last-child td{border-bottom:0}
+.hb{height:10px;border-radius:0 4px 4px 0;display:inline-block;vertical-align:middle;min-width:2px}
+.pts{list-style:none;margin:0;padding:0}.pts li{padding:9px 0 9px 26px;border-bottom:1px solid var(--border);position:relative;font-size:15px;line-height:1.4;color:var(--dim)}
+.pts li:last-child{border:0}.pts li:before{content:"";position:absolute;left:4px;top:16px;width:9px;height:9px;border-radius:50%;background:var(--accent)}
+.pts b{color:var(--ink)}
+.note{background:var(--panel2);border:1px solid var(--border);border-left:4px solid var(--warn);border-radius:10px;padding:12px 16px;color:var(--dim);font-size:13.5px;line-height:1.5;margin-top:14px}
+.note b{color:var(--ink)}
+.stages{display:grid;grid-template-columns:repeat(4,1fr);gap:10px}
+.stage{background:var(--panel2);border:1px solid var(--border);border-radius:12px;overflow:hidden;position:relative}
+.stage .hd{padding:8px 12px;font-weight:800;font-size:13px;color:#06101c}.stage .bd{padding:12px}
+.stage .t{font-weight:700;font-size:15px}.stage .c{font-size:28px;font-weight:800;margin:6px 0;font-variant-numeric:tabular-nums}.stage .d{font-size:13px;color:var(--dim);line-height:1.45}
+.flow{display:grid;grid-template-columns:1fr 34px 1fr 34px 1fr;gap:0;align-items:stretch}
+.flow .box{background:var(--panel2);border:1px solid var(--border);border-radius:12px;padding:12px 14px}
+.flow .box h4{margin:0 0 8px;font-size:12px;color:var(--mute);text-transform:uppercase;letter-spacing:.1em}
+.flow .it{font-size:13.5px;padding:6px 0;border-bottom:1px solid var(--border);color:var(--dim)}.flow .it:last-child{border:0}.flow .it b{color:var(--ink)}
+.flow .ar{display:flex;align-items:center;justify-content:center;color:var(--accent);font-size:22px}
+.tip{position:fixed;z-index:99;pointer-events:none;background:var(--panel2);border:1px solid var(--border);border-radius:10px;padding:8px 12px;font-size:13px;line-height:1.45;box-shadow:var(--shadow);display:none;max-width:340px}
+svg text{fill:var(--mute);font-size:12px;font-family:inherit}
+.foot{color:var(--mute);font-size:12px;margin-top:26px;line-height:1.6}
+/* front page */
+.stops{display:grid;grid-template-columns:repeat(4,1fr);gap:16px;align-items:stretch}
+.stop{background:linear-gradient(170deg,color-mix(in srgb,var(--c) 9%,var(--panel)),var(--panel));border:1.5px solid color-mix(in srgb,var(--c) 70%,transparent);border-radius:18px;padding:22px;display:flex;flex-direction:column;box-shadow:var(--shadow);transition:.2s}
+.stop:hover{transform:translateY(-4px);box-shadow:0 16px 50px color-mix(in srgb,var(--c) 28%,transparent)}
+.stop .lb{font-size:12.5px;font-weight:800;letter-spacing:.1em;color:var(--c);text-transform:uppercase}
+.stop h3{margin:6px 0 4px;font-size:21px}
+.stop .big{font-size:50px;font-weight:800;letter-spacing:-.02em;color:var(--c);line-height:1.05;margin:6px 0 4px;font-variant-numeric:tabular-nums}
+.stop .sb{color:var(--dim);font-size:15px;line-height:1.4;min-height:44px}
+.stop .tg{font-size:13px;color:var(--dim);font-weight:600}
+.stop .viz{margin:14px 0 6px;background:var(--panel2);border:1px solid var(--border);border-radius:12px;padding:12px}
+.stop .vt{font-size:11px;color:var(--mute);text-transform:uppercase;letter-spacing:.1em;margin-bottom:6px}
+.stop ul{list-style:none;margin:10px 0 0;padding:0}.stop li{position:relative;padding:6px 0 6px 20px;font-size:14.5px;color:var(--dim);line-height:1.4}
+.stop li:before{content:"";position:absolute;left:2px;top:13px;width:8px;height:8px;border-radius:50%;background:var(--c)}
+.stop .ask{margin-top:auto;padding-top:14px}.stop .ask .k{font-size:11px;color:var(--mute);text-transform:uppercase;letter-spacing:.1em}
+.stop .ask .a{font-size:15.5px;font-weight:700;margin:2px 0 14px}
+.btn{display:inline-block;background:var(--c);color:#06101c;font-weight:800;font-size:15px;padding:11px 18px;border-radius:11px;text-decoration:none;box-shadow:0 6px 22px color-mix(in srgb,var(--c) 40%,transparent)}
+.btn:hover{filter:brightness(1.1)}.btn2{font-size:13px;color:var(--dim);margin-left:12px}
+.asks{margin-top:16px;background:var(--panel);border:1px solid var(--border);border-radius:18px;padding:16px 22px;box-shadow:var(--shadow)}
+.asks .at{font-size:12.5px;font-weight:800;letter-spacing:.12em;text-transform:uppercase;color:var(--mute);margin-bottom:10px}
+.asks .ag{display:grid;grid-template-columns:repeat(4,1fr);gap:16px}
+.aq{display:flex;gap:12px;align-items:flex-start;border-left:3px solid var(--c);padding:4px 0 4px 14px}
+.aq .an{flex:none;width:30px;height:30px;border-radius:50%;background:var(--c);color:#06101c;font-weight:800;display:flex;align-items:center;justify-content:center;font-size:15px}
+.aq b{display:block;font-size:16px;line-height:1.3}.aq small{display:block;color:var(--dim);font-size:12.5px;margin-top:3px}
+@media(max-width:1300px){.asks .ag{grid-template-columns:repeat(2,1fr)}}
+.mini{display:flex;gap:10px;margin-top:8px}.mini div{flex:1;font-size:12px;color:var(--dim)}.mini b{display:block;font-size:17px;color:var(--ink);font-variant-numeric:tabular-nums}
+.pill{display:inline-flex;align-items:center;gap:6px;border:1px solid var(--border);border-radius:999px;padding:5px 11px;font-size:13px;font-weight:700;margin:0 6px 6px 0;background:var(--panel)}
+.dot{width:11px;height:11px;border-radius:50%;display:inline-block}
+@media(max-width:1300px){.stops,.grid4,.stages{grid-template-columns:repeat(2,1fr)}.grid2,.grid3{grid-template-columns:1fr}.flow{grid-template-columns:1fr}.flow .ar{transform:rotate(90deg);padding:4px}}
+@media print{.bar{display:none}}
+</style></head>
+<body>
+<div class="bar"><a class="chip" href="index.html">&larr; Back to the demo</a><span class="ttl">Stop 2 &middot; Card vault</span>
+<div class="theme"><button id="thL">Light</button><button id="thD">Dark</button></div></div>
+<main>
+<h1>Card vault: <span>what to keep, what to remove</span></h1>
+<p class="sub">Every card stored in the vault, measured on 4 November 2026. A card is kept when it sits on an active subscription, or was charged as a saved card on a one-time order in the last 3 months.</p>
+<div class="grid4">
+<div class="stat"><div class="k">Cards stored in the vault</div><div class="v ">678,792</div><div class="n">every saved card, wallet token and stored token</div></div>
+<div class="stat"><div class="k">Keep</div><div class="v c-good">127,595</div><div class="n">on a live subscription or used recently</div></div>
+<div class="stat"><div class="k">Review</div><div class="v c-warn">26,086</div><div class="n">cannot prove use either way</div></div>
+<div class="stat"><div class="k">Remove</div><div class="v c-bad">525,111</div><div class="n">77 in every 100: nothing uses them</div></div>
+</div>
+<div class="card" style="margin-top:14px"><h3>Three in every four stored cards are used by nothing</h3><div class="cs">All 678,792 cards, by decision. Hover a block for the count.</div>
+<div class="pbar" style="height:54px"><div class="b-good" style="flex:0.18797" data-tip="<b>Keep: 127,595</b> (19 in 100)">Keep 19%</div><div class="b-warn" style="flex:0.03843" data-tip="<b>Review: 26,086</b> (4 in 100)">4%</div><div class="b-bad" style="flex:0.77360" data-tip="<b>Remove: 525,111</b> (77 in 100)">Remove: 77% of the vault</div></div></div>
+
+<h2 class="sec">The nine rules, and where every card lands</h2>
+<div class="grid3"><div class="card" style="border-color:var(--good)"><div style="display:flex;align-items:baseline"><h3 class="c-good">Keep</h3><b style="margin-left:auto;font-size:24px" class="c-good">127,595</b></div><div class="cs">19 in every 100</div><table><tr><td style="width:26px;color:var(--mute)">1</td><td>On an active subscription<br><span class="hb b-good" style="width:150px"></span></td><td class="r"><b>90,175</b></td></tr><tr><td style="width:26px;color:var(--mute)">2</td><td>On an active subscription, card expired<br><span class="hb b-good" style="width:5px"></span></td><td class="r"><b>3,059</b></td></tr><tr><td style="width:26px;color:var(--mute)">3</td><td>Used on a one-time order, last 3 months<br><span class="hb b-good" style="width:14px"></span></td><td class="r"><b>8,245</b></td></tr><tr><td style="width:26px;color:var(--mute)">4</td><td>Saved in the last 3 months, not used yet<br><span class="hb b-good" style="width:43px"></span></td><td class="r"><b>26,116</b></td></tr></table></div><div class="card" style="border-color:var(--warn)"><div style="display:flex;align-items:baseline"><h3 class="c-warn">Review</h3><b style="margin-left:auto;font-size:24px" class="c-warn">26,086</b></div><div class="cs">4 in every 100</div><table><tr><td style="width:26px;color:var(--mute)">5</td><td>Charged by a subscription since canceled<br><span class="hb b-warn" style="width:36px"></span></td><td class="r"><b>5,050</b></td></tr><tr><td style="width:26px;color:var(--mute)">6</td><td>Apple Pay or Google Pay token, no active subscription<br><span class="hb b-warn" style="width:150px"></span></td><td class="r"><b>21,036</b></td></tr></table></div><div class="card" style="border-color:var(--bad)"><div style="display:flex;align-items:baseline"><h3 class="c-bad">Remove</h3><b style="margin-left:auto;font-size:24px" class="c-bad">525,111</b></div><div class="cs">77 in every 100</div><table><tr><td style="width:26px;color:var(--mute)">7</td><td>Expired, unused for 3 months<br><span class="hb b-bad" style="width:94px"></span></td><td class="r"><b>202,243</b></td></tr><tr><td style="width:26px;color:var(--mute)">8</td><td>Valid, unused for 3 months<br><span class="hb b-bad" style="width:150px"></span></td><td class="r"><b>322,733</b></td></tr><tr><td style="width:26px;color:var(--mute)">9</td><td>Expiry unknown, unused for 3 months<br><span class="hb b-bad" style="width:0px"></span></td><td class="r"><b>135</b></td></tr></table></div></div>
+<div class="note">Every card falls under exactly one rule; the first rule that fits wins. Rule 7 alone is 202,243 cards, 30 in every 100: a card that cannot be charged, kept for nothing.</div>
+
+<h2 class="sec">What the data shows</h2>
+<div class="grid2">
+<div class="card"><h3>A longer look-back window barely changes the answer</h3><div class="cs">Cards by decision if "used recently" means 3, 6 or 12 months.</div>
+<table><tr><td style="width:110px"><b>3 months</b></td><td><div class="pbar" style="height:30px"><div class="b-good" style="flex:0.18797" data-tip="<b>Keep: 127,595</b>"></div><div class="b-warn" style="flex:0.03843" data-tip="<b>Review: 26,086</b>"></div><div class="b-bad" style="flex:0.77360" data-tip="<b>Remove: 525,111</b>">Remove 77 in 100</div></div></td></tr><tr><td style="width:110px"><b>6 months</b></td><td><div class="pbar" style="height:30px"><div class="b-good" style="flex:0.25056" data-tip="<b>Keep: 170,080</b>"></div><div class="b-warn" style="flex:0.03064" data-tip="<b>Review: 20,798</b>"></div><div class="b-bad" style="flex:0.71880" data-tip="<b>Remove: 487,914</b>">Remove 72 in 100</div></div></td></tr><tr><td style="width:110px"><b>12 months</b></td><td><div class="pbar" style="height:30px"><div class="b-good" style="flex:0.34401" data-tip="<b>Keep: 233,509</b>"></div><div class="b-warn" style="flex:0.02022" data-tip="<b>Review: 13,725</b>"></div><div class="b-bad" style="flex:0.63577" data-tip="<b>Remove: 431,558</b>">Remove 64 in 100</div></div></td></tr></table>
+<div class="cs" style="margin:8px 0 0">Expired cards stay at about 200,000 whatever the window. 3 months is the agreed minimum.</div></div>
+<div class="card"><h3>The vault grows every year and has never been pruned</h3><div class="cs">Stored cards by the year they were saved (2026 to 4 Nov).</div>
+<svg viewBox="0 0 900 260" width="100%"><path d="M64,230.0 H890" stroke="var(--border)"/><text x="56" y="234.0" text-anchor="end">0</text><path d="M64,179.0 H890" stroke="var(--border)"/><text x="56" y="183.0" text-anchor="end">54,551</text><path d="M64,128.0 H890" stroke="var(--border)"/><text x="56" y="132.0" text-anchor="end">109,102</text><path d="M64,77.0 H890" stroke="var(--border)"/><text x="56" y="81.0" text-anchor="end">163,653</text><path d="M64,26.0 H890" stroke="var(--border)"/><text x="56" y="30.0" text-anchor="end">218,204</text><rect data-tip="<b>2019</b><br>28,672 cards saved" x="82.6" y="203.2" width="66.1" height="26.8" rx="4" style="fill:var(--accent)"><animate attributeName="height" from="0" to="26.8" dur="0.7s"/><animate attributeName="y" from="230" to="203.2" dur="0.7s"/></rect><text x="115.6" y="197.2" text-anchor="middle" style="fill:var(--ink);font-weight:700">28,672</text><text x="115.6" y="252" text-anchor="middle">2019</text><rect data-tip="<b>2020</b><br>3,099 cards saved" x="185.8" y="227.1" width="66.1" height="2.9" rx="4" style="fill:var(--accent)"><animate attributeName="height" from="0" to="2.9" dur="0.7s"/><animate attributeName="y" from="230" to="227.1" dur="0.7s"/></rect><text x="218.9" y="221.1" text-anchor="middle" style="fill:var(--ink);font-weight:700">3,099</text><text x="218.9" y="252" text-anchor="middle">2020</text><rect data-tip="<b>2021</b><br>4,823 cards saved" x="289.1" y="225.5" width="66.1" height="4.5" rx="4" style="fill:var(--accent)"><animate attributeName="height" from="0" to="4.5" dur="0.7s"/><animate attributeName="y" from="230" to="225.5" dur="0.7s"/></rect><text x="322.1" y="219.5" text-anchor="middle" style="fill:var(--ink);font-weight:700">4,823</text><text x="322.1" y="252" text-anchor="middle">2021</text><rect data-tip="<b>2022</b><br>52,471 cards saved" x="392.3" y="180.9" width="66.1" height="49.1" rx="4" style="fill:var(--accent)"><animate attributeName="height" from="0" to="49.1" dur="0.7s"/><animate attributeName="y" from="230" to="180.9" dur="0.7s"/></rect><text x="425.4" y="174.9" text-anchor="middle" style="fill:var(--ink);font-weight:700">52,471</text><text x="425.4" y="252" text-anchor="middle">2022</text><rect data-tip="<b>2023</b><br>97,822 cards saved" x="495.6" y="138.5" width="66.1" height="91.5" rx="4" style="fill:var(--accent)"><animate attributeName="height" from="0" to="91.5" dur="0.7s"/><animate attributeName="y" from="230" to="138.5" dur="0.7s"/></rect><text x="528.6" y="132.5" text-anchor="middle" style="fill:var(--ink);font-weight:700">97,822</text><text x="528.6" y="252" text-anchor="middle">2023</text><rect data-tip="<b>2024</b><br>138,239 cards saved" x="598.8" y="100.8" width="66.1" height="129.2" rx="4" style="fill:var(--accent)"><animate attributeName="height" from="0" to="129.2" dur="0.7s"/><animate attributeName="y" from="230" to="100.8" dur="0.7s"/></rect><text x="631.9" y="94.8" text-anchor="middle" style="fill:var(--ink);font-weight:700">138,239</text><text x="631.9" y="252" text-anchor="middle">2024</text><rect data-tip="<b>2025</b><br>158,841 cards saved" x="702.1" y="81.5" width="66.1" height="148.5" rx="4" style="fill:var(--accent)"><animate attributeName="height" from="0" to="148.5" dur="0.7s"/><animate attributeName="y" from="230" to="81.5" dur="0.7s"/></rect><text x="735.1" y="75.5" text-anchor="middle" style="fill:var(--ink);font-weight:700">158,841</text><text x="735.1" y="252" text-anchor="middle">2025</text><rect data-tip="<b>2026</b><br>194,825 cards saved" x="805.3" y="47.9" width="66.1" height="182.1" rx="4" style="fill:var(--accent)"><animate attributeName="height" from="0" to="182.1" dur="0.7s"/><animate attributeName="y" from="230" to="47.9" dur="0.7s"/></rect><text x="838.4" y="41.9" text-anchor="middle" style="fill:var(--ink);font-weight:700">194,825</text><text x="838.4" y="252" text-anchor="middle">2026</text></svg></div>
+</div>
+<div class="grid3" style="margin-top:14px">
+<div class="stat"><div class="k">Already expired</div><div class="v c-bad">206,541</div><div class="n">30 in every 100 cannot be charged at all</div></div>
+<div class="stat"><div class="k">On an active subscription</div><div class="v c-good">93,234</div><div class="n">the cards the business actually needs</div></div>
+<div class="stat"><div class="k">Apple Pay tokens</div><div class="v c-warn">34,548</div><div class="n">their use is not visible to our payment service</div></div>
+</div>
+
+<h2 class="sec">How we got the data</h2>
+<div class="card"><div class="flow"><div class="box"><h4>Five sources, read only</h4><div class="it"><b>Card vault</b>: every stored card, masked number, expiry, date saved</div><div class="it"><b>Customer</b>: turns the vault's customer number into the Unicity ID</div><div class="it"><b>Subscriptions</b>: which saved card each active subscription charges</div><div class="it"><b>Payments, 12 months</b>: every approved saved-card payment</div><div class="it"><b>Order history</b>: subscription or one-time order</div></div><div class="ar">&rarr;</div><div class="box"><h4>Each card gets labels</h4><div class="it">Kind: card, Apple Pay, Google Pay, other token</div><div class="it">Expiry: valid, expired, unknown</div><div class="it">On an active subscription?</div><div class="it">Last one-time use, last subscription charge</div><div class="it">Date saved</div></div><div class="ar">&rarr;</div><div class="box"><h4>Nine rules, first fit wins</h4><div class="it"><b class='c-good'>Keep</b>: rules 1 to 4</div><div class="it"><b class='c-warn'>Review</b>: rules 5 and 6</div><div class="it"><b class='c-bad'>Remove</b>: rules 7 to 9</div></div></div>
+<div class="note">Nothing was changed. The hard part: a payment carries no vault token, so it is tied to a stored card by customer plus masked card number (95.5 in every 100 saved-card payments tie back).</div></div>
+
+<h2 class="sec">Why clean up</h2>
+<div class="grid2">
+<div class="card"><h3>Keep only the card data you need</h3><div class="cs">Payment Card Industry Data Security Standard (PCI DSS) v4.0.1, Requirement 3.2.1</div>
+<ul class="pts"><li>Limit the amount of data stored, and how long, to <b>what the business needs</b>.</li><li>Set specific retention requirements for stored account data.</li><li>Delete securely when the data is no longer needed.</li><li>Check <b>at least every three months</b> that data past its retention period is gone.</li></ul>
+<div class="cs" style="margin:8px 0 0">Paraphrased from the standard; check the exact wording against the published text before quoting it outward.</div></div>
+<div class="card"><h3>Where we stand</h3><div class="cs">Storing cards is allowed. Storing cards with no business reason is not.</div>
+<ul class="pts"><li><b>525,111 stored cards</b> have no subscription, no use in 3 months and no retention reason on record.</li><li>A written retention period for stored cards: <b class="c-bad">NOT ESTABLISHED</b>.</li><li>Every stored card is a liability in a breach; 525,000 of them buy nothing.</li><li>The in-house vault programme will move the vault: <b>128,000 cards move faster and cheaper than 679,000</b>.</li></ul></div>
+</div>
+
+<h2 class="sec">What the measurement cannot see</h2>
+<div class="card"><table><tr><th>Blind spot</th><th>What it means</th><th>How it is handled</th></tr><tr><td style="white-space:nowrap"><b>Payments outside the payment service</b></td><td style="color:var(--dim)">Ushop, uFeelGreat's own checkout, office card terminals, payment links. A card used only there looks unused.</td><td class="c-good" style="font-weight:700">Remove in stages; expired cards first, they cannot be charged anywhere</td></tr><tr><td style="white-space:nowrap"><b>Apple Pay and Google Pay</b></td><td style="color:var(--dim)">Approved Apple Pay payments never reach our payment service.</td><td class="c-good" style="font-weight:700">Rule 6: review, never remove</td></tr><tr><td style="white-space:nowrap"><b>PayPal</b></td><td style="color:var(--dim)">Not in the vault, and not in any Unicity table. A subscription cannot bill PayPal.</td><td class="c-good" style="font-weight:700">Shown apart as use, not as a vault item</td></tr><tr><td style="white-space:nowrap"><b>4.5 in every 100 unmatched payments</b></td><td style="color:var(--dim)">7,600 saved-card payments tie to no current stored card. Why: NOT ESTABLISHED.</td><td class="c-good" style="font-weight:700">Open item; does not change the removal set</td></tr></table></div>
+
+<h2 class="sec">Proposal: remove in three stages, then check every quarter</h2>
+<div class="stages"><div class="stage"><div class="hd b-bad">Stage 1</div><div class="bd"><div class="t">Expired, unused</div><div class="c c-bad">202,243</div><div class="d">Zero customer risk: an expired card cannot be charged by anyone.</div></div></div><div class="stage"><div class="hd b-bad">Stage 2</div><div class="bd"><div class="t">Valid, idle 12 months</div><div class="c c-bad">230,537</div><div class="d">Lowest chance of use outside our payment service.</div></div></div><div class="stage"><div class="hd b-warn">Stage 3</div><div class="bd"><div class="t">Valid, idle 3 to 12 months</div><div class="c c-warn">92,196</div><div class="d">After stages 1 and 2 show no complaints.</div></div></div><div class="stage"><div class="hd b-good">Every quarter</div><div class="bd"><div class="t">Re-run the query</div><div class="c c-good">&nbsp;</div><div class="d">The three-month check, with a written retention period behind it.</div></div></div></div>
+<div class="card" style="margin-top:14px"><h3>Decisions needed</h3><ul class="pts"><li>The look-back window: <b>3 months</b> is the agreed minimum.</li><li>Rule 4: does a card saved recently but never used count as keep?</li><li>Who owns the deletion and the written retention period: <b>proposed owners are Payments (the list) and IT (the deletion)</b>, to accept or reassign.</li></ul></div>
+<div class="foot">Card vault cleanup, measured 4 Nov 2026. Ticket PAYMT-441. Read-only queries; nothing was changed or removed.</div>
+</main>
+<div class="tip" id="tip"></div>
+<script>const $=id=>document.getElementById(id);
+function theme(t){document.documentElement.dataset.theme=t;$('thL').className=t==='light'?'on':'';$('thD').className=t==='dark'?'on':'';try{localStorage.setItem('demoTheme',t)}catch(e){}}
+$('thL').onclick=()=>theme('light');$('thD').onclick=()=>theme('dark');let t0='dark';try{t0=localStorage.getItem('demoTheme')||'dark'}catch(e){}theme(t0);
+const tip=$('tip');document.querySelectorAll('[data-tip]').forEach(el=>{el.addEventListener('mousemove',e=>{tip.innerHTML=el.dataset.tip;tip.style.display='block';const w=tip.offsetWidth;tip.style.left=Math.min(e.clientX+14,innerWidth-w-10)+'px';tip.style.top=(e.clientY+14)+'px'});el.addEventListener('mouseleave',()=>tip.style.display='none')});
+</script>
+</body></html>

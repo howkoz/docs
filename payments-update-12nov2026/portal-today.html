@@ -1,0 +1,639 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Payments Portal Update</title>
+<style>
+:root{
+  --bg:#0b0d10; --panel:#14171c; --panel2:#1b1f26; --line:#2a303a; --fg:#eef1f5; --fg2:#aab3c0; --fg3:#7d8796;
+  --green:#3fb97a; --greenbg:#10291c; --blue:#5b9cf0; --bluebg:#0f2036; --amber:#e8a33a; --amberbg:#2e2210; --red:#e86b5f;
+}
+*{box-sizing:border-box}
+html,body{margin:0;background:var(--bg);color:var(--fg);font:15px/1.55 "Segoe UI",Poppins,Arial,sans-serif}
+a{color:var(--blue)}
+.top{position:sticky;top:0;z-index:5;background:#000;border-bottom:1px solid var(--line)}
+.topin{max-width:1240px;margin:0 auto;display:flex;align-items:center;gap:22px;padding:12px 16px;flex-wrap:wrap}
+.brand{font-weight:800;letter-spacing:.18em;font-size:18px}
+.brand small{font-weight:700;letter-spacing:0;font-size:14px;border-left:1px solid #555;padding-left:12px;margin-left:10px}
+.nav{display:flex;gap:4px;flex-wrap:wrap}
+.nav button{background:none;border:0;color:var(--fg2);font:inherit;font-size:14px;padding:6px 10px;cursor:pointer;border-bottom:2px solid transparent}
+.nav button:hover{color:var(--fg)}
+.nav button.on{color:var(--fg);border-bottom-color:var(--fg);font-weight:600}
+.nav .sep{width:1px;background:#333;margin:4px 6px}
+.mode{margin-left:auto;display:flex;gap:0}
+.mode span{border:1px solid #444;padding:4px 10px;font-size:13px}
+.mode span.on{background:#fff;color:#000}
+main{max-width:1240px;margin:0 auto;padding:28px 16px 60px}
+.eyebrow{font-size:12px;letter-spacing:.12em;text-transform:uppercase;color:var(--fg3);font-weight:700}
+h1{font-size:28px;margin:4px 0 6px}
+h2{font-size:19px;margin:28px 0 10px}
+h3{font-size:15px;margin:0 0 8px}
+.lede{color:var(--fg2);max-width:900px;margin:0 0 18px}
+.panel{display:none}
+.panel.on{display:block}
+.grid{display:grid;gap:14px}
+.g2{grid-template-columns:repeat(2,minmax(0,1fr))}
+.g3{grid-template-columns:repeat(3,minmax(0,1fr))}
+.g4{grid-template-columns:repeat(4,minmax(0,1fr))}
+@media (max-width:900px){.g2,.g3,.g4{grid-template-columns:1fr}}
+.card{background:var(--panel);border:1px solid var(--line);padding:16px}
+.card.green{border-color:#245c3d;background:var(--greenbg)}
+.card.blue{border-color:#244b7a;background:var(--bluebg)}
+.big{font-size:30px;font-weight:700;line-height:1.1}
+.big small{font-size:14px;font-weight:500;color:var(--fg2)}
+.muted{color:var(--fg2)}
+.tiny{font-size:12.5px;color:var(--fg3)}
+ul.can{list-style:none;padding:0;margin:0}
+ul.can li{padding:7px 0 7px 30px;position:relative;border-bottom:1px solid #1f242c}
+ul.can li:last-child{border-bottom:0}
+ul.can li:before{content:"";position:absolute;left:4px;top:11px;width:14px;height:14px;border-radius:50%;background:var(--green)}
+ul.can li:after{content:"";position:absolute;left:8px;top:14px;width:6px;height:3px;border-left:2px solid #08170e;border-bottom:2px solid #08170e;transform:rotate(-45deg)}
+ul.can.see li:before{background:var(--blue)}
+ol.demo{counter-reset:s;list-style:none;padding:0;margin:0}
+ol.demo li{counter-increment:s;padding:8px 0 8px 40px;position:relative;border-bottom:1px solid #1f242c}
+ol.demo li:before{content:counter(s);position:absolute;left:0;top:7px;width:26px;height:26px;border-radius:50%;background:#fff;color:#000;font-weight:700;text-align:center;line-height:26px;font-size:13px}
+ol.demo li b{color:#fff}
+ol.demo .say{display:block;color:var(--fg2);font-size:13.5px;font-style:italic}
+.pill{display:inline-block;font-size:11.5px;font-weight:700;padding:2px 8px;border-radius:10px;vertical-align:middle}
+.pill.new{background:var(--amberbg);color:var(--amber);border:1px solid #6b4d1c}
+.pill.ok{background:var(--greenbg);color:var(--green);border:1px solid #245c3d}
+.pill.see{background:var(--bluebg);color:var(--blue);border:1px solid #244b7a}
+.pill.gray{background:#222831;color:var(--fg2);border:1px solid #333b47}
+table{width:100%;border-collapse:collapse;font-size:13.5px}
+th,td{text-align:left;padding:8px 10px;border-bottom:1px solid var(--line);vertical-align:top}
+th{color:var(--fg3);font-weight:600;font-size:12px;text-transform:uppercase;letter-spacing:.05em}
+.tablewrap{overflow-x:auto;border:1px solid var(--line);background:var(--panel)}
+.tiles{display:grid;grid-template-columns:repeat(5,minmax(0,1fr));border:1px solid var(--line)}
+@media (max-width:900px){.tiles{grid-template-columns:repeat(2,minmax(0,1fr))}}
+.tile{background:var(--panel2);padding:14px;border-right:1px solid var(--line);border-bottom:1px solid var(--line)}
+.tile .l{font-size:13px;color:var(--fg2)}
+.tile .v{font-size:24px;font-weight:700}
+.svgwrap{background:#fff;padding:8px;border:1px solid var(--line)}
+.svgwrap svg{width:100%;height:auto;display:block}
+.tl{position:relative;margin:6px 0 0 8px;padding-left:22px;border-left:2px solid #333b47}
+.tl .ev{position:relative;padding:0 0 14px}
+.tl .ev:before{content:"";position:absolute;left:-29px;top:5px;width:12px;height:12px;border-radius:50%;background:var(--green);border:2px solid var(--bg)}
+.tl .ev.pay:before{background:var(--blue)}
+.tl .d{font-weight:700;display:inline-block;min-width:70px}
+.tl .who{color:var(--fg3);font-size:12.5px}
+.mock{background:#000;border:1px solid #333;padding:14px;font-size:13px}
+.mock .row{display:flex;justify-content:space-between;gap:10px;padding:6px 0;border-bottom:1px solid #222}
+.mock .row:last-child{border-bottom:0}
+.dont{border:1px solid #6b4d1c;background:var(--amberbg);padding:12px 14px;font-size:13.5px}
+.dont b{color:var(--amber)}
+.flow{display:flex;gap:8px;align-items:stretch;flex-wrap:wrap}
+.flow .st{flex:1 1 150px;background:var(--panel2);border:1px solid var(--line);padding:10px 12px;font-size:13.5px}
+.flow .st b{display:block;color:#fff}
+.flow .ar{align-self:center;color:var(--fg3);font-size:20px}
+.foot{margin-top:40px;border-top:1px solid var(--line);padding-top:14px;color:var(--fg3);font-size:12.5px}
+.next{display:flex;justify-content:space-between;margin-top:26px}
+.next button{background:var(--panel2);border:1px solid var(--line);color:var(--fg);padding:8px 14px;font:inherit;font-size:14px;cursor:pointer}
+.next button:hover{border-color:#566}
+</style>
+</head>
+<body>
+<div class="top"><div class="topin">
+  <div class="brand">UNICITY<small>Payments portal: where we are</small></div>
+  <nav class="nav" id="nav">
+    <button data-p="overview">Overview</button>
+    <span class="sep"></span>
+    <button data-p="dashboard">Dashboard</button>
+    <button data-p="payments">Payments and Orders</button>
+    <button data-p="processors">Processors</button>
+    <button data-p="checkout">Checkout</button>
+    <button data-p="routing">Routing</button>
+    <button data-p="webhooks">Webhooks</button>
+    <button data-p="settings">Settings</button>
+    <button data-p="team">Team</button>
+    <span class="sep"></span>
+    <button data-p="roles">Who can do what</button>
+    <button data-p="script">Demo script</button>
+  </nav>
+  <div class="mode"><span class="on">Test</span><span>Live</span></div>
+</div></div>
+
+<main>
+
+<!-- ============ OVERVIEW ============ -->
+<section class="panel" id="overview">
+  <div class="eyebrow">Update, 11 Nov 2026</div>
+  <h1>The payments portal: what is working, and what Payments runs on it</h1>
+  <p class="lede">The portal is where Payments sets up and runs the in-house payment service without a developer: connect processor accounts, decide where each payment goes, preview the payment form, watch every payment and webhook, and manage keys and people. Everything below was read from the portal in Test mode on 10 Nov 2026 and from its code on 11 Nov 2026.</p>
+
+  <div class="grid g4">
+    <div class="card green"><div class="big">9 <small>pages working</small></div><div class="muted">Dashboard, Payments, Orders, Processors, Checkout, Routing, Webhooks, Settings and Team</div></div>
+    <div class="card green"><div class="big">6 <small>processor accounts</small></div><div class="muted">Worldpay US, UK and Canada; Nuvei Canada; Braintree for PayPal; NMI US. 4 passed their connection test</div></div>
+    <div class="card green"><div class="big">3 <small>markets routed</small></div><div class="muted">US, Canada and UK have published routing in Test mode. 43 dry runs, every one went where the rules said</div></div>
+    <div class="card green"><div class="big">2 <small>webhook endpoints</small></div><div class="muted">Both verified. 66 deliveries sent by 10 Nov; the newest 25 all delivered</div></div>
+  </div>
+
+  <h2>What the payments admin runs, tab by tab</h2>
+  <div class="svgwrap"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1010 640" font-family="Segoe UI, Arial, sans-serif">
+  <rect x="0" y="0" fill="#ffffff"/>
+  <text x="20" y="34" font-size="19" font-weight="700" fill="#1f2937">Payments portal today: what the payments admin runs, tab by tab</text>
+  <text x="20" y="56" font-size="12.5" fill="#4b5563">payments-portal-service.vercel.app, read in Test mode on 10 Nov 2026 and from its code on 11 Nov 2026. No developer needed for anything on this page.</text>
+
+  <rect x="20" y="70" width="970" height="30" rx="6" fill="#1f2937"/>
+  <text x="34" y="90" font-size="12.5" fill="#ffffff" font-weight="700">Header:</text>
+  <text x="92" y="90" font-size="12.5" fill="#e5e7eb">Dashboard menu (Dashboard, Payments, Orders)  ·  Processors  ·  Checkout  ·  Routing  ·  Webhooks  ·  Settings menu (Settings, Team)  ·  Test / Live switch</text>
+
+  <rect x="20" y="112" width="12" height="12" fill="#e0ecfb" stroke="#3b78d8"/><text x="38" y="123" font-size="12" fill="#374151">You see and search</text>
+  <rect x="170" y="112" width="12" height="12" fill="#e6f4ea" stroke="#1e8e3e"/><text x="188" y="123" font-size="12" fill="#374151">You set up and change (admin)</text>
+
+  <!-- Row 1 -->
+  <g>
+    <rect x="20" y="136" width="230" height="200" rx="8" fill="#e0ecfb" stroke="#3b78d8" stroke-width="1.5"/>
+    <text x="34" y="160" font-size="15" font-weight="700" fill="#1f3a6b">1 Dashboard</text>
+    <text x="34" y="186" font-size="11.5" fill="#374151">Payments, success rate, declines</text>
+    <text x="34" y="206" font-size="11.5" fill="#374151">Expired, in progress, failed</text>
+    <text x="34" y="226" font-size="11.5" fill="#374151">Success after a decline</text>
+    <text x="34" y="246" font-size="11.5" fill="#374151">3-D Secure challenge rate</text>
+    <text x="34" y="266" font-size="11.5" fill="#374151">Today, 7, 30 or 90 days</text>
+    <text x="34" y="286" font-size="11.5" fill="#374151">Each figure against the range before</text>
+    <text x="34" y="318" font-size="11" font-weight="700" fill="#1f3a6b">30 days: 199 payments, 9 paid</text>
+  </g>
+  <g>
+    <rect x="265" y="136" width="230" height="200" rx="8" fill="#e0ecfb" stroke="#3b78d8" stroke-width="1.5"/>
+    <text x="279" y="160" font-size="15" font-weight="700" fill="#1f3a6b">2 Payments and Orders</text>
+    <text x="279" y="186" font-size="11.5" fill="#374151">Every payment, newest first</text>
+    <text x="279" y="206" font-size="11.5" fill="#374151">Orders: payments grouped by order</text>
+    <text x="279" y="226" font-size="11.5" fill="#374151">Filter market, processor, status</text>
+    <text x="279" y="246" font-size="11.5" fill="#374151">Search order, payment id, last 4, email</text>
+    <text x="279" y="266" font-size="11.5" fill="#374151">Open one: every attempt and why</text>
+    <text x="279" y="286" font-size="11.5" fill="#374151">Each decline marked hard or soft</text>
+    <text x="279" y="318" font-size="11" font-weight="700" fill="#1f3a6b">Same figures, then the rows</text>
+  </g>
+  <g>
+    <rect x="510" y="136" width="230" height="200" rx="8" fill="#e6f4ea" stroke="#1e8e3e" stroke-width="1.5"/>
+    <text x="524" y="160" font-size="15" font-weight="700" fill="#14532d">3 Processors</text>
+    <text x="524" y="186" font-size="11.5" fill="#374151">Connect Worldpay, NMI, Nuvei,</text>
+    <text x="524" y="206" font-size="11.5" fill="#374151">PayPal and Braintree accounts</text>
+    <text x="524" y="226" font-size="11.5" fill="#374151">Set markets, card brands, wallets</text>
+    <text x="524" y="246" font-size="11.5" fill="#374151">Test the connection any time</text>
+    <text x="524" y="266" font-size="11.5" fill="#374151">Enable, disable, edit credentials</text>
+    <text x="524" y="286" font-size="11.5" fill="#374151">See which rules use each account</text>
+    <text x="524" y="318" font-size="11" font-weight="700" fill="#14532d">6 accounts connected, 4 passed</text>
+  </g>
+  <g>
+    <rect x="755" y="136" width="235" height="200" rx="8" fill="#e0ecfb" stroke="#3b78d8" stroke-width="1.5"/>
+    <text x="769" y="160" font-size="15" font-weight="700" fill="#1f3a6b">4 Checkout  <tspan font-size="11" fill="#b45309">NEW 10 Nov</tspan></text>
+    <text x="769" y="186" font-size="11.5" fill="#374151">Preview the payment form</text>
+    <text x="769" y="206" font-size="11.5" fill="#374151">as shoppers see it, in any of 50 markets</text>
+    <text x="769" y="226" font-size="11.5" fill="#374151">Ways to pay offered in that market</text>
+    <text x="769" y="246" font-size="11.5" fill="#374151">Address fields per country</text>
+    <text x="769" y="266" font-size="11.5" fill="#374151">Desktop or mobile size</text>
+    <text x="769" y="286" font-size="11.5" fill="#374151">Highlight my changes</text>
+    <text x="769" y="318" font-size="11" font-weight="700" fill="#1f3a6b">Type into it: nothing is sent</text>
+  </g>
+
+  <!-- Row 2 -->
+  <g>
+    <rect x="20" y="350" width="230" height="200" rx="8" fill="#e6f4ea" stroke="#1e8e3e" stroke-width="1.5"/>
+    <text x="34" y="374" font-size="15" font-weight="700" fill="#14532d">5 Routing</text>
+    <text x="34" y="400" font-size="11.5" fill="#374151">Rules per market and payment kind:</text>
+    <text x="34" y="420" font-size="11.5" fill="#374151">online, phone and mail, rebills</text>
+    <text x="34" y="440" font-size="11.5" fill="#374151">Split traffic by share %</text>
+    <text x="34" y="460" font-size="11.5" fill="#374151">Failover, fallback, attempts</text>
+    <text x="34" y="480" font-size="11.5" fill="#374151">Try a payment: dry run, no charge</text>
+    <text x="34" y="500" font-size="11.5" fill="#374151">Draft, publish, every version kept</text>
+    <text x="34" y="532" font-size="11" font-weight="700" fill="#14532d">Published: US, Canada, UK</text>
+  </g>
+  <g>
+    <rect x="265" y="350" width="230" height="200" rx="8" fill="#e6f4ea" stroke="#1e8e3e" stroke-width="1.5"/>
+    <text x="279" y="374" font-size="15" font-weight="700" fill="#14532d">6 Webhooks</text>
+    <text x="279" y="400" font-size="11.5" fill="#374151">Add, verify, edit, delete endpoints</text>
+    <text x="279" y="420" font-size="11.5" fill="#374151">Pick which events each one gets</text>
+    <text x="279" y="440" font-size="11.5" fill="#374151">Rotate secret, 24-hour overlap</text>
+    <text x="279" y="460" font-size="11.5" fill="#374151">Every delivery, body as sent</text>
+    <text x="279" y="480" font-size="11.5" fill="#374151">Resend one, send a test event</text>
+    <text x="279" y="500" font-size="11.5" fill="#374151">Filter by endpoint and event</text>
+    <text x="279" y="532" font-size="11" font-weight="700" fill="#14532d">2 endpoints verified</text>
+  </g>
+  <g>
+    <rect x="510" y="350" width="230" height="200" rx="8" fill="#e6f4ea" stroke="#1e8e3e" stroke-width="1.5"/>
+    <text x="524" y="374" font-size="15" font-weight="700" fill="#14532d">7 Settings</text>
+    <text x="524" y="400" font-size="11.5" fill="#374151">Company name</text>
+    <text x="524" y="420" font-size="11.5" fill="#374151">Websites allowed to show the form</text>
+    <text x="524" y="440" font-size="11.5" fill="#374151">Make and rotate API keys</text>
+    <text x="524" y="460" font-size="11.5" fill="#374151">Key shown once, 24-hour overlap</text>
+    <text x="524" y="480" font-size="11.5" fill="#374151">Test and Live keys kept apart</text>
+    <text x="524" y="500" font-size="11.5" fill="#374151">Change password (12+ characters)</text>
+    <text x="524" y="532" font-size="11" font-weight="700" fill="#14532d">Takes effect at once</text>
+  </g>
+  <g>
+    <rect x="755" y="350" width="235" height="200" rx="8" fill="#e6f4ea" stroke="#1e8e3e" stroke-width="1.5"/>
+    <text x="769" y="374" font-size="15" font-weight="700" fill="#14532d">8 Team  <tspan font-size="11" fill="#b45309">NEW 10 Nov</tspan></text>
+    <text x="769" y="400" font-size="11.5" fill="#374151">Everyone who signs in, and their role</text>
+    <text x="769" y="420" font-size="11.5" fill="#374151">Invite by link (one use, 7 days)</text>
+    <text x="769" y="440" font-size="11.5" fill="#374151">Join as member or admin</text>
+    <text x="769" y="460" font-size="11.5" fill="#374151">Promote a member to admin</text>
+    <text x="769" y="480" font-size="11.5" fill="#374151">Members see all and draft rules</text>
+    <text x="769" y="500" font-size="11.5" fill="#374151">Admins change and publish</text>
+    <text x="769" y="532" font-size="11" font-weight="700" fill="#14532d">Named logins for every change</text>
+  </g>
+
+  <rect x="20" y="566" width="970" height="58" rx="8" fill="#f9fafb" stroke="#e5e7eb"/>
+  <text x="34" y="589" font-size="12.5" font-weight="700" fill="#1f2937">Built by (GitHub records):</text>
+  <text x="200" y="589" font-size="12.5" fill="#374151">Matthew Winn: dashboard, payments, orders, processors, routing, webhooks, team and roles.</text>
+  <text x="34" y="609" font-size="12.5" fill="#374151">Fidel Bello: checkout preview, payment method settings, billing address form.  Anthony Fernandez: dashboard figures.  NMI = Network Merchants Inc.  API = application programming interface.</text>
+</svg>
+</div>
+
+  <h2>How a payment moves through what we set up</h2>
+  <div class="flow">
+    <div class="st"><b>Settings</b>Our website opens a payment with the API key. The form shows only on allowed websites</div>
+    <div class="ar">&rarr;</div>
+    <div class="st"><b>Checkout</b>The shopper sees the ways to pay set up for their market, with address fields for their country</div>
+    <div class="ar">&rarr;</div>
+    <div class="st"><b>Routing</b>The rules for that market and payment kind pick the processor account, with failover and fallback</div>
+    <div class="ar">&rarr;</div>
+    <div class="st"><b>Processors</b>The chosen account charges the card or wallet</div>
+    <div class="ar">&rarr;</div>
+    <div class="st"><b>Webhooks</b>The result goes back to our systems, signed</div>
+    <div class="ar">&rarr;</div>
+    <div class="st"><b>Dashboard, Payments, Orders</b>Payments sees every attempt and the figures</div>
+  </div>
+
+  <h2>What has been built and done, 15 Oct to 10 Nov 2026</h2>
+  <p class="tiny">Green: built by the developers (date the change was merged, GitHub records). Blue: set up or checked by Payments in the portal.</p>
+  <div class="tl">
+    <div class="ev"><span class="d">15 Oct</span> Processors tab: connect processor accounts <span class="who">Matthew Winn, pull request 87</span></div>
+    <div class="ev"><span class="d">19 Oct</span> Routing tab: rules, versions, publish <span class="who">Matthew Winn, pull request 104</span></div>
+    <div class="ev"><span class="d">30 Oct</span> Payments and Orders tabs <span class="who">Matthew Winn, pull requests 194 and 195</span></div>
+    <div class="ev pay"><span class="d">31 Oct</span> Payments walks every screen for the first time</div>
+    <div class="ev pay"><span class="d">2 Nov</span> Canada and UK routing published; Worldpay UK and Nuvei Canada pass their connection tests</div>
+    <div class="ev"><span class="d">3 Nov</span> Test and Live mode and rule conditions in the portal <span class="who">Matthew Winn, pull request 252</span></div>
+    <div class="ev pay"><span class="d">3 Nov</span> US routing version 2 published; NMI US passes its connection test</div>
+    <div class="ev"><span class="d">4 Nov</span> Webhooks tab: endpoints, deliveries, resend <span class="who">Matthew Winn, a series of pull requests from 257 to 281</span></div>
+    <div class="ev pay"><span class="d">5 Nov</span> Canada draft saved: cards 80% Nuvei, 20% Worldpay, failover on</div>
+    <div class="ev pay"><span class="d">6 Nov</span> Worldpay US passes its connection test</div>
+    <div class="ev"><span class="d">10 Nov</span> Checkout tab: preview the payment form per market <span class="who">Fidel Bello, pull requests 289 and 372</span></div>
+    <div class="ev"><span class="d">10 Nov</span> Payment method settings per market, and the billing address form <span class="who">Fidel Bello, pull requests 290, 302, 305, 309 and 371</span></div>
+    <div class="ev"><span class="d">10 Nov</span> Team page, member and admin roles, every button tied to a permission <span class="who">Matthew Winn, pull requests 378, 379, 381 and 383</span></div>
+    <div class="ev pay"><span class="d">10 Nov</span> Payments runs 43 routing dry runs across US, Canada and UK</div>
+  </div>
+  <div class="next"><span></span><button data-go="dashboard">Next: Dashboard &rarr;</button></div>
+</section>
+
+<!-- ============ DASHBOARD ============ -->
+<section class="panel" id="dashboard">
+  <div class="eyebrow">Dashboard menu &rsaquo; Dashboard <span class="pill see">You see</span></div>
+  <h1>Dashboard</h1>
+  <p class="lede">How payments are faring, in the mode chosen in the header. Every figure is compared with the same length of time just before it, with a small trend line under it.</p>
+  <h3>30 days, Test mode (11 Nov 2026)</h3>
+  <div class="tiles">
+    <div class="tile"><div class="l">Payments</div><div class="v">199</div></div>
+    <div class="tile"><div class="l">Success rate</div><div class="v">4.8%</div></div>
+    <div class="tile"><div class="l">Succeeded</div><div class="v">9</div></div>
+    <div class="tile"><div class="l">Declines</div><div class="v">1</div></div>
+    <div class="tile"><div class="l">Failed</div><div class="v">0</div></div>
+    <div class="tile"><div class="l">Expired</div><div class="v">178</div></div>
+    <div class="tile"><div class="l">Awaiting processor</div><div class="v">0</div></div>
+    <div class="tile"><div class="l">Paid without a reference</div><div class="v">0</div></div>
+    <div class="tile"><div class="l">Succeeded after a decline</div><div class="v">1</div></div>
+    <div class="tile"><div class="l">In progress</div><div class="v">0</div></div>
+    <div class="tile"><div class="l">Challenge rate (3-D Secure)</div><div class="v">0%</div></div>
+  </div>
+  <p class="tiny">Test mode figures: most of the 199 are test checkouts opened by the developers and left, so they expire. Live figures appear here the moment Live is switched on.</p>
+  <div class="grid g2">
+    <div class="card"><h3>What you can do here</h3>
+      <ul class="can see">
+        <li>Switch between Test and Live in the header; every page follows</li>
+        <li>Pick Today, 7 days, 30 days or 90 days</li>
+        <li>See 11 figures: payments, success rate, succeeded, declines, failed, expired, awaiting processor, paid without a reference, succeeded after a decline, in progress, challenge rate</li>
+        <li>Each figure shows the change against the period before</li>
+        <li>Times shown in New York time (America/New_York)</li>
+      </ul></div>
+    <div class="card"><h3>Demo it</h3>
+      <ol class="demo">
+        <li><b>Open the Dashboard</b> with Test selected.<span class="say">"This is every payment through the new service, in one place."</span></li>
+        <li><b>Click 7 days, then 30 days.</b><span class="say">"Each figure compares itself with the period before."</span></li>
+        <li><b>Point at "Succeeded after a decline".</b><span class="say">"The service already counts payments rescued by a second try."</span></li>
+      </ol></div>
+  </div>
+  <div class="next"><button data-go="overview">&larr; Overview</button><button data-go="payments">Next: Payments and Orders &rarr;</button></div>
+</section>
+
+<!-- ============ PAYMENTS / ORDERS ============ -->
+<section class="panel" id="payments">
+  <div class="eyebrow">Dashboard menu &rsaquo; Payments, Orders <span class="pill see">You see and search</span></div>
+  <h1>Payments and Orders</h1>
+  <p class="lede"><b>Payments</b> lists every payment opened in the chosen mode over the range, figures first, then the payments. <b>Orders</b> groups the payments under the order reference our systems gave them, one row per order. Open any row for everything about it.</p>
+  <div class="grid g2">
+    <div class="card"><h3>What you can do here</h3>
+      <ul class="can see">
+        <li>Filter by market, processor and status ("Every market", "Every processor")</li>
+        <li>Search Orders by order reference, payment id, a card's last four digits or the shopper's email</li>
+        <li>Sort and page through the list</li>
+        <li>Open a payment: details, shopper, metadata, card replacements</li>
+        <li>See every attempt on it, which processor account took it, and the outcome</li>
+        <li>Each decline is labelled <b>hard</b> ("the same card will not succeed later") or <b>soft</b> ("the same card could succeed later")</li>
+        <li>See when a payment set up a stored card for later rebills, and any 3-D Secure challenge</li>
+      </ul></div>
+    <div class="card"><h3>What one payment shows</h3>
+      <div class="mock">
+        <div class="row"><span>Details</span><span class="muted">amount, currency, market, status, order reference</span></div>
+        <div class="row"><span>Shopper</span><span class="muted">email, billing address</span></div>
+        <div class="row"><span>Attempts</span><span class="muted">each try, account used, outcome</span></div>
+        <div class="row"><span>Decline</span><span class="muted">hard or soft, the processor's reason</span></div>
+        <div class="row"><span>Replacements</span><span class="muted">card replaced on the same payment</span></div>
+        <div class="row"><span>Metadata</span><span class="muted">tags our checkout sent</span></div>
+      </div>
+      <h3 style="margin-top:16px">Demo it</h3>
+      <ol class="demo">
+        <li><b>Open Payments</b>, filter Market = Canada.</li>
+        <li><b>Open one payment</b> and scroll to Attempts.<span class="say">"Every try, the account it went to, and why it ended."</span></li>
+        <li><b>Open Orders</b> and search an order number.<span class="say">"Customer service can find an order from an email or last four digits."</span></li>
+      </ol></div>
+  </div>
+  <div class="next"><button data-go="dashboard">&larr; Dashboard</button><button data-go="processors">Next: Processors &rarr;</button></div>
+</section>
+
+<!-- ============ PROCESSORS ============ -->
+<section class="panel" id="processors">
+  <div class="eyebrow">Processors <span class="pill ok">You set up and change</span></div>
+  <h1>Payment processors</h1>
+  <p class="lede">Payments connects our processor accounts here, with their credentials, and decides what each account takes: which markets, which currency in each market, which card brands and which wallets. No developer is needed to add another merchant account.</p>
+  <h3>Connected today (Test mode)</h3>
+  <div class="tablewrap"><table>
+    <tr><th>Account</th><th>Processor</th><th>Market, currency</th><th>Takes</th><th>Connection test</th></tr>
+    <tr><td>worldpay-us-ecom-test</td><td>Worldpay</td><td>US, USD</td><td>Visa, Mastercard, Amex, Discover</td><td><span class="pill ok">Passed 6 Nov</span></td></tr>
+    <tr><td>worldpay-gbp-ecom-test</td><td>Worldpay</td><td>UK, GBP</td><td>Visa, Mastercard, Amex, Discover</td><td><span class="pill ok">Passed 2 Nov</span></td></tr>
+    <tr><td>nuvei-unicity-international</td><td>Nuvei</td><td>Canada, CAD</td><td>6 card brands</td><td><span class="pill ok">Passed 2 Nov</span></td></tr>
+    <tr><td>network-merchants-...-nuvei</td><td>NMI</td><td>US, USD</td><td>6 card brands</td><td><span class="pill ok">Passed 3 Nov</span></td></tr>
+    <tr><td>worldpay-ecom-test-ca</td><td>Worldpay</td><td>Canada, CAD</td><td>6 card brands, Apple Pay, Google Pay</td><td><span class="pill gray">Ready to run</span></td></tr>
+    <tr><td>braintree-paypal-ca</td><td>Braintree</td><td>Canada, CAD</td><td>PayPal</td><td><span class="pill gray">Ready to run</span></td></tr>
+  </table></div>
+  <p class="tiny">6 card brands = Visa, Mastercard, American Express (Amex), Discover, Diners Club and JCB.</p>
+  <div class="grid g2">
+    <div class="card green"><h3>What you can do here</h3>
+      <ul class="can">
+        <li><b>Connect a processor:</b> Worldpay, NMI, Nuvei, PayPal or Braintree, in Test or Live</li>
+        <li>Give it a label and an account type: online, phone and mail, or rebills</li>
+        <li>Enter its credentials; secrets are never shown again, leave blank to keep them</li>
+        <li>Choose its markets and the currency it charges in each</li>
+        <li>Choose its ways to pay: card brands, Apple Pay, Google Pay, PayPal, with each wallet's card networks</li>
+        <li>Worldpay accounts: turn on extended decline codes and set 3-D Secure</li>
+        <li><b>Test connection</b> at any time: "Credentials work" or "Credentials refused"</li>
+        <li><b>Enable or disable</b> an account with one switch</li>
+        <li>See which routing rules use the account before changing it</li>
+        <li>Delete an account that has never taken a payment; disable one that has</li>
+      </ul></div>
+    <div class="card"><h3>Demo it</h3>
+      <ol class="demo">
+        <li><b>Open Processors.</b><span class="say">"Six accounts across three processors and a PayPal account, all connected by Payments."</span></li>
+        <li><b>Open nuvei-unicity-international.</b> Show Payment methods: Canada, CAD, six card brands.</li>
+        <li><b>Open worldpay-ecom-test-ca</b> and show Google Pay's card networks.<span class="say">"We can switch any card network on or off per account."</span></li>
+        <li><b>Click Connect a processor</b> and pick Worldpay, to show the form. Click Back without saving.<span class="say">"Adding the euro Worldpay accounts is this form, no developer."</span></li>
+        <li><b>Optional:</b> press <b>Test connection</b> on Worldpay Canada; it only checks the credentials.</li>
+      </ol></div>
+  </div>
+  <div class="next"><button data-go="payments">&larr; Payments and Orders</button><button data-go="checkout">Next: Checkout &rarr;</button></div>
+</section>
+
+<!-- ============ CHECKOUT ============ -->
+<section class="panel" id="checkout">
+  <div class="eyebrow">Checkout <span class="pill new">New 10 Nov</span> <span class="pill see">You see and try</span></div>
+  <h1>Payment form</h1>
+  <p class="lede">The hosted payment form exactly as a shopper sees it in each market: the ways to pay that market offers, the card fields, and the billing address in that country's own fields. You can type into it and check it; nothing is sent.</p>
+  <div class="grid g2">
+    <div class="card"><h3>What you can do here</h3>
+      <ul class="can see">
+        <li>Pick any of the 50 markets from a searchable list with flags</li>
+        <li>Read, in one sentence, how shoppers there can pay: in Canada, by card, Apple Pay, Google Pay and PayPal</li>
+        <li>See the methods shown in the order set for the form</li>
+        <li>Switch the preview between Desktop and Mobile size</li>
+        <li>Change the billing country and see its address fields</li>
+        <li>Turn on "Highlight my changes" to see each field our settings changed, and why</li>
+        <li>Follow the link to Processors to add a way to pay a market lacks</li>
+      </ul>
+      <p class="tiny" style="margin-top:10px">Built alongside it on 10 Nov: payment method settings per market (global, then per market) and the order the form offers them in. Fidel Bello's thread of 10 Nov: the portal screen for changing that order is the next piece being built.</p></div>
+    <div class="card"><h3>Demo it</h3>
+      <ol class="demo">
+        <li><b>Open Checkout</b> and pick Canada.<span class="say">"This is what a Canadian shopper sees: cards, Apple Pay, Google Pay, PayPal."</span></li>
+        <li><b>Switch to Mobile.</b></li>
+        <li><b>Pick United Kingdom.</b><span class="say">"The UK form offers cards only, because that is what the UK account takes."</span></li>
+        <li><b>Change the billing country</b> to Japan or Germany to show the address fields change.</li>
+        <li><b>Turn on Highlight my changes.</b></li>
+      </ol></div>
+  </div>
+  <div class="next"><button data-go="processors">&larr; Processors</button><button data-go="routing">Next: Routing &rarr;</button></div>
+</section>
+
+<!-- ============ ROUTING ============ -->
+<section class="panel" id="routing">
+  <div class="eyebrow">Routing <span class="pill ok">You set up and change</span></div>
+  <h1>Routing rules</h1>
+  <p class="lede">Which of our processor accounts charges each payment. Pick a market and a kind of payment; the rules are checked top to bottom, the first that matches decides, and the fallback takes every payment no rule matches. Rules are drafted, tried, then published, and every version is kept.</p>
+  <h3>Published today (Test mode)</h3>
+  <div class="tablewrap"><table>
+    <tr><th>Market</th><th>Online payments</th></tr>
+    <tr><td>US</td><td>Version 2, 3 Nov: cards to NMI 100%</td></tr>
+    <tr><td>Canada</td><td>Version 1, 2 Nov: cards to Nuvei; Apple Pay and Google Pay to Worldpay Canada; PayPal to Braintree; fallback Nuvei. <span class="pill gray">Draft saved 5 Nov</span> cards 80% Nuvei / 20% Worldpay, failover on. Rebills: version 1, 2 Nov, cards to Nuvei</td></tr>
+    <tr><td>UK</td><td>Version 2, 2 Nov: four brands to Worldpay GBP 100%, fallback Worldpay GBP</td></tr>
+  </table></div>
+  <p class="tiny">43 dry runs on 10 Nov across these versions and the Canada draft: every payment went exactly where the rules said.</p>
+  <div class="grid g2">
+    <div class="card green"><h3>What you can do here</h3>
+      <ul class="can">
+        <li>Pick the market and the kind of payment: online, phone and mail, or rebills</li>
+        <li>Add, name, reorder (up and down) and remove rules</li>
+        <li>Conditions on a rule: payment method (card or a wallet), currency, amount (at least, more than, less than, at most), card brand, customer reference, or a tag our checkout sends</li>
+        <li>Send a rule to one account or split it across several by share %</li>
+        <li>Turn failover on per rule: if the processor itself fails, the payment moves to the next account</li>
+        <li>Pick a fallback account for anything no rule matches, or refuse it</li>
+        <li>Set the attempts allowed per payment</li>
+        <li>Copy rules from another kind of payment</li>
+        <li>"Where payments go": the portal lists, for every currency, brand and wallet, which rule or fallback takes it, and warns of anything the rules would refuse</li>
+        <li><b>Try a payment:</b> enter amount, currency, brand or wallet and see which account takes it, under the published version or the draft. Nothing is charged</li>
+        <li>Save draft, discard draft, publish; history shows who drafted and published each version</li>
+      </ul></div>
+    <div class="card"><h3>Rule card, as it looks</h3>
+      <div class="mock">
+        <div class="row"><span><b>Rule 1</b> "Cards in CAD"</span><span class="muted">&uarr; &darr; remove</span></div>
+        <div class="row"><span>Conditions</span><span class="muted">Payment method is card; currency in CAD</span></div>
+        <div class="row"><span>Accounts</span><span class="muted">Nuvei 80% &middot; Worldpay Canada 20%</span></div>
+        <div class="row"><span>Failover</span><span class="muted">On</span></div>
+        <div class="row"><span>Fallback (whole market)</span><span class="muted">Worldpay Canada</span></div>
+        <div class="row"><span>Attempts per payment</span><span class="muted">5</span></div>
+      </div>
+      <h3 style="margin-top:16px">Demo it</h3>
+      <ol class="demo">
+        <li><b>Open Routing</b>, Market Canada, kind Online.<span class="say">"Published version 1 and a draft that splits cards 80 / 20 with failover."</span></li>
+        <li><b>Scroll to "Where payments go".</b><span class="say">"Before publishing, the portal shows where every currency and brand would land."</span></li>
+        <li><b>Try a payment:</b> CAD, Visa, 100.00.<span class="say">"Nuvei 80%, Worldpay 20%, failover to Worldpay. Nothing was charged."</span></li>
+        <li><b>Try a payment:</b> CAD, Apple Pay.<span class="say">"Wallets go to Worldpay Canada."</span></li>
+        <li><b>Open Versions published.</b><span class="say">"Every version kept, with who drafted it and when it was published."</span></li>
+      </ol></div>
+  </div>
+  <div class="next"><button data-go="checkout">&larr; Checkout</button><button data-go="webhooks">Next: Webhooks &rarr;</button></div>
+</section>
+
+<!-- ============ WEBHOOKS ============ -->
+<section class="panel" id="webhooks">
+  <div class="eyebrow">Webhooks <span class="pill ok">You set up and change</span></div>
+  <h1>Webhooks</h1>
+  <p class="lede">How the payment service tells our systems what happened to a payment. Above: the endpoints messages go to. Below: every message sent, newest first, with how it went. Open one for every attempt and the body exactly as sent.</p>
+  <div class="grid g3">
+    <div class="card green"><div class="big">2 <small>endpoints</small></div><div class="muted">Both verified</div></div>
+    <div class="card green"><div class="big">66 <small>deliveries by 10 Nov</small></div><div class="muted">The newest 25 all delivered</div></div>
+    <div class="card green"><div class="big">5 <small>events</small></div><div class="muted">succeeded, declined, failed, expired, requires action (3-D Secure)</div></div>
+  </div>
+  <div class="grid g2" style="margin-top:14px">
+    <div class="card green"><h3>What you can do here</h3>
+      <ul class="can">
+        <li>Add an endpoint (its web address) and choose which events it receives</li>
+        <li>Verify an endpoint before anything is sent to it</li>
+        <li>Rotate an endpoint's signing secret: the old one keeps working for 24 hours</li>
+        <li>Edit or delete an endpoint</li>
+        <li>See every delivery, filter by endpoint and event</li>
+        <li>Open a delivery: every attempt, the reply, and the body as sent</li>
+        <li><b>Resend</b> a delivery, or <b>send a test event</b> to an endpoint</li>
+      </ul></div>
+    <div class="card"><h3>Demo it</h3>
+      <ol class="demo">
+        <li><b>Open Webhooks.</b><span class="say">"Two endpoints, verified. Every message the service has sent is listed."</span></li>
+        <li><b>Open the endpoints panel</b> and show which events each one gets.</li>
+        <li><b>Open the newest delivery.</b><span class="say">"The exact message our system received, and its reply."</span></li>
+        <li><b>Filter Event</b> = payment_intent.succeeded.</li>
+      </ol></div>
+  </div>
+  <div class="next"><button data-go="routing">&larr; Routing</button><button data-go="settings">Next: Settings &rarr;</button></div>
+</section>
+
+<!-- ============ SETTINGS ============ -->
+<section class="panel" id="settings">
+  <div class="eyebrow">Settings menu &rsaquo; Settings <span class="pill ok">You set up and change</span></div>
+  <h1>Settings</h1>
+  <p class="lede">Our company's name, the websites the payment form may be shown on, the keys our servers hold, and a link to webhooks. Changes take effect at once: the next form and the next message use them.</p>
+  <div class="grid g2">
+    <div class="card green"><h3>What you can do here</h3>
+      <ul class="can">
+        <li>Change the company name</li>
+        <li>Set the allowed origins: the websites allowed to show the payment form (today the developers' demo shop and unicity-checkout.vercel.app)</li>
+        <li><b>API keys:</b> generate one for Test and one for Live. A key is shown once, when made; rotating gives the old key 24 hours before it stops</li>
+        <li>See when each key was made and last used</li>
+        <li>Change your own password (at least 12 characters); your other sessions are signed out</li>
+      </ul></div>
+    <div class="card"><h3>In place today</h3>
+      <div class="mock">
+        <div class="row"><span>Company</span><span class="muted">Unicity</span></div>
+        <div class="row"><span>Allowed origins</span><span class="muted">2 websites</span></div>
+        <div class="row"><span>Test API key</span><span class="muted">made 30 Oct, in use</span></div>
+        <div class="row"><span>Test and Live</span><span class="muted">separate keys and secrets</span></div>
+      </div>
+      <h3 style="margin-top:16px">Demo it</h3>
+      <ol class="demo">
+        <li><b>Open Settings.</b> Show allowed origins.<span class="say">"Only our own websites can show the payment form."</span></li>
+        <li><b>Point at API keys</b> without pressing anything.<span class="say">"Keys are shown once and rotate with a 24-hour overlap, so a change never breaks checkout."</span></li>
+      </ol></div>
+  </div>
+  <div class="next"><button data-go="webhooks">&larr; Webhooks</button><button data-go="team">Next: Team &rarr;</button></div>
+</section>
+
+<!-- ============ TEAM ============ -->
+<section class="panel" id="team">
+  <div class="eyebrow">Settings menu &rsaquo; Team <span class="pill new">New 10 Nov</span> <span class="pill ok">You set up and change</span></div>
+  <h1>Team</h1>
+  <p class="lede">Everyone who signs in for our company, and their role. An admin invites teammates by link, as a member or an admin, and can make a member an admin. Each person gets their own login, so every change carries a name.</p>
+  <div class="grid g2">
+    <div class="card green"><h3>What you can do here</h3>
+      <ul class="can">
+        <li>See everyone who can sign in, their role and when they joined</li>
+        <li>Invite a teammate: choose member or admin, then send the link. It works once, for seven days</li>
+        <li>Promote a member to admin</li>
+        <li>Any button a person's role does not allow is greyed out and says which permission it needs</li>
+      </ul></div>
+    <div class="card"><h3>The two roles</h3>
+      <div class="mock">
+        <div class="row"><span><b>Member</b></span><span class="muted">"Sees everything and drafts routing rules; changes nothing else."</span></div>
+        <div class="row"><span><b>Admin</b></span><span class="muted">"Also changes your setup: processors, routing, webhooks, keys, settings and the team."</span></div>
+      </div>
+      <h3 style="margin-top:16px">Demo it</h3>
+      <ol class="demo">
+        <li><b>Open Settings menu &rsaquo; Team.</b></li>
+        <li><b>Click Invite a teammate</b>, show the member and admin choice, then close.<span class="say">"A member can draft routing for an admin to publish."</span></li>
+      </ol></div>
+  </div>
+  <div class="next"><button data-go="settings">&larr; Settings</button><button data-go="roles">Next: Who can do what &rarr;</button></div>
+</section>
+
+<!-- ============ ROLES ============ -->
+<section class="panel" id="roles">
+  <div class="eyebrow">From the portal's permission list (code, 11 Nov 2026)</div>
+  <h1>Who can do what</h1>
+  <p class="lede">Every control in the portal checks one permission. Members can see everything and draft routing; admins can change the setup. The payments admin role holds every permission below.</p>
+  <div class="tablewrap"><table>
+    <tr><th>Tab</th><th>Permission</th><th>What it allows</th><th>Member</th><th>Admin</th></tr>
+    <tr><td>Dashboard, Payments, Orders</td><td>Payments::Read</td><td>See payments, orders and the dashboard's figures</td><td>Yes</td><td>Yes</td></tr>
+    <tr><td rowspan="3">Processors</td><td>Processors::Read</td><td>See processor accounts and the processors we may add</td><td>Yes</td><td>Yes</td></tr>
+    <tr><td>Processors::Test</td><td>Check an account's credentials with its processor</td><td>No</td><td>Yes</td></tr>
+    <tr><td>Processors::Write</td><td>Add, change, enable, disable and delete accounts</td><td>No</td><td>Yes</td></tr>
+    <tr><td rowspan="2">Checkout</td><td>Checkout::Read</td><td>See payment method settings and their order, preview the form</td><td>Yes</td><td>Yes</td></tr>
+    <tr><td>Checkout::Write</td><td>Change a payment method's settings and the order shown</td><td>No</td><td>Yes</td></tr>
+    <tr><td rowspan="3">Routing</td><td>Routing::Read</td><td>See rules and history; try a payment without saving</td><td>Yes</td><td>Yes</td></tr>
+    <tr><td>Routing::Draft</td><td>Save and discard a draft</td><td>Yes</td><td>Yes</td></tr>
+    <tr><td>Routing::Publish</td><td>Publish a draft so payments follow it</td><td>No</td><td>Yes</td></tr>
+    <tr><td rowspan="3">Webhooks</td><td>Webhooks::Read</td><td>See endpoints and deliveries</td><td>Yes</td><td>Yes</td></tr>
+    <tr><td>Webhooks::Resend</td><td>Resend a delivery, send a test event</td><td>No</td><td>Yes</td></tr>
+    <tr><td>Webhooks::Write</td><td>Add, change, verify, delete endpoints; rotate secrets</td><td>No</td><td>Yes</td></tr>
+    <tr><td rowspan="3">Settings</td><td>Settings::Read</td><td>See name, allowed origins and keys in force</td><td>Yes</td><td>Yes</td></tr>
+    <tr><td>Settings::Write</td><td>Change name and allowed origins</td><td>No</td><td>Yes</td></tr>
+    <tr><td>ApiKeys::Rotate</td><td>Make a new key and retire the old one</td><td>No</td><td>Yes</td></tr>
+    <tr><td rowspan="2">Team</td><td>Users::Read</td><td>See people and their roles</td><td>Yes</td><td>Yes</td></tr>
+    <tr><td>Users::Write</td><td>Invite members or admins, make a member an admin</td><td>No</td><td>Yes</td></tr>
+  </table></div>
+  <div class="next"><button data-go="team">&larr; Team</button><button data-go="script">Next: Demo script &rarr;</button></div>
+</section>
+
+<!-- ============ SCRIPT ============ -->
+<section class="panel" id="script">
+  <div class="eyebrow">For the update meeting</div>
+  <h1>Demo script, about 12 minutes</h1>
+  <p class="lede">Run it in Test mode, signed in as an admin. Every step is read-only or a dry run; nothing below charges a card or changes a setting.</p>
+  <div class="grid g2">
+    <div class="card"><ol class="demo">
+      <li><b>Header (1 minute).</b> Point at the tabs and the Test / Live switch.<span class="say">"Everything Payments needs to run the service is in these tabs."</span></li>
+      <li><b>Processors (2 minutes).</b> The six accounts; open Nuvei Canada; open Connect a processor and back out.<span class="say">"We connect and switch accounts ourselves."</span></li>
+      <li><b>Checkout (2 minutes).</b> Canada, then UK; switch to Mobile.<span class="say">"What the shopper sees, market by market."</span></li>
+      <li><b>Routing (3 minutes).</b> Canada online: the published version, the draft, "Where payments go", two Try a payment runs, the version history.<span class="say">"We decide where every payment goes, test it first, and keep every version."</span></li>
+      <li><b>Dashboard, Payments, Orders (2 minutes).</b> 30 days; open one payment's attempts; search an order.</li>
+      <li><b>Webhooks (1 minute).</b> Endpoints verified; open one delivery.</li>
+      <li><b>Settings and Team (1 minute).</b> Allowed websites, keys shown once, the member and admin roles.</li>
+    </ol></div>
+    <div>
+      <div class="card green"><h3>Three lines to close on</h3>
+        <ul class="can">
+          <li>Payments connects and manages processor accounts in the portal, with no developer</li>
+          <li>Payments sets, tests and publishes routing per market, with every version kept</li>
+          <li>Every payment, attempt and webhook is visible to Payments in one place</li>
+        </ul></div>
+      <div class="dont" style="margin-top:14px"><b>Keep the demo read-only:</b> do not press Publish, Rotate (keys or secrets), Delete, or Save on Settings during the meeting. Try a payment, Test connection, opening drawers and switching tabs are all safe.</div>
+      <div class="card" style="margin-top:14px"><h3>Acronyms on this page</h3>
+        <p class="tiny" style="margin:0">API: application programming interface (how our website talks to the payment service). NMI: Network Merchants Inc., the gateway with Nuvei behind it for US cards. CAD, GBP, USD: Canadian dollar, British pound, US dollar. 3-D Secure: the card bank's check of the shopper. Amex: American Express. JCB: Japan Credit Bureau card brand. UK: United Kingdom. US: United States.</p></div>
+    </div>
+  </div>
+  <div class="next"><button data-go="roles">&larr; Who can do what</button><button data-go="overview">Back to Overview</button></div>
+</section>
+
+<div class="foot">Sources: the portal at payments-portal-service.vercel.app, read in Test mode on 10 Nov 2026 (Routing, Processors, Webhooks, Settings) and the Dashboard on 11 Nov 2026; the portal's code in the Unicity frontier repository, main branch as of 10 Nov 2026 (commit 516e17b94); Fidel Bello's Slack thread of 10 Nov 2026. Built by Payments (Howard Koziara), 11 Nov 2026.</div>
+</main>
+
+<script>
+(function(){
+  var ids=["overview","dashboard","payments","processors","checkout","routing","webhooks","settings","team","roles","script"];
+  function show(id){
+    if(ids.indexOf(id)<0) id="overview";
+    ids.forEach(function(x){document.getElementById(x).classList.toggle("on",x===id);});
+    document.querySelectorAll("#nav button").forEach(function(b){b.classList.toggle("on",b.dataset.p===id);});
+    if(location.hash!=="#"+id){ try{history.replaceState(null,"","#"+id);}catch(e){location.hash=id;} }
+    window.scrollTo(0,0);
+  }
+  document.querySelectorAll("#nav button").forEach(function(b){b.addEventListener("click",function(){show(b.dataset.p);});});
+  document.querySelectorAll("[data-go]").forEach(function(b){b.addEventListener("click",function(){show(b.dataset.go);});});
+  show((location.hash||"#overview").slice(1));
+})();
+</script>
+<a href="index.html" style="position:fixed;left:14px;bottom:14px;z-index:9999;background:#121a30;color:#eef2fb;border:1px solid #60a5fa;border-radius:999px;padding:8px 14px;font:600 13px Segoe UI,Arial,sans-serif;text-decoration:none;box-shadow:0 6px 20px rgba(0,0,0,.4)">&larr; Back to the demo</a></body>
+</html>
